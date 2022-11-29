@@ -5,6 +5,7 @@ networks:
         name: ${COMPOSE_PROJECT_NAME}_network
 
 services:
+    # DATABASE #
     pgsql:
         container_name: ${COMPOSE_PROJECT_NAME}_pgsql
         # tagging the image with the projet name
@@ -22,3 +23,36 @@ services:
             POSTGRES_DB: ${POSTGRES_DATABASE}
             POSTGRES_USER: ${POSTGRES_USERNAME}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+
+    # SERVICES #
+    api:
+        container_name: ${COMPOSE_PROJECT_NAME}_api
+        image: ${COMPOSE_PROJECT_NAME}_api
+        build: api
+        networks: [docker]
+        volumes:
+            - ../api/:/srv/:r
+        labels:
+            # Enable traefik to redirect traffic to the API
+            - "traefik.enable=true"
+            - "traefik.http.routers.api.rule=Host(`snippt.localhost`)"
+            - "traefik.http.routers.api.entrypoints=web"
+            - "traefik.http.services.api.loadbalancer.server.port=80"
+
+
+    # REVERSE PROXY #
+    traefik:
+        container_name: ${COMPOSE_PROJECT_NAME}_traefik
+        image: "traefik:v2.9"
+        ports: ["80:80"]
+        networks: [docker]
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        command:
+            - "--entrypoints.web.address=:80"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+        depends_on:
+            api:
+                condition: service_started
