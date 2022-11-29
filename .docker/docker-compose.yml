@@ -1,0 +1,24 @@
+version: "3.9"
+
+networks:
+    docker:
+        name: ${COMPOSE_PROJECT_NAME}_network
+
+services:
+    pgsql:
+        container_name: ${COMPOSE_PROJECT_NAME}_pgsql
+        # tagging the image with the projet name
+        # please always use "docker-compose build"
+        # running "docker-compose pull" will try to pull an image of that name from servers,
+        # as per docker-compose ^1.6.0 documentation specifies
+        image: ${COMPOSE_PROJECT_NAME}_pgsql
+        build: pgsql
+        networks: [docker]
+        volumes:
+            # save data on the disk, so it doesn't get erased
+            # even if the container goes down
+            - ./pgsql/data:/var/lib/postgresql/data:rw
+        environment:
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+            POSTGRES_USER: ${POSTGRES_USERNAME}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
