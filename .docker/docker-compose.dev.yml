@@ -1,0 +1,14 @@
+version: "3.9"
+
+networks:
+    docker:
+        name: ${COMPOSE_PROJECT_NAME}_network
+
+services:
+    adminer:
+        container_name: snippt_adminer
+        image: adminer
+        ports: ["8080:8080"]
+        networks: [docker]
+        environment:
+            ADMINER_DEFAULT_SERVER: ${COMPOSE_PROJECT_NAME}_pgsql

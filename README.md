@@ -23,9 +23,11 @@ If you have the `make` command available, use the `Makefile` at the root of the 
 
 ```bash
 # start the containers
+# you can use "make dev ENV=prod" to start in production mode
 $ make up
 
 # shut them down
+# if started in production mode, write "make down ENV=prod"
 $ make down
 
 # in any critical event, you can kill the containers
