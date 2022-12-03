@@ -1,34 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // TODO: create the "create user"/register? in auth module
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
+  // TODO: implement finding users by who they follow
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get(':handle')
+  @ApiOperation({ summary: "Find a user by their handle" })
+  @ApiResponse({ status: 200, description: "The found user" })
+  @ApiResponse({ status: 404, description: "If the user was not found" })
+  findOne(@Param('handle') handle: string) {
+    return this.usersService.findOne(handle);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: "Update a user" })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
+  // TODO: create a "delete" route that would disable the user
 }
