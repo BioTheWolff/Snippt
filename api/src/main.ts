@@ -6,6 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
+  // TODO: document swagger like the users module
   const config = new DocumentBuilder()
     .setTitle('Snippt API')
     .setDescription('The Snippt API')

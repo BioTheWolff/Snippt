@@ -36,4 +36,4 @@ $ make kill
 
 ### On Windows
 
-TODO
+TODO: windows documentation
