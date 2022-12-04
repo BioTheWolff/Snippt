@@ -15,7 +15,7 @@ require('dotenv').config();
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
       entities: [
-          __dirname + '/**/*.entity{.ts,.js}',
+          __dirname + '/**/entities/*.entity{.ts,.js}',
       ],
       synchronize: (process.env.MODE === "env"),
     }),
