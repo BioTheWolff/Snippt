@@ -2,7 +2,8 @@ import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Inj
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserInfoDto } from './dto/update-user-info.dto';
+import { UpdateUserEmailDto } from './dto/update-user-email.dto';
+import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -21,9 +22,9 @@ export class UsersService {
     return this.usersRepository.findOneBy({handle: handle});
   }
 
-  async updateInfo(id: number, updateUserInfoDto: UpdateUserInfoDto) {
+  async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
     // if the update DTO is empty
-    if (updateUserInfoDto.isEmpty()) {
+    if (updateUserDetailsDto.isEmpty()) {
       throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
     }
 
@@ -35,15 +36,36 @@ export class UsersService {
 
     // updating the user
     try {
-      let result = await this.usersRepository.update({id: id}, updateUserInfoDto);
+      let result = await this.usersRepository.update({id: id}, updateUserDetailsDto);
       if (result.affected > 0) {
-        return updateUserInfoDto;
+        return updateUserDetailsDto;
       } else {
         throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
       }
     } catch (QueryFailedError) {
       // in case of duplicate key error
       throw new ForbiddenException("New handle is already taken")
+    }
+  }
+
+  async updateEmail(id: number, updateUserEmailDto: UpdateUserEmailDto) {
+    // getting the user to update
+    let user = await this.usersRepository.findOneBy({id: id});
+    if (!user) {
+      throw new BadRequestException("User to update was not found");
+    }
+
+    // updating the user
+    try {
+      let result = await this.usersRepository.update({id: id}, updateUserEmailDto);
+      if (result.affected > 0) {
+        return updateUserEmailDto;
+      } else {
+        throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
+      }
+    } catch (QueryFailedError) {
+      // in case of duplicate key error
+      throw new ForbiddenException("New email is already taken")
     }
   }
 

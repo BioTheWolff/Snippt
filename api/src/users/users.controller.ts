@@ -1,9 +1,10 @@
 import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserInfoDto } from './dto/update-user-info.dto';
+import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LowercasePipe } from 'src/pipes/lowercase.pipe';
+import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 
 @Controller('users')
 export class UsersController {
@@ -34,10 +35,16 @@ export class UsersController {
   }
 
   // TODO: PROTECT IT WITH GUARDS
-  @Patch(':id')
-  @ApiOperation({ summary: "Update a user" })
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateUserInfoDto: UpdateUserInfoDto) {
-    return await this.usersService.updateInfo(id, updateUserInfoDto);
+  @Patch(':id/details')
+  @ApiOperation({ summary: "Update a user's public details" })
+  async updateDetails(@Param('id', ParseIntPipe) id: number, @Body() updateUserDetailsDto: UpdateUserDetailsDto) {
+    return await this.usersService.updateInfo(id, updateUserDetailsDto);
+  }
+
+  @Patch(':id/email')
+  @ApiOperation({ summary: "Update a user's email" })
+  async updateEmail(@Param('id', ParseIntPipe) id: number, @Body() updateUserEmailDto: UpdateUserEmailDto) {
+    return await this.usersService.updateEmail(id, updateUserEmailDto);
   }
 
   // TODO: create a "delete" route that would disable the user
