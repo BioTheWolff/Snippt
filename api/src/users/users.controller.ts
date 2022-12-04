@@ -1,6 +1,6 @@
-import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LowercasePipe } from 'src/pipes/lowercase.pipe';
@@ -34,10 +34,10 @@ export class UsersController {
   }
 
   // TODO: PROTECT IT WITH GUARDS
-  @Patch(':handle')
+  @Patch(':id')
   @ApiOperation({ summary: "Update a user" })
-  async update(@Param('handle') handle: string, @Body() updateUserDto: UpdateUserDto) {
-    return await this.usersService.update(handle, updateUserDto);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateUserInfoDto: UpdateUserInfoDto) {
+    return await this.usersService.updateInfo(id, updateUserInfoDto);
   }
 
   // TODO: create a "delete" route that would disable the user

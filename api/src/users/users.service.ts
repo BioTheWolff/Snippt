@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Inj
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -21,23 +21,23 @@ export class UsersService {
     return this.usersRepository.findOneBy({handle: handle});
   }
 
-  async update(handle: string, updateUserDto: UpdateUserDto) {
+  async updateInfo(id: number, updateUserInfoDto: UpdateUserInfoDto) {
     // if the update DTO is empty
-    if (updateUserDto.isEmpty()) {
+    if (updateUserInfoDto.isEmpty()) {
       throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
     }
 
     // getting the user to update
-    let user = await this.usersRepository.findOneBy({handle: handle});
+    let user = await this.usersRepository.findOneBy({id: id});
     if (!user) {
       throw new BadRequestException("User to update was not found");
     }
 
     // updating the user
     try {
-      let result = await this.usersRepository.update({handle: handle}, updateUserDto);
+      let result = await this.usersRepository.update({id: id}, updateUserInfoDto);
       if (result.affected > 0) {
-        return updateUserDto;
+        return updateUserInfoDto;
       } else {
         throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
       }
