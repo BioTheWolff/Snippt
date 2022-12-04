@@ -5,6 +5,7 @@ import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { CreateUserDto } from './dto/create-user.dto';
 import { LowercasePipe } from 'src/pipes/lowercase.pipe';
 import { UpdateUserEmailDto } from './dto/update-user-email.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Controller('users')
 export class UsersController {
@@ -45,6 +46,12 @@ export class UsersController {
   @ApiOperation({ summary: "Update a user's email" })
   async updateEmail(@Param('id', ParseIntPipe) id: number, @Body() updateUserEmailDto: UpdateUserEmailDto) {
     return await this.usersService.updateEmail(id, updateUserEmailDto);
+  }
+
+  @Patch(':id/password')
+  @ApiOperation({ summary: "Update a user's password" })
+  async updatePassword(@Param('id', ParseIntPipe) id: number, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
+    return await this.usersService.updatePassword(id, updateUserPasswordDto)
   }
 
   // TODO: create a "delete" route that would disable the user

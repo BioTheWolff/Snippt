@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { User } from './entities/user.entity';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -69,6 +70,30 @@ export class UsersService {
     }
   }
 
+  async updatePassword(id: number, updateUserPasswordDto: UpdateUserPasswordDto) {
+    // checking new passwords are equal
+    if (updateUserPasswordDto.new_password !== updateUserPasswordDto.new_password_confirm) {
+      throw new BadRequestException("New passwords don't match");
+    }
+
+    // getting the user to update
+    let user = await this.usersRepository.findOneBy({id: id});
+    if (!user) {
+      throw new BadRequestException("User to update was not found");
+    }
+
+    // checking old password matches DB
+    if (user.password !== updateUserPasswordDto.password) {
+      throw new ForbiddenException("Old password is incorrect");
+    }
+
+
+    // updating the user
+    await this.usersRepository.update({id: id}, {password: updateUserPasswordDto.new_password});
+    return null;
+  }
+
+  // TODO: implement remove
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
