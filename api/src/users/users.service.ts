@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -6,6 +6,7 @@ import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { responseMessages } from '../response-messages';
 
 @Injectable()
 export class UsersService {
@@ -26,13 +27,13 @@ export class UsersService {
   async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
     // if the update DTO is empty
     if (UpdateUserDetailsDto.isEmpty(updateUserDetailsDto)) {
-      throw new BadRequestException("Empty modification request");
+      throw new BadRequestException(responseMessages.EMPTY_MODIF_DTO);
     }
 
     // getting the user to update
     let user = await this.usersRepository.findOneBy({id: id});
     if (!user) {
-      throw new BadRequestException("User to update was not found");
+      throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
     }
 
     // updating the user
@@ -41,24 +42,28 @@ export class UsersService {
       if (result.affected > 0) {
         return updateUserDetailsDto;
       } else {
-        throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
+        throw new HttpException(responseMessages.NOT_MODIFIED, HttpStatus.NOT_MODIFIED);
       }
-    } catch (QueryFailedError) {
-      // in case of duplicate key error
-      throw new ForbiddenException("New handle is already taken")
+    } catch (e) {
+      if (e instanceof QueryFailedError) {
+        // in case of duplicate key error
+        throw new ForbiddenException(responseMessages.HANDLE_IN_USE)
+      } else {
+        throw new ServiceUnavailableException(responseMessages.UKN_DB_ERROR)
+      }
     }
   }
 
   async updateEmail(id: number, updateUserEmailDto: UpdateUserEmailDto) {
     // if the update DTO is empty
     if (UpdateUserEmailDto.isEmpty(updateUserEmailDto)) {
-      throw new BadRequestException("Empty modification request");
+      throw new BadRequestException(responseMessages.EMPTY_MODIF_DTO);
     }
 
     // getting the user to update
     let user = await this.usersRepository.findOneBy({id: id});
     if (!user) {
-      throw new BadRequestException("User to update was not found");
+      throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
     }
 
     // updating the user
@@ -67,34 +72,38 @@ export class UsersService {
       if (result.affected > 0) {
         return updateUserEmailDto;
       } else {
-        throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
+        throw new HttpException(responseMessages.NOT_MODIFIED, HttpStatus.NOT_MODIFIED);
       }
-    } catch (QueryFailedError) {
-      // in case of duplicate key error
-      throw new ForbiddenException("New email is already taken")
+    } catch (e) {
+      if (e instanceof QueryFailedError) {
+        // in case of duplicate key error
+        throw new ForbiddenException(responseMessages.EMAIL_IN_USE)
+      } else {
+        throw new ServiceUnavailableException(responseMessages.UKN_DB_ERROR)
+      }
     }
   }
 
   async updatePassword(id: number, updateUserPasswordDto: UpdateUserPasswordDto) {
     // if the update DTO is empty
     if (UpdateUserPasswordDto.isEmpty(updateUserPasswordDto)) {
-      throw new BadRequestException("Empty modification request");
+      throw new BadRequestException(responseMessages.EMPTY_MODIF_DTO);
     }
 
     // checking new passwords are equal
     if (updateUserPasswordDto.new_password !== updateUserPasswordDto.new_password_confirm) {
-      throw new BadRequestException("New passwords don't match");
+      throw new BadRequestException(responseMessages.NEW_PASS_MISMATCH);
     }
 
     // getting the user to update
     let user = await this.usersRepository.findOneBy({id: id});
     if (!user) {
-      throw new BadRequestException("User to update was not found");
+      throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
     }
 
     // checking old password matches DB
     if (user.password !== updateUserPasswordDto.password) {
-      throw new ForbiddenException("Old password is incorrect");
+      throw new ForbiddenException(responseMessages.WRONG_OLD_PASS);
     }
 
 
@@ -105,6 +114,6 @@ export class UsersService {
 
   // TODO: implement remove
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return "NOK";
   }
 }

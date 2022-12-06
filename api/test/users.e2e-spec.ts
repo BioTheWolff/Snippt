@@ -7,6 +7,7 @@ import { User } from '../src/users/entities/user.entity';
 import { UsersSeederService } from '../src/users/seeds/users-seeder.service';
 import { usersSeeds } from '../src/users/seeds/users-seeds';
 import { getBodyFromError } from './utils';
+import { responseMessages } from '../src/response-messages';
 let _async = require('async');
 
 describe('Users', () => {
@@ -41,6 +42,7 @@ describe('Users', () => {
     return request(app.getHttpServer())
       .get('/users/notfound')
       .expect(404)
+      .expect(getBodyFromError(404))
   })
 
 
@@ -77,21 +79,24 @@ describe('Users', () => {
   it('should not update details on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/details`)
-      .expect(400);
+      .expect(400)
+      .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
   })
 
   it('should not update details on existing handle', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/details`)
       .send({ handle: users[1].handle })
-      .expect(403);
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
   })
 
   it('should not update details of non-existing user', () => {
     return request(app.getHttpServer())
       .patch(`/users/-1/details`)
       .send({ handle: "superlongtest" })
-      .expect(400);
+      .expect(400)
+      .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
   })
 
   // UPDATE EMAIL
@@ -117,20 +122,23 @@ describe('Users', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
       .send({ email: users[1].email })
-      .expect(403);
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.EMAIL_IN_USE));
   })
 
   it('should not update email of non-existing user', () => {
     return request(app.getHttpServer())
       .patch(`/users/-1/email`)
       .send({ email: users[1].email })
-      .expect(400);
+      .expect(400)
+      .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
   })
 
   it('should not update email on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
-      .expect(400);
+      .expect(400)
+      .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
   })
 
   // UPDATE PASSWORD
@@ -150,7 +158,7 @@ describe('Users', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/password`)
       .expect(400)
-      .expect(getBodyFromError(400, "Empty modification request"));
+      .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
   })
 
   it('should not update password of non-existing user', () => {
@@ -161,7 +169,8 @@ describe('Users', () => {
         new_password: "azertyuiop",
         new_password_confirm: "azertyuiop"
       })
-      .expect(400);
+      .expect(400)
+      .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
   })
 
   it('should not update password on mismatched new password confirm', () => {
@@ -172,7 +181,8 @@ describe('Users', () => {
         new_password: "azertyuiop",
         new_password_confirm: "azertyuiopp"
       })
-      .expect(400);
+      .expect(400)
+      .expect(getBodyFromError(400, responseMessages.NEW_PASS_MISMATCH));
   })
 
   it('should not update password on wrong current password', () => {
@@ -183,6 +193,7 @@ describe('Users', () => {
         new_password: "azertyuiop",
         new_password_confirm: "azertyuiop"
       })
-      .expect(403);
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.WRONG_OLD_PASS));
   })
 });
