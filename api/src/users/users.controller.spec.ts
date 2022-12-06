@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmSqliteTestingModule } from '../utils/typeorm-sqlite-testing';
+import { User } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -7,6 +9,7 @@ describe('UsersController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [...TypeOrmSqliteTestingModule([User])],
       controllers: [UsersController],
       providers: [UsersService],
     }).compile();

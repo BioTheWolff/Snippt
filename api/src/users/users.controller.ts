@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LowercasePipe } from 'src/pipes/lowercase.pipe';
+import { LowercasePipe } from '../pipes/lowercase.pipe';
 import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 

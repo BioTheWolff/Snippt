@@ -30,7 +30,7 @@ export class User {
 
     @Exclude()
     @ApiHideProperty()
-    @Column({ type: "bool", default: false })
+    @Column({ type: "integer", default: false })
     disabled: boolean;
 
 
