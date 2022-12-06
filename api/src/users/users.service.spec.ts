@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmSqliteTestingModule } from '../utils/typeorm-sqlite-testing';
+import { TypeOrmSqliteTestingModule } from '../database/typeorm-sqlite-testing';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 

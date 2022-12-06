@@ -9,6 +9,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
+  // TODO: generate migrations
   // TODO: document swagger like the users module
   const config = new DocumentBuilder()
     .setTitle('Snippt API')
