@@ -19,8 +19,8 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  findOne(handle: string) {
-    return this.usersRepository.findOneBy({handle: handle});
+  async findOne(handle: string) {
+    return await this.usersRepository.findOneBy({handle: handle});
   }
 
   async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
