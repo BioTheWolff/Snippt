@@ -13,4 +13,8 @@ export class UpdateUserPasswordDto extends PickType(CreateUserDto, ['password'] 
     @IsNotEmpty()
     @Length(8)
     new_password_confirm: string;
+
+    static isEmpty(dto) {
+        return !(dto.password || dto.new_password || dto.new_password_confirm);
+    }
 }

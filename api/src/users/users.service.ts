@@ -25,8 +25,8 @@ export class UsersService {
 
   async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
     // if the update DTO is empty
-    if (updateUserDetailsDto.isEmpty()) {
-      throw new HttpException("Not modified", HttpStatus.NOT_MODIFIED);
+    if (UpdateUserDetailsDto.isEmpty(updateUserDetailsDto)) {
+      throw new BadRequestException("Empty modification request");
     }
 
     // getting the user to update
@@ -50,6 +50,11 @@ export class UsersService {
   }
 
   async updateEmail(id: number, updateUserEmailDto: UpdateUserEmailDto) {
+    // if the update DTO is empty
+    if (UpdateUserEmailDto.isEmpty(updateUserEmailDto)) {
+      throw new BadRequestException("Empty modification request");
+    }
+
     // getting the user to update
     let user = await this.usersRepository.findOneBy({id: id});
     if (!user) {
@@ -71,6 +76,11 @@ export class UsersService {
   }
 
   async updatePassword(id: number, updateUserPasswordDto: UpdateUserPasswordDto) {
+    // if the update DTO is empty
+    if (UpdateUserPasswordDto.isEmpty(updateUserPasswordDto)) {
+      throw new BadRequestException("Empty modification request");
+    }
+
     // checking new passwords are equal
     if (updateUserPasswordDto.new_password !== updateUserPasswordDto.new_password_confirm) {
       throw new BadRequestException("New passwords don't match");
@@ -90,7 +100,7 @@ export class UsersService {
 
     // updating the user
     await this.usersRepository.update({id: id}, {password: updateUserPasswordDto.new_password});
-    return null;
+    return "OK";
   }
 
   // TODO: implement remove

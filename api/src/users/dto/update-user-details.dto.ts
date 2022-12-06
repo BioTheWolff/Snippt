@@ -4,7 +4,7 @@ import { CreateUserDto } from './create-user.dto';
 export class UpdateUserDetailsDto extends PartialType(
     OmitType(CreateUserDto, ['password', 'email'] as const),
   ) {
-    isEmpty() {
-      return !(this.display_name || this.handle);
+    static isEmpty(dto: UpdateUserDetailsDto) {
+      return !(dto.display_name || dto.handle);
     }
   }
