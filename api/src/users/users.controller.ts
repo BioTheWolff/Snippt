@@ -11,13 +11,6 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // TODO: create the "create user"/register? in auth module
-  @Post()
-  @UseInterceptors(ClassSerializerInterceptor)
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
-  }
-
   // TODO: implement finding users by who they follow
 
   @Get(':handle')

@@ -25,9 +25,18 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    let user = this.usersRepository.create(createUserDto);
+    // check handle is available
+    if (await this.usersRepository.findOneBy({ handle: createUserDto.handle })) {
+      throw new ForbiddenException(responseMessages.HANDLE_IN_USE);
+    }
 
-    // hash password
+    // check email is available
+    if (await this.usersRepository.findOneBy({ email: createUserDto.email })) {
+      throw new ForbiddenException(responseMessages.EMAIL_IN_USE);
+    }
+
+    // create user and hash password
+    let user = this.usersRepository.create(createUserDto);
     user.password = await this._password_hash(user.password);
 
     return this.usersRepository.save(user);
