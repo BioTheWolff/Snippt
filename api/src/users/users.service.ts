@@ -115,7 +115,7 @@ export class UsersService {
     }
 
     // checking old password matches DB
-    if (!this._password_compare(updateUserPasswordDto.password, user.password)) {
+    if (!await this._password_compare(updateUserPasswordDto.password, user.password)) {
       throw new ForbiddenException(responseMessages.WRONG_OLD_PASS);
     }
 

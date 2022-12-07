@@ -19,8 +19,14 @@ export class CreateUserDto {
     @Transform(({ value }) => value.toLowerCase())
     email: string;
 
+    // TODO: add password validation on strength (a-zA-Z.; etc)
     @IsString()
     @IsNotEmpty()
     @Length(8)
     password: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @Length(8)
+    password_confirm: string;
 }
