@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 
 require('dotenv').config();
 
@@ -21,6 +22,7 @@ require('dotenv').config();
     }),
     // API modules
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
