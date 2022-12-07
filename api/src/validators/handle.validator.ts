@@ -8,6 +8,6 @@ export class HandleValidator implements ValidatorConstraintInterface {
     }
 
     defaultMessage?(validationArguments?: ValidationArguments): string {
-        return "The handle should only contain alphanumerical characters, dashes (-) and underscores (_)"
+        return `${validationArguments.targetName} should only contain alphanumerical characters, dashes (-) and underscores (_)`
     }
 }

@@ -1,10 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { TypeOrmSqliteTestingModule } from '../src/database/typeorm-sqlite-testing';
 import { User } from '../src/users/entities/user.entity';
 import { AuthModule } from '../src/auth/auth.module';
 import { usersSeeds } from '../src/users/seeds/users-seeds';
+import * as _async from 'async';
+import { getBodyFromError } from './utils';
+import { responseMessages } from '../src/response-messages';
 
 describe('Users', () => {
   let app: INestApplication;
@@ -16,20 +19,61 @@ describe('Users', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
   // REGISTER
   it('should register a new user', () => {
-    return expect(false).toBeTruthy();
+    return request(app.getHttpServer())
+      .post(`/auth/register`)
+      .send(usersSeeds[0])
+      .expect(201)
+      .expect({
+        handle: usersSeeds[0].handle
+      });
   });
 
-  it('should not register on duplicate handle', () => {
-    return expect(false).toBeTruthy();
+  it('should not register on duplicate handle', (done) => {
+    let wrong_user = {...usersSeeds[1]};
+    wrong_user.handle = usersSeeds[0].handle;
+
+    return _async.series([
+        function (cb) { request(app.getHttpServer()).post(`/auth/register`).send(usersSeeds[0]) },
+        function (cb) { 
+            request(app.getHttpServer())
+                .post(`/auth/register`)
+                .send(wrong_user)
+                .expect(403)
+                .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
+        }
+    ], done)
   })
 
-  it('should not register on duplicate email', () => {
-    return expect(false).toBeTruthy();
+  it('should not register on duplicate email', (done) => {
+    let wrong_user = {...usersSeeds[1]};
+    wrong_user.email = usersSeeds[0].email;
+
+    return _async.series([
+        function (cb) { request(app.getHttpServer()).post(`/auth/register`).send(usersSeeds[0]) },
+        function (cb) { 
+            request(app.getHttpServer())
+                .post(`/auth/register`)
+                .send(wrong_user)
+                .expect(403)
+                .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
+        }
+    ], done)
+  })
+
+  it('should not register on handle validation fail', () => {
+    let wrong_user = {...usersSeeds[0]};
+    wrong_user.handle = "wrong@ handle";
+
+    return request(app.getHttpServer())
+      .post(`/auth/register`)
+      .send(wrong_user)
+      .expect(400);
   })
 
   // LOGIN

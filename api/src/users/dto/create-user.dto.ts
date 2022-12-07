@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsNotEmpty, IsEmail, Length, IsAlphanumeric, Validate } from 'class-validator';
-import { HandleValidator } from 'src/validators/handle.validator';
+import { IsString, IsNotEmpty, IsEmail, Length, Validate } from 'class-validator';
+import { HandleValidator } from '../../validators/handle.validator';
 
 export class CreateUserDto {
     @IsString()

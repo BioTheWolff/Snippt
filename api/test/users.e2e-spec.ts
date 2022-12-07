@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { UsersModule } from '../src/users/users.module';
 import { TypeOrmSqliteTestingModule } from '../src/database/typeorm-sqlite-testing';
@@ -21,6 +21,7 @@ describe('Users', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
     let seeder = moduleFixture.get<UsersSeederService>(UsersSeederService);
@@ -137,8 +138,7 @@ describe('Users', () => {
   it('should not update email on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
-      .expect(400)
-      .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
+      .expect(400);
   })
 
   // UPDATE PASSWORD
@@ -157,8 +157,7 @@ describe('Users', () => {
   it('should not update password on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/password`)
-      .expect(400)
-      .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
+      .expect(400);
   })
 
   it('should not update password of non-existing user', () => {
