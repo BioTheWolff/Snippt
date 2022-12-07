@@ -1,10 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsNotEmpty, IsEmail, Length } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, Length, IsAlphanumeric, Validate } from 'class-validator';
+import { HandleValidator } from 'src/validators/handle.validator';
 
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     @Length(1, 30)
+    @Validate(HandleValidator)
     @Transform(({ value }) => value.toLowerCase())
     handle: string;
 
