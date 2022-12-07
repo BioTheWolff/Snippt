@@ -1,4 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmSqliteTestingModule } from '../database/typeorm-sqlite-testing';
+import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -6,7 +9,8 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      imports: [...TypeOrmSqliteTestingModule([User])],
+      providers: [UsersService, AuthService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
