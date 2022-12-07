@@ -14,8 +14,8 @@ export class UsersController {
   // TODO: create the "create user"/register? in auth module
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.usersService.create(createUserDto);
   }
 
   // TODO: implement finding users by who they follow

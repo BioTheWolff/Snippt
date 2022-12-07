@@ -7,6 +7,7 @@ import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { responseMessages } from '../response-messages';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -15,8 +16,20 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async _password_hash(plain: string): Promise<string> {
+    return await bcrypt.hash(plain, 10);
+  }
+
+  async _password_compare(plain: string, hash: string) {
+    return await bcrypt.compare(plain, hash);
+  }
+
+  async create(createUserDto: CreateUserDto) {
     let user = this.usersRepository.create(createUserDto);
+
+    // hash password
+    user.password = await this._password_hash(user.password);
+
     return this.usersRepository.save(user);
   }
 
@@ -102,13 +115,14 @@ export class UsersService {
     }
 
     // checking old password matches DB
-    if (user.password !== updateUserPasswordDto.password) {
+    if (!this._password_compare(updateUserPasswordDto.password, user.password)) {
       throw new ForbiddenException(responseMessages.WRONG_OLD_PASS);
     }
 
-
-    // updating the user
-    await this.usersRepository.update({id: id}, {password: updateUserPasswordDto.new_password});
+    // hashing password and updating user
+    await this.usersRepository.update({id: id}, {
+      password: await this._password_hash(updateUserPasswordDto.new_password)
+    });
     return "OK";
   }
 

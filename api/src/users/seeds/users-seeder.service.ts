@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entities/user.entity";
 import { usersSeeds } from "./users-seeds";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersSeederService {
@@ -12,7 +13,9 @@ export class UsersSeederService {
 
     create(): Promise<User>[] {
         return usersSeeds.map(async (e) => {
-            return await this.repository.save(this.repository.create(e))
+            let user = this.repository.create(e);
+            user.password = await bcrypt.hash(user.password, 10);
+            return await this.repository.save(user);
         })
     }
 }
