@@ -56,7 +56,6 @@ describe('Users', () => {
         request(app.getHttpServer())
           .patch(`/users/${users[0].id}/details`)
           .send(new_handle)
-          .expect(200)
           .expect(new_handle, cb)
       },
       function (cb) {
