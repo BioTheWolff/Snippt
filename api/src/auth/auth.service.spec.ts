@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmSqliteTestingModule } from '../database/typeorm-sqlite-testing';
 import { User } from '../users/entities/user.entity';
@@ -10,7 +11,7 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [...TypeOrmSqliteTestingModule([User])],
-      providers: [UsersService, AuthService],
+      providers: [UsersService, AuthService, JwtService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);

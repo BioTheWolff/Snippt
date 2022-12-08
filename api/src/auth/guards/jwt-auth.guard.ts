@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_BYPASSING_JWT_AUTH } from 'src/decorators/bypass-jwt-auth.decorator';
+import { IS_BYPASSING_JWT_AUTH } from '../../decorators/bypass-jwt-auth.decorator';
 import { IS_PUBLIC } from '../../decorators/public.decorator';
 
 @Injectable()
