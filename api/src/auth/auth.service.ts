@@ -17,4 +17,12 @@ export class AuthService {
             throw new BadRequestException(responseMessages.REGISTRATION_FAILED);
         }
     }
+
+    async validateUser(email: string, password: string) {
+        const user = await this.usersService.findOneEmail(email);
+        if(await this.usersService._password_compare(password, user.password)) {
+            let {password, ...result} = user;
+            return result;
+        }
+    }
 }
