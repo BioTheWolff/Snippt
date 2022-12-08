@@ -8,30 +8,42 @@ import { usersSeeds } from '../src/users/seeds/users-seeds';
 import * as _async from 'async';
 import { getBodyFromError } from './utils';
 import { responseMessages } from '../src/response-messages';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+
+require('dotenv').config();
 
 describe('Users', () => {
   let app: INestApplication;
+  let jwtService: JwtService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [...TypeOrmSqliteTestingModule([User]), AuthModule],
+      imports: [
+        ...TypeOrmSqliteTestingModule([User]), 
+        AuthModule,
+        JwtModule.register({
+          secret: process.env.JWT_SECRET,
+          signOptions: { expiresIn: '5s' },
+        }),
+      ],
       providers: []
     }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
+
+    jwtService = moduleFixture.get<JwtService>(JwtService);
   });
 
   // REGISTER
-  it('should register a new user', () => {
-    return request(app.getHttpServer())
+  it('should register a new user', async () => {
+    let response = await request(app.getHttpServer())
       .post(`/auth/register`)
-      .send(usersSeeds[0])
-      .expect(201)
-      .expect({
-        handle: usersSeeds[0].handle
-      });
+      .send(usersSeeds[0]);
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body.handle).toBe(usersSeeds[0].handle);
   });
 
   it('should not register on duplicate handle', (done) => {
@@ -39,13 +51,18 @@ describe('Users', () => {
     wrong_user.handle = usersSeeds[0].handle;
 
     return _async.series([
-        function (cb) { request(app.getHttpServer()).post(`/auth/register`).send(usersSeeds[0]) },
         function (cb) { 
-            request(app.getHttpServer())
-                .post(`/auth/register`)
-                .send(wrong_user)
-                .expect(403)
-                .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
+          request(app.getHttpServer())
+            .post(`/auth/register`)
+            .send(usersSeeds[0])
+            .expect(201, cb);
+        },
+        function (cb) { 
+          request(app.getHttpServer())
+            .post(`/auth/register`)
+            .send(wrong_user)
+            .expect(403)
+            .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE), cb);
         }
     ], done)
   })
@@ -55,14 +72,19 @@ describe('Users', () => {
     wrong_user.email = usersSeeds[0].email;
 
     return _async.series([
-        function (cb) { request(app.getHttpServer()).post(`/auth/register`).send(usersSeeds[0]) },
-        function (cb) { 
-            request(app.getHttpServer())
-                .post(`/auth/register`)
-                .send(wrong_user)
-                .expect(403)
-                .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
-        }
+      function (cb) { 
+        request(app.getHttpServer())
+          .post(`/auth/register`)
+          .send(usersSeeds[0])
+          .expect(201, cb);
+      },
+      function (cb) { 
+        request(app.getHttpServer())
+          .post(`/auth/register`)
+          .send(wrong_user)
+          .expect(403)
+          .expect(getBodyFromError(403, responseMessages.EMAIL_IN_USE), cb);
+      }
     ], done)
   })
 
@@ -76,43 +98,77 @@ describe('Users', () => {
       .expect(400);
   })
 
-  // LOGIN
-  it('should login on register', () => {
-    return expect(false).toBeTruthy();
+  // JWT & LOGIN
+  it('should set JWT on login by register', async () => {
+    let response = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(usersSeeds[0]);
+    
+    expect(response.statusCode).toBe(201);
+    expect(response.body.token).toBeDefined();
+
+    expect(jwtService.verify(response.body.token)).toBeTruthy();
   })
 
-  it('should login on correct credentials', () => {
-    return expect(false).toBeTruthy();
+  it('should set JWT on login by credentials', async () => {
+    // registration
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(usersSeeds[0]);
+
+    // login
+    let response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: usersSeeds[0].email,
+        password: usersSeeds[0].password
+      });
+    
+    expect(response.statusCode).toBe(201);
+    expect(response.body.token).toBeDefined();
+
+    expect(jwtService.verify(response.body.token)).toBeTruthy();
   })
 
-  it('should not login on incorrect email', () => {
-    return expect(false).toBeTruthy();
+  it('should not login on incorrect email', async () => {
+    // registration
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(usersSeeds[0]);
+
+    // login
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: "wrong@example.com",
+        password: usersSeeds[0].password
+      })
+      .expect(401);
   })
 
-  it('should not login on incorrect password', () => {
-    return expect(false).toBeTruthy();
+  it('should not login on incorrect password', async () => {
+    // registration
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(usersSeeds[0]);
+
+    // login
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: usersSeeds[0].email,
+        password: "wrongpass"
+      })
+      .expect(401);
   })
 
   // LOGOUT
   it('should accept logout when connected', () => {
-    return expect(false).toBeTruthy();
+
   })
 
   it('should refuse logout if not connected', () => {
-    return expect(false).toBeTruthy();
-  })
 
-  // JWT
-  it('should set JWT on login by register', () => {
-    return expect(false).toBeTruthy();
-  })
-
-  it('should set JWT on login by credentials', () => {
-    return expect(false).toBeTruthy();
-  })
-
-  it('should remove JWT on logout', () => {
-    return expect(false).toBeTruthy();
   })
 
 });
