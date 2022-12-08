@@ -12,9 +12,12 @@ let _async = require('async');
 
 describe('Users', () => {
   let app: INestApplication;
-  let users: User[]
+  let seeder: UsersSeederService;
 
-  beforeEach(async () => {
+  let users: User[]
+  let jwt_bearer: string
+
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [...TypeOrmSqliteTestingModule([User]), UsersModule],
       providers: [UsersSeederService]
@@ -24,9 +27,25 @@ describe('Users', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    let seeder = moduleFixture.get<UsersSeederService>(UsersSeederService);
-    users = await Promise.all(seeder.create());
+    seeder = moduleFixture.get<UsersSeederService>(UsersSeederService);
   });
+
+  beforeEach(async () => {
+    users = await Promise.all(seeder.create());
+
+    jwt_bearer = 'Bearer ' + (
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: usersSeeds[0].email,
+          password: usersSeeds[0].password
+        })
+    ).body.token;
+  })
+
+  afterEach(async () => {
+    await seeder.drop();
+  })
 
   // PROFILE
   it('should 200 on found profile', () => {
@@ -55,6 +74,7 @@ describe('Users', () => {
       function (cb) { 
         request(app.getHttpServer())
           .patch(`/users/${users[0].id}/details`)
+          .set("Authorization", jwt_bearer)
           .send(new_handle)
           .expect(new_handle, cb)
       },
@@ -71,6 +91,7 @@ describe('Users', () => {
     let new_handle = { handle: users[0].handle };
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/details`)
+      .set("Authorization", jwt_bearer)
       .send(new_handle)
       .expect(200)
       .expect(new_handle);
@@ -79,6 +100,7 @@ describe('Users', () => {
   it('should not update details on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/details`)
+      .set("Authorization", jwt_bearer)
       .expect(400)
       .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
   })
@@ -86,6 +108,7 @@ describe('Users', () => {
   it('should not update details on existing handle', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/details`)
+      .set("Authorization", jwt_bearer)
       .send({ handle: users[1].handle })
       .expect(403)
       .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
@@ -94,9 +117,19 @@ describe('Users', () => {
   it('should not update details of non-existing user', () => {
     return request(app.getHttpServer())
       .patch(`/users/-1/details`)
+      .set("Authorization", jwt_bearer)
       .send({ handle: "superlongtest" })
       .expect(400)
       .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
+  })
+
+  it('should not update details of another user', () => {
+    return request(app.getHttpServer())
+      .patch(`/users/${users[1].id}/details`)
+      .set("Authorization", jwt_bearer)
+      .send({ handle: "superlongtest" })
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
 
   // UPDATE EMAIL
@@ -106,6 +139,7 @@ describe('Users', () => {
     // TODO: check returned email is correct from private profile route once implemented
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
+      .set("Authorization", jwt_bearer)
       .send(new_email)
       .expect(200)
       .expect(new_email);
@@ -114,6 +148,7 @@ describe('Users', () => {
   it('should update email even if same', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
+      .set("Authorization", jwt_bearer)
       .send({ email: users[0].email })
       .expect(200);
   })
@@ -121,6 +156,7 @@ describe('Users', () => {
   it('should not update email if already taken', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
+      .set("Authorization", jwt_bearer)
       .send({ email: users[1].email })
       .expect(403)
       .expect(getBodyFromError(403, responseMessages.EMAIL_IN_USE));
@@ -129,6 +165,7 @@ describe('Users', () => {
   it('should not update email of non-existing user', () => {
     return request(app.getHttpServer())
       .patch(`/users/-1/email`)
+      .set("Authorization", jwt_bearer)
       .send({ email: users[1].email })
       .expect(400)
       .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
@@ -137,13 +174,24 @@ describe('Users', () => {
   it('should not update email on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/email`)
+      .set("Authorization", jwt_bearer)
       .expect(400);
+  })
+
+  it('should not update email of another user', () => {
+    return request(app.getHttpServer())
+      .patch(`/users/${users[1].id}/email`)
+      .set("Authorization", jwt_bearer)
+      .send({ email: "any@example.com" })
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
 
   // UPDATE PASSWORD
   it('should update password', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/password`)
+      .set("Authorization", jwt_bearer)
       .send({
         password: usersSeeds[0].password,
         new_password: "azertyuiop",
@@ -156,12 +204,14 @@ describe('Users', () => {
   it('should not update password on empty body', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/password`)
+      .set("Authorization", jwt_bearer)
       .expect(400);
   })
 
   it('should not update password of non-existing user', () => {
     return request(app.getHttpServer())
       .patch(`/users/-1/password`)
+      .set("Authorization", jwt_bearer)
       .send({
         password: usersSeeds[0].password,
         new_password: "azertyuiop",
@@ -174,6 +224,7 @@ describe('Users', () => {
   it('should not update password on mismatched new password confirm', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/password`)
+      .set("Authorization", jwt_bearer)
       .send({
         password: usersSeeds[0].password,
         new_password: "azertyuiop",
@@ -186,6 +237,7 @@ describe('Users', () => {
   it('should not update password on wrong current password', () => {
     return request(app.getHttpServer())
       .patch(`/users/${users[0].id}/password`)
+      .set("Authorization", jwt_bearer)
       .send({
         password: "wrongpassword",
         new_password: "azertyuiop",
@@ -193,5 +245,18 @@ describe('Users', () => {
       })
       .expect(403)
       .expect(getBodyFromError(403, responseMessages.WRONG_OLD_PASS));
+  })
+
+  it('should not update password of non-existing user', () => {
+    return request(app.getHttpServer())
+      .patch(`/users/${users[1].id}/password`)
+      .set("Authorization", jwt_bearer)
+      .send({
+        password: usersSeeds[0].password,
+        new_password: "azertyuiop",
+        new_password_confirm: "azertyuiop"
+      })
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
 });

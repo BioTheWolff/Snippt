@@ -8,6 +8,7 @@ export const responseMessages = {
 
     // Auth
     REGISTRATION_FAILED: "Failed to register user account",
+    TARGET_NOT_SELF: "Cannot take action on another account",
 
     // Updates
     EMPTY_MODIF_DTO: "Empty modification request",

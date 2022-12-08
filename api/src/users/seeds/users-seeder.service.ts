@@ -18,4 +18,8 @@ export class UsersSeederService {
             return await this.repository.save(user);
         })
     }
+
+    async drop() {
+        return await this.repository.createQueryBuilder().delete().execute();
+    }
 }
