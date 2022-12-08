@@ -34,6 +34,7 @@ export class AuthService {
     }
 
     async login(user: User) {
+        // TODO: simplify payload to switch to cookie
         const payload = {
             sub: user.id,
             handle: user.handle,

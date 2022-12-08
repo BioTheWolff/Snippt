@@ -8,6 +8,7 @@ require('dotenv').config();
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
+      // TODO: switch from bearer token to secure HTTP cookie
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
