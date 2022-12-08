@@ -15,7 +15,7 @@ export class AuthService {
     async register(userInfo: CreateUserDto) {
         let user = await this.usersService.create(userInfo);
         if (user) {
-            return { handle: user.handle };
+            return { handle: user.handle, token: (await this.login(user)).token };
         } else {
             throw new BadRequestException(responseMessages.REGISTRATION_FAILED);
         }
