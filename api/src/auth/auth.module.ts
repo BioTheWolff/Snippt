@@ -3,17 +3,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 require('dotenv').config();
 
 @Module({
   imports: [
-    UsersModule,
+    TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
@@ -22,7 +24,11 @@ require('dotenv').config();
   ],
   controllers: [AuthController],
   providers: [
-    AuthService,
+    AuthService, UsersService,
+    LocalStrategy, JwtStrategy,
+    LocalAuthGuard, JwtAuthGuard
+  ],
+  exports: [
     LocalStrategy, JwtStrategy,
     LocalAuthGuard, JwtAuthGuard
   ]
