@@ -4,6 +4,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { BypassJwtAuth } from '../decorators/bypass-jwt-auth.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +21,7 @@ export class AuthController {
   // TODO: refuse if user is disabled (only if not admin)
   @Post('login')
   @UseGuards(LocalAuthGuard)
+  @BypassJwtAuth()
   async login(@Request() req: { user: User }) {
     return this.authService.login(req.user);
   }

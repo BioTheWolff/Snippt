@@ -2,10 +2,10 @@ import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterc
 import { UsersService } from './users.service';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CreateUserDto } from './dto/create-user.dto';
 import { LowercasePipe } from '../pipes/lowercase.pipe';
 import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -13,6 +13,7 @@ export class UsersController {
 
   // TODO: implement finding users by who they follow
 
+  @Public()
   @Get(':handle')
   @ApiOperation({ summary: "Find a user by their handle" })
   @ApiResponse({ status: 200, description: "The found user" })
