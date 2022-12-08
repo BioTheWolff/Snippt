@@ -24,6 +24,10 @@ export class UsersService {
     return await bcrypt.compare(plain, hash);
   }
 
+  async isPasswordCorrect(user: User, plain: string): Promise<Boolean> {
+    return await this._password_compare(plain, user.password);
+  }
+
   async create(createUserDto: CreateUserDto) {
     // check handle is available
     if (await this.usersRepository.findOneBy({ handle: createUserDto.handle })) {
@@ -44,6 +48,10 @@ export class UsersService {
 
   async findOne(handle: string) {
     return await this.usersRepository.findOneBy({handle: handle});
+  }
+
+  async findOneEmail(email: string) {
+    return await this.usersRepository.findOneBy({email: email});
   }
 
   async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
@@ -114,7 +122,7 @@ export class UsersService {
     }
 
     // checking old password matches DB
-    if (!await this._password_compare(updateUserPasswordDto.password, user.password)) {
+    if (!await this.isPasswordCorrect(user, updateUserPasswordDto.password)) {
       throw new ForbiddenException(responseMessages.WRONG_OLD_PASS);
     }
 

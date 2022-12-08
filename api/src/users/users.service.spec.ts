@@ -32,7 +32,7 @@ describe('UsersService', () => {
 
   it('should have the correct hash', async () => {
     let user = await service.create(usersSeeds[0]);
-    expect(await service._password_compare(usersSeeds[0].password, user.password)).toBeTruthy()
+    expect(await service.isPasswordCorrect(user, usersSeeds[0].password)).toBeTruthy()
   })
 
   it('should not find a user that was not created', async () => {
@@ -75,6 +75,6 @@ describe('UsersService', () => {
     expect(await service.updatePassword(user.id, pass)).toBe("OK");
 
     let fetch = await service.findOne(user.handle);
-    expect(await service._password_compare(pass.new_password, fetch.password)).toBeTruthy();
+    expect(await service.isPasswordCorrect(fetch, pass.new_password)).toBeTruthy();
   })
 });
