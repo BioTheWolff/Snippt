@@ -6,6 +6,7 @@ import { LowercasePipe } from '../pipes/lowercase.pipe';
 import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { Public } from '../decorators/public.decorator';
+import { NeedsOwnerPermission } from '../decorators/needs-owner-permission.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -31,18 +32,21 @@ export class UsersController {
 
   // TODO: PROTECT IT WITH GUARDS
   @Patch(':id/details')
+  @NeedsOwnerPermission()
   @ApiOperation({ summary: "Update a user's public details" })
   async updateDetails(@Param('id', ParseIntPipe) id: number, @Body() updateUserDetailsDto: UpdateUserDetailsDto) {
     return await this.usersService.updateInfo(id, updateUserDetailsDto);
   }
 
   @Patch(':id/email')
+  @NeedsOwnerPermission()
   @ApiOperation({ summary: "Update a user's email" })
   async updateEmail(@Param('id', ParseIntPipe) id: number, @Body() updateUserEmailDto: UpdateUserEmailDto) {
     return await this.usersService.updateEmail(id, updateUserEmailDto);
   }
 
   @Patch(':id/password')
+  @NeedsOwnerPermission()
   @ApiOperation({ summary: "Update a user's password" })
   async updatePassword(@Param('id', ParseIntPipe) id: number, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
     return await this.usersService.updatePassword(id, updateUserPasswordDto)
