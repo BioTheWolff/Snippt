@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { responseMessages } from '../../../response-messages';
 import { PERM_ROUTE_PARAM, PERM_USER_PROPERTY } from '../../../decorators/needs-owner-permission.decorator';
@@ -15,7 +15,7 @@ export class OwnerPermissionGuard implements CanActivate {
     const user = request.user;
 
     if (!user) {
-      this.refuse();
+      throw new UnauthorizedException();
     }
 
     // TODO: implement admin override
