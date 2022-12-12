@@ -18,7 +18,7 @@ require('dotenv').config();
       entities: [
           __dirname + '/**/entities/*.entity{.ts,.js}',
       ],
-      synchronize: (process.env.MODE === "env"),
+      synchronize: (process.env.MODE === "dev"),
     }),
     // API modules
     UsersModule,
