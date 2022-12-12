@@ -119,6 +119,15 @@ describe('Users', () => {
       .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
   })
 
+  it('should not see user doesn\'t exist when updating details if not admin', () => {
+    return request(app.getHttpServer())
+      .patch(`/users/-1/details`)
+      .set("Authorization", jwt_bearer)
+      .send({ handle: "superlongtest" })
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
+  })
+
   it('should not update details of non-existing user', async () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
@@ -180,6 +189,15 @@ describe('Users', () => {
       .expect(getBodyFromError(403, responseMessages.EMAIL_IN_USE));
   })
 
+  it('should not see user doesn\'t exist when updating email if not admin', () => {
+    return request(app.getHttpServer())
+      .patch(`/users/-1/email`)
+      .set("Authorization", jwt_bearer)
+      .send({ email: "nope@example.com" })
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
+  })
+
   it('should not update email of non-existing user', async () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
@@ -237,6 +255,19 @@ describe('Users', () => {
       .patch(`/users/${users[0].id}/password`)
       .set("Authorization", jwt_bearer)
       .expect(400);
+  })
+
+  it('should not see user doesn\'t exist when updating password if not admin', () => {
+    return request(app.getHttpServer())
+      .patch(`/users/-1/password`)
+      .set("Authorization", jwt_bearer)
+      .send({
+        password: usersSeeds[0].password,
+        new_password: "azertyuiop",
+        new_password_confirm: "azertyuiop"
+      })
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
 
   it('should not update password of non-existing user', async () => {
