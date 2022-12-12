@@ -6,7 +6,7 @@ import { TypeOrmSqliteTestingModule } from '../src/database/typeorm-sqlite-testi
 import { User } from '../src/users/entities/user.entity';
 import { UsersSeederService } from '../src/users/seeds/users-seeder.service';
 import { usersSeeds } from '../src/users/seeds/users-seeds';
-import { getBodyFromError, getTokenFromResponse } from './utils';
+import { getBodyFromError, getBearerFromResponse } from './utils';
 import { responseMessages } from '../src/response-messages';
 let _async = require('async');
 import * as cookieParser from 'cookie-parser';
@@ -18,7 +18,7 @@ async function loginAndGetToken(app, email: string, password: string) {
       email: email,
       password: password
     });
-  return getTokenFromResponse(response);
+  return getBearerFromResponse(response);
 }
 
 describe('Users', () => {

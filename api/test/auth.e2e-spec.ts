@@ -6,7 +6,7 @@ import { User } from '../src/users/entities/user.entity';
 import { AuthModule } from '../src/auth/auth.module';
 import { usersSeeds } from '../src/users/seeds/users-seeds';
 import * as _async from 'async';
-import { getBodyFromError } from './utils';
+import { getBodyFromError, getTokenFromResponse } from './utils';
 import { responseMessages } from '../src/response-messages';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
@@ -108,9 +108,9 @@ describe('Users', () => {
       .send(usersSeeds[0]);
     
     expect(response.statusCode).toBe(201);
-    expect(response.body.token).toBeDefined();
+    expect(response.headers['set-cookie']).toBeDefined();
 
-    expect(jwtService.verify(response.body.token)).toBeTruthy();
+    expect(jwtService.verify(getTokenFromResponse(response))).toBeTruthy();
   })
 
   it('should set JWT on login by credentials', async () => {
@@ -128,9 +128,9 @@ describe('Users', () => {
       });
     
     expect(response.statusCode).toBe(201);
-    expect(response.body.token).toBeDefined();
+    expect(response.headers['set-cookie']).toBeDefined();
 
-    expect(jwtService.verify(response.body.token)).toBeTruthy();
+    expect(jwtService.verify(getTokenFromResponse(response))).toBeTruthy();
   })
 
   it('should not login on incorrect email', async () => {
@@ -165,6 +165,7 @@ describe('Users', () => {
       .expect(401);
   })
 
+  // TODO: logout
   // LOGOUT
   it('should accept logout when connected', () => {
 

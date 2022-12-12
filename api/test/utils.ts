@@ -21,9 +21,12 @@ export function getBodyFromError(code: number, message?: string) {
 }
 
 export function getTokenFromResponse(response) {
-    return 'Bearer ' + 
-        response
-            .headers['set-cookie'][0] // getting headers
-            .split(";")[0] // splitting by cookie info
-            .split("=")[1]; // getting the value
+    return response
+        .headers['set-cookie'][0] // getting headers
+        .split(";")[0] // splitting by cookie info
+        .split("=")[1]; // getting the value
+}
+
+export function getBearerFromResponse(response) {
+    return 'Bearer ' + getTokenFromResponse(response);
 }
