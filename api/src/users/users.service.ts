@@ -51,10 +51,11 @@ export class UsersService {
 
 
   // Search
-  async findOne(handle: string) {
+  async findOne(handle: string, get_relations: boolean = true) {
     return await this.usersRepository.findOne({
       relations: {
-        following: true,
+        following: get_relations,
+        followers: get_relations,
       },
       where: { handle: handle }
     });
@@ -73,6 +74,7 @@ export class UsersService {
     }
 
     user.follow(target);
+    await this.usersRepository.save(user);
   }
 
   async unfollow(user: User, target_handle: string) {
@@ -83,6 +85,7 @@ export class UsersService {
     }
 
     user.unfollow(target);
+    await this.usersRepository.save(user);
   }
 
 

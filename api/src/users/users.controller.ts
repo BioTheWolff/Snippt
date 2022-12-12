@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, Request } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, Request, ParseBoolPipe, Query, DefaultValuePipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -21,8 +21,11 @@ export class UsersController {
   @ApiResponse({ status: 200, description: "The found user" })
   @ApiNotFoundResponse({ description: "If the user was not found" })
   @UseInterceptors(ClassSerializerInterceptor)
-  async findOne(@Param('handle', LowercasePipe) handle: string) {
-    let user = await this.usersService.findOne(handle);
+  async findOne(
+    @Param('handle', LowercasePipe) handle: string, 
+    @Query('relations', new DefaultValuePipe(true), ParseBoolPipe) get_relations: boolean
+  ) {
+    let user = await this.usersService.findOne(handle, get_relations);
     if (user) {
       return user;
     }

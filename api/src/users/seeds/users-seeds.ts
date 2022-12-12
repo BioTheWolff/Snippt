@@ -4,6 +4,7 @@ export const usersSeeds: (CreateUserDto & { admin?: boolean, disabled?: boolean 
     { handle: "test", display_name: "My Test", email: "test@example.com", password: "abcdefgh", password_confirm: "abcdefgh" },
     { handle: "supertest", display_name: "My Super Test", email: "super@example.com", password: "abcdefgh", password_confirm: "abcdefgh", admin: true },
     { handle: "famousguy", display_name: "Famous guy!!", email: "famous@example.com", password: "abcdefgh", password_confirm: "abcdefgh" },
+    { handle: "sadandlonely", display_name: "Nothanks", email: "lonely@example.com", password: "abcdefgh", password_confirm: "abcdefgh", disabled: true }
 ];
 
 function h(index: number) {
