@@ -44,9 +44,7 @@ export class AuthService {
         // TODO: simplify payload to switch to cookie
         const payload = {
             sub: user.id,
-            handle: user.handle,
-            display_name: user.display_name,
-            email: user.email
+            handle: user.handle
         };
 
         const token = this.jwtService.sign(payload);
