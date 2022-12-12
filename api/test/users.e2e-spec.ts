@@ -5,7 +5,7 @@ import { UsersModule } from '../src/users/users.module';
 import { TypeOrmSqliteTestingModule } from '../src/database/typeorm-sqlite-testing';
 import { User } from '../src/users/entities/user.entity';
 import { UsersSeederService } from '../src/users/seeds/users-seeder.service';
-import { usersSeeds } from '../src/users/seeds/users-seeds';
+import { followersForHandle, followingsForHandle, usersSeeds } from '../src/users/seeds/users-seeds';
 import { getBodyFromError, getBearerFromResponse } from './utils';
 import { responseMessages } from '../src/response-messages';
 let _async = require('async');
@@ -28,6 +28,7 @@ describe('Users', () => {
   let users: User[]
   let jwt_bearer: string
 
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [...TypeOrmSqliteTestingModule([User]), UsersModule],
@@ -44,7 +45,7 @@ describe('Users', () => {
   });
 
   beforeEach(async () => {
-    users = await Promise.all(seeder.create());
+    users = await seeder.create();
     jwt_bearer = await loginAndGetToken(app, usersSeeds[0].email, usersSeeds[0].password);
   })
 
@@ -52,16 +53,30 @@ describe('Users', () => {
     await seeder.drop();
   })
 
+  
   // PROFILE
   it('should 200 on found profile', () => {
     return request(app.getHttpServer())
-      .get(`/users/${users[0].handle}`)
-      .expect(200)
+      .get(`/users/${users[0].handle}?relations=false`)
       .expect({
         handle: users[0].handle,
         display_name: users[0].display_name
       });
   });
+
+  // TODO: test following system /follow and /unfollow
+  it('should 200 on found profile with relations', async () => {
+    for (let index in users) {
+      await request(app.getHttpServer())
+        .get(`/users/${users[index].handle}`)
+        .expect({
+          handle: users[index].handle,
+          display_name: users[index].display_name,
+          following: followingsForHandle(users[index].handle),
+          followers: followersForHandle(users[index].handle),
+        });
+    }
+  })
 
   it('should 404 on non-existing profile', () => {
     return request(app.getHttpServer())
@@ -85,7 +100,7 @@ describe('Users', () => {
       },
       function (cb) {
         request(app.getHttpServer())
-          .get(`/users/${new_handle.handle}`)
+          .get(`/users/${new_handle.handle}?relations=false`)
           .expect(200)
           .expect({ handle: new_handle.handle, display_name: users[0].display_name }, cb)
       }
@@ -158,6 +173,7 @@ describe('Users', () => {
       .expect(200)
       .expect({ display_name: "Should work!" });
   })
+
 
   // UPDATE EMAIL
   it('should update email', () => {
@@ -235,6 +251,7 @@ describe('Users', () => {
       .expect(200)
       .expect({ email: "notadmin@example.com" });
   })
+
 
   // UPDATE PASSWORD
   it('should update password', () => {

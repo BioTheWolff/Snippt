@@ -11,6 +11,20 @@ function h(index: number) {
     return usersSeeds[index].handle;
 }
 
+export function followingsForHandle(handle: string) {
+    return followersSeeds.filter((e) => e.from == handle).map((follow) => ({
+        handle: follow.to,
+        display_name: usersSeeds.find((e) => e.handle === follow.to).display_name,
+    }));
+}
+
+export function followersForHandle(handle: string) {
+    return followersSeeds.filter((e) => e.to == handle).map((follow) => ({
+        handle: follow.from,
+        display_name: usersSeeds.find((e) => e.handle === follow.from).display_name,
+    }));
+}
+
 // from handle to handle, use function to automatically gather handles from seeds
 export const followersSeeds: { from: string, to: string }[] = [
     { from: h(0), to: h(1) },

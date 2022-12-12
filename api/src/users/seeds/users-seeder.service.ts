@@ -19,14 +19,13 @@ export class UsersSeederService {
             return await this.repository.save(user);
         }));
 
-        await followersSeeds.map(async (e) => {
+        await Promise.all(followersSeeds.map(async (e) => {
             let ufrom = await this.repository.findOneBy({ handle: e.from });
             let uto = await this.repository.findOneBy({ handle: e.to });
 
             ufrom.follow(uto);
             await this.repository.save(ufrom);
-            await this.repository.save(uto);
-        })
+        }));
 
         return users;
     }
