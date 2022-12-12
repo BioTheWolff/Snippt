@@ -15,7 +15,8 @@ export class AuthController {
 
   // TODO: restrict to NOT logged-in users
   @Post('register')
-  async register(@Request() req, @Body() userInfo: CreateUserDto, @Response({ passthrough: true }) res: ResponseType) {
+  @BypassJwtAuth()
+  async register(@Body() userInfo: CreateUserDto, @Response({ passthrough: true }) res: ResponseType) {
     return await this.authService.register(userInfo, res);
   }
 
