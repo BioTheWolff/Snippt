@@ -50,7 +50,9 @@ export class AuthService {
         const token = this.jwtService.sign(payload);
 
         response.cookie('token', token, { 
-            expires: new Date(this.jwtService.decode(token)['exp']*1000) 
+            expires: new Date(this.jwtService.decode(token)['exp']*1000),
+            httpOnly: true,
+            sameSite: true
         });
     }
 }
