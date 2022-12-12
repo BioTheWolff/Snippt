@@ -1,6 +1,6 @@
 import { ApiHideProperty } from "@nestjs/swagger";
 import { Exclude, Transform } from "class-transformer";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -17,14 +17,12 @@ export class User {
     @Column({ type: "varchar", length: 40 })
     display_name: string;
 
-    @OneToMany(() => User, (user) => user.followers)
-    @Transform(({ value }: { value: User }) => { handle: value.handle})
-    following: User[];
+    @ManyToMany(() => User, (user) => user.followers)
+    @JoinTable()
+    following!: User[];
 
-    @OneToMany(() => User, (user) => user.following)
-    @Transform(({ value }: { value: User }) => { handle: value.handle})
-    followers: User[];
-
+    @ManyToMany(() => User, (user) => user.following)
+    followers!: User[];
 
     // Private profile
     @Exclude()
@@ -75,5 +73,29 @@ export class User {
 
     is_admin() {
         return Boolean(this.admin);
+    }
+
+    follow(target: User) {
+        if (this.following) {
+            this.following.push(target);
+        }
+        else {
+            this.following = [target];
+        }
+
+        if (target.followers) {
+            target.followers.push(this);
+        } else {
+            target.followers = [this];
+        }
+    }
+
+    unfollow(target: User) {
+        if (!this.following) return;
+
+        this.following = this.following.filter((u) => u.id != target.id);
+
+        if (!target.followers) return;
+        target.followers = target.followers.filter((u) => u.id != this.id);
     }
 }

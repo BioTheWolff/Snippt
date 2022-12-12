@@ -52,7 +52,12 @@ export class UsersService {
 
   // Search
   async findOne(handle: string) {
-    return await this.usersRepository.findOneBy({handle: handle});
+    return await this.usersRepository.findOne({
+      relations: {
+        following: true,
+      },
+      where: { handle: handle }
+    });
   }
 
   async findOneEmail(email: string) {
@@ -67,8 +72,7 @@ export class UsersService {
       throw new BadRequestException(responseMessages.USER_NOT_FOUND);
     }
 
-    user.following.push(target);
-    target.followers.push(user);
+    user.follow(target);
   }
 
   async unfollow(user: User, target_handle: string) {
@@ -78,8 +82,7 @@ export class UsersService {
       throw new BadRequestException(responseMessages.USER_NOT_FOUND);
     }
 
-    user.following.filter((u) => u.id != target.id);
-    target.following.filter((u) => u.id != user.id);
+    user.unfollow(target);
   }
 
 
