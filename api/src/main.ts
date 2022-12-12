@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -8,6 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.use(cookieParser());
 
   // TODO: generate migrations
   // TODO: document swagger like the users module

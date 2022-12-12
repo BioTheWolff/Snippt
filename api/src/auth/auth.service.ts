@@ -4,6 +4,7 @@ import { User } from '../users/entities/user.entity';
 import { responseMessages } from '../response-messages';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
+import { Response as ResponseType } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -12,10 +13,11 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) {}
 
-    async register(userInfo: CreateUserDto) {
+    async register(userInfo: CreateUserDto, response: ResponseType) {
         let user = await this.usersService.create(userInfo);
         if (user) {
-            return { handle: user.handle, token: (await this.login(user)).token };
+            this.setAuthenticationToken(user, response);
+            return { handle: user.handle };
         } else {
             throw new BadRequestException(responseMessages.REGISTRATION_FAILED);
         }
@@ -33,7 +35,12 @@ export class AuthService {
         }
     }
 
-    async login(user: User) {
+    async login(user: User, response: ResponseType) {
+        this.setAuthenticationToken(user, response);
+        return "OK"
+    }
+
+    async setAuthenticationToken(user: User, response: ResponseType) {
         // TODO: simplify payload to switch to cookie
         const payload = {
             sub: user.id,
@@ -42,8 +49,10 @@ export class AuthService {
             email: user.email
         };
 
-        return {
-            token: this.jwtService.sign(payload)
-        };
+        const token = this.jwtService.sign(payload);
+
+        response.cookie('token', token, { 
+            expires: new Date(this.jwtService.decode(token)['exp']*1000) 
+        });
     }
 }
