@@ -9,6 +9,7 @@ import { usersSeeds } from '../src/users/seeds/users-seeds';
 import { getBodyFromError } from './utils';
 import { responseMessages } from '../src/response-messages';
 let _async = require('async');
+import * as cookieParser from 'cookie-parser';
 
 describe('Users', () => {
   let app: INestApplication;
@@ -25,6 +26,8 @@ describe('Users', () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
+    app.use(cookieParser());
+
     await app.init();
 
     seeder = moduleFixture.get<UsersSeederService>(UsersSeederService);
@@ -33,14 +36,18 @@ describe('Users', () => {
   beforeEach(async () => {
     users = await Promise.all(seeder.create());
 
-    jwt_bearer = 'Bearer ' + (
-      await request(app.getHttpServer())
-        .post('/auth/login')
-        .send({
-          email: usersSeeds[0].email,
-          password: usersSeeds[0].password
-        })
-    ).body.token;
+    let response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: usersSeeds[0].email,
+        password: usersSeeds[0].password
+      });
+
+    jwt_bearer = 'Bearer ' + 
+      response
+        .headers['set-cookie'][0] // getting headers
+        .split(";")[0] // splitting by cookie info
+        .split("=")[1]; // getting the value
   })
 
   afterEach(async () => {

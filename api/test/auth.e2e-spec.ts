@@ -9,6 +9,7 @@ import * as _async from 'async';
 import { getBodyFromError } from './utils';
 import { responseMessages } from '../src/response-messages';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import * as cookieParser from 'cookie-parser';
 
 require('dotenv').config();
 
@@ -31,6 +32,8 @@ describe('Users', () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
+    app.use(cookieParser());
+
     await app.init();
 
     jwtService = moduleFixture.get<JwtService>(JwtService);
