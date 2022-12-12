@@ -14,8 +14,6 @@ import { User } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // TODO: implement finding users by who they follow
-
   // User profile
   @Public()
   @Get(':handle')
