@@ -30,7 +30,7 @@ export class User {
 
     @Exclude()
     @ApiHideProperty()
-    @Column({ type: "integer", default: false })
+    @Column({ type: "integer", default: 0 })
     disabled: boolean;
 
 
@@ -43,4 +43,21 @@ export class User {
     @ApiHideProperty()
     @UpdateDateColumn()
     updated_at: Date;
+
+    @Exclude()
+    @ApiHideProperty()
+    @Column({ type: "integer", default: 0 })
+    admin: boolean;
+
+    @Exclude()
+    @ApiHideProperty()
+    jwtExpirationDate: number = null;
+
+    is_disabled() {
+        return Boolean(this.disabled);
+    }
+
+    is_admin() {
+        return Boolean(this.admin);
+    }
 }

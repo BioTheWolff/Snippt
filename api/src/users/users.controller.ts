@@ -46,7 +46,7 @@ export class UsersController {
   }
 
   @Patch(':id/password')
-  @NeedsOwnerPermission()
+  @NeedsOwnerPermission({ allow_admins: false })
   @ApiOperation({ summary: "Update a user's password" })
   async updatePassword(@Param('id', ParseIntPipe) id: number, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
     return await this.usersService.updatePassword(id, updateUserPasswordDto)
