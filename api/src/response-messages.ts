@@ -19,4 +19,7 @@ export const responseMessages = {
     EMAIL_IN_USE: "Email is already taken",
     NEW_PASS_MISMATCH: "New passwords don't match",
     WRONG_OLD_PASS: "Old password is incorrect",
+
+    // Followers system
+    USER_NOT_FOUND: "User not found",
 }

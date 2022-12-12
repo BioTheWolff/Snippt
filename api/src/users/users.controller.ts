@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
 import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -7,6 +7,8 @@ import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { Public } from '../decorators/public.decorator';
 import { NeedsOwnerPermission } from '../decorators/needs-owner-permission.decorator';
+import { Request as RequestType } from 'express';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -14,6 +16,7 @@ export class UsersController {
 
   // TODO: implement finding users by who they follow
 
+  // User profile
   @Public()
   @Get(':handle')
   @ApiOperation({ summary: "Find a user by their handle" })
@@ -30,7 +33,20 @@ export class UsersController {
     }
   }
 
-  // TODO: PROTECT IT WITH GUARDS
+
+  // Followers system
+  @Post(':handle/follow')
+  async follow(@Request() req: RequestType & { user: User }, @Param('handle') target_handle: string) {
+    return await this.usersService.follow(req.user, target_handle);
+  }
+
+  @Post(':handle/unfollow')
+  async unfollow(@Request() req: RequestType & { user: User }, @Param('handle') target_handle: string) {
+    return await this.usersService.unfollow(req.user, target_handle);
+  }
+
+
+  // User settings
   @Patch(':id/details')
   @NeedsOwnerPermission()
   @ApiOperation({ summary: "Update a user's public details" })

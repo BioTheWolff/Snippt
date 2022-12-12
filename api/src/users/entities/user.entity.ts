@@ -1,6 +1,6 @@
 import { ApiHideProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Exclude, Transform } from "class-transformer";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -10,13 +10,23 @@ export class User {
     id: number;
 
 
+    // Public Profile
     @Column({ type: "varchar", length: 30, unique: true })
     handle: string;
 
     @Column({ type: "varchar", length: 40 })
     display_name: string;
 
+    @OneToMany(() => User, (user) => user.followers)
+    @Transform(({ value }: { value: User }) => { handle: value.handle})
+    following: User[];
 
+    @OneToMany(() => User, (user) => user.following)
+    @Transform(({ value }: { value: User }) => { handle: value.handle})
+    followers: User[];
+
+
+    // Private profile
     @Exclude()
     @ApiHideProperty()
     @Column({ type: "varchar", length: 80, unique: true })
@@ -28,12 +38,19 @@ export class User {
     password: string;
 
 
+    // Internal use
     @Exclude()
     @ApiHideProperty()
     @Column({ type: "integer", default: 0 })
     disabled: boolean;
 
+    @Exclude()
+    @ApiHideProperty()
+    @Column({ type: "integer", default: 0 })
+    admin: boolean;
 
+
+    // Logs
     @Exclude()
     @ApiHideProperty()
     @CreateDateColumn()
@@ -44,15 +61,14 @@ export class User {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @Exclude()
-    @ApiHideProperty()
-    @Column({ type: "integer", default: 0 })
-    admin: boolean;
 
+    // Other properties
     @Exclude()
     @ApiHideProperty()
     jwtExpirationDate: number = null;
 
+
+    // Methods
     is_disabled() {
         return Boolean(this.disabled);
     }

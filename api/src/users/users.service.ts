@@ -16,6 +16,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  // Utils
   async _password_hash(plain: string): Promise<string> {
     return await bcrypt.hash(plain, 10);
   }
@@ -28,6 +29,8 @@ export class UsersService {
     return await this._password_compare(plain, user.password);
   }
 
+
+  // Creation
   async create(createUserDto: CreateUserDto) {
     // check handle is available
     if (await this.usersRepository.findOneBy({ handle: createUserDto.handle })) {
@@ -46,6 +49,8 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+
+  // Search
   async findOne(handle: string) {
     return await this.usersRepository.findOneBy({handle: handle});
   }
@@ -54,6 +59,31 @@ export class UsersService {
     return await this.usersRepository.findOneBy({email: email});
   }
 
+  // Followers system
+  async follow(user: User, target_handle: string) {
+    // getting the user to follow
+    let target = await this.usersRepository.findOneBy({handle: target_handle});
+    if (!target) {
+      throw new BadRequestException(responseMessages.USER_NOT_FOUND);
+    }
+
+    user.following.push(target);
+    target.followers.push(user);
+  }
+
+  async unfollow(user: User, target_handle: string) {
+    // getting the user to unfollow
+    let target = await this.usersRepository.findOneBy({handle: target_handle});
+    if (!target) {
+      throw new BadRequestException(responseMessages.USER_NOT_FOUND);
+    }
+
+    user.following.filter((u) => u.id != target.id);
+    target.following.filter((u) => u.id != user.id);
+  }
+
+
+  // Update
   async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
     // if the update DTO is empty
     if (UpdateUserDetailsDto.isEmpty(updateUserDetailsDto)) {
@@ -61,6 +91,7 @@ export class UsersService {
     }
 
     // getting the user to update
+    // TODO: refactor with findOneByOrDie?
     let user = await this.usersRepository.findOneBy({id: id});
     if (!user) {
       throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
@@ -132,6 +163,7 @@ export class UsersService {
     });
     return "OK";
   }
+
 
   // TODO: implement remove
   remove(id: number) {
