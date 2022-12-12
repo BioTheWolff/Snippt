@@ -6,10 +6,20 @@ import { TypeOrmSqliteTestingModule } from '../src/database/typeorm-sqlite-testi
 import { User } from '../src/users/entities/user.entity';
 import { UsersSeederService } from '../src/users/seeds/users-seeder.service';
 import { usersSeeds } from '../src/users/seeds/users-seeds';
-import { getBodyFromError } from './utils';
+import { getBodyFromError, getTokenFromResponse } from './utils';
 import { responseMessages } from '../src/response-messages';
 let _async = require('async');
 import * as cookieParser from 'cookie-parser';
+
+async function loginAndGetToken(app, email: string, password: string) {
+  const response = await request(app.getHttpServer())
+    .post('/auth/login')
+    .send({
+      email: email,
+      password: password
+    });
+  return getTokenFromResponse(response);
+}
 
 describe('Users', () => {
   let app: INestApplication;
@@ -35,19 +45,7 @@ describe('Users', () => {
 
   beforeEach(async () => {
     users = await Promise.all(seeder.create());
-
-    let response = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({
-        email: usersSeeds[0].email,
-        password: usersSeeds[0].password
-      });
-
-    jwt_bearer = 'Bearer ' + 
-      response
-        .headers['set-cookie'][0] // getting headers
-        .split(";")[0] // splitting by cookie info
-        .split("=")[1]; // getting the value
+    jwt_bearer = await loginAndGetToken(app, usersSeeds[0].email, usersSeeds[0].password);
   })
 
   afterEach(async () => {
@@ -121,10 +119,12 @@ describe('Users', () => {
       .expect(getBodyFromError(403, responseMessages.HANDLE_IN_USE));
   })
 
-  it('should not update details of non-existing user', () => {
+  it('should not update details of non-existing user', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
     return request(app.getHttpServer())
       .patch(`/users/-1/details`)
-      .set("Authorization", jwt_bearer)
+      .set("Authorization", token)
       .send({ handle: "superlongtest" })
       .expect(400)
       .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
@@ -137,6 +137,17 @@ describe('Users', () => {
       .send({ handle: "superlongtest" })
       .expect(403)
       .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
+  })
+
+  it('should update details of another user IF ADMIN', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
+    return request(app.getHttpServer())
+      .patch(`/users/${users[0].id}/details`)
+      .set("Authorization", token)
+      .send({ display_name: "Should work!" })
+      .expect(200)
+      .expect({ display_name: "Should work!" });
   })
 
   // UPDATE EMAIL
@@ -169,10 +180,12 @@ describe('Users', () => {
       .expect(getBodyFromError(403, responseMessages.EMAIL_IN_USE));
   })
 
-  it('should not update email of non-existing user', () => {
+  it('should not update email of non-existing user', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
     return request(app.getHttpServer())
       .patch(`/users/-1/email`)
-      .set("Authorization", jwt_bearer)
+      .set("Authorization", token)
       .send({ email: users[1].email })
       .expect(400)
       .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
@@ -192,6 +205,17 @@ describe('Users', () => {
       .send({ email: "any@example.com" })
       .expect(403)
       .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
+  })
+
+  it('should update email of another user IF ADMIN', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
+    return request(app.getHttpServer())
+      .patch(`/users/${users[0].id}/email`)
+      .set("Authorization", token)
+      .send({ email: "notadmin@example.com" })
+      .expect(200)
+      .expect({ email: "notadmin@example.com" });
   })
 
   // UPDATE PASSWORD
@@ -215,17 +239,19 @@ describe('Users', () => {
       .expect(400);
   })
 
-  it('should not update password of non-existing user', () => {
+  it('should not update password of non-existing user', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
     return request(app.getHttpServer())
       .patch(`/users/-1/password`)
-      .set("Authorization", jwt_bearer)
+      .set("Authorization", token)
       .send({
         password: usersSeeds[0].password,
         new_password: "azertyuiop",
         new_password_confirm: "azertyuiop"
       })
-      .expect(400)
-      .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
+      .expect(403)
+      .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
 
   it('should not update password on mismatched new password confirm', () => {
@@ -254,10 +280,12 @@ describe('Users', () => {
       .expect(getBodyFromError(403, responseMessages.WRONG_OLD_PASS));
   })
 
-  it('should not update password of non-existing user', () => {
+  it('should not update password of another user EVEN IF ADMIN', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
     return request(app.getHttpServer())
-      .patch(`/users/${users[1].id}/password`)
-      .set("Authorization", jwt_bearer)
+      .patch(`/users/${users[0].id}/password`)
+      .set("Authorization", token)
       .send({
         password: usersSeeds[0].password,
         new_password: "azertyuiop",

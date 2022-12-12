@@ -19,3 +19,11 @@ export function getBodyFromError(code: number, message?: string) {
         message: message ?? "No message provided",
     }
 }
+
+export function getTokenFromResponse(response) {
+    return 'Bearer ' + 
+        response
+            .headers['set-cookie'][0] // getting headers
+            .split(";")[0] // splitting by cookie info
+            .split("=")[1]; // getting the value
+}
