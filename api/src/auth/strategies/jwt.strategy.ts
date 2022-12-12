@@ -2,12 +2,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Request as RequestType } from 'express';
+import { UsersService } from '../../users/users.service';
 
 require('dotenv').config();
 
+// TODO: validate current token from DB?
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly usersService: UsersService) {
     super({
       // TODO: switch from bearer token to secure HTTP cookie
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -27,6 +29,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { id: payload.sub, handle: payload.handle, jwtExp: payload.exp };
+    let user = await this.usersService.findOne(payload.handle);
+    user.jwtExpirationDate = payload.exp;
+    return user;
   }
 }

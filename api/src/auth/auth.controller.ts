@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { BypassJwtAuth } from '../decorators/bypass-jwt-auth.decorator';
-import { Response as ResponseType } from 'express';
+import { Request as RequestType, Response as ResponseType } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -32,7 +32,7 @@ export class AuthController {
   // TODO: JWT refresh token?
   @Get('status')
   @UseGuards(JwtAuthGuard)
-  async status(@Request() req) {
-    return { status: "OK", expiresIn: req.user.jwtExp - new Date().getTime()/1000 };
+  async status(@Request() req: RequestType & { user: User }) {
+    return { status: "OK", expiresIn: req.user.jwtExpirationDate - new Date().getTime()/1000 };
   }
 }
