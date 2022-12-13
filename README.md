@@ -32,6 +32,10 @@ $ make down
 
 # in any critical event, you can kill the containers
 $ make kill
+
+# to apply migrations, in other environments than dev (staging, prod, etc.)
+# will make up before
+$ make migrate
 ```
 
 ### On Windows
