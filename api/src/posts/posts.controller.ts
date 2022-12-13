@@ -2,15 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Request as RequestType } from 'express';
-import { User } from '../users/entities/user.entity';
+import { RequestWithUser } from '../types/request-with-user.type';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Req() req: RequestType & { user: User }, @Body() createPostDto: CreatePostDto) {
+  create(@Req() req: RequestWithUser, @Body() createPostDto: CreatePostDto) {
     return this.postsService.create(req.user, createPostDto);
   }
 

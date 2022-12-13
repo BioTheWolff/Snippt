@@ -7,8 +7,7 @@ import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { Public } from '../decorators/public.decorator';
 import { NeedsOwnerPermission } from '../decorators/needs-owner-permission.decorator';
-import { Request as RequestType } from 'express';
-import { User } from './entities/user.entity';
+import { RequestWithUser } from '../types/request-with-user.type';
 
 @Controller('users')
 export class UsersController {
@@ -37,12 +36,12 @@ export class UsersController {
 
   // Followers system
   @Post(':handle/follow')
-  async follow(@Request() req: RequestType & { user: User }, @Param('handle') target_handle: string) {
+  async follow(@Request() req: RequestWithUser, @Param('handle') target_handle: string) {
     return await this.usersService.follow(req.user, target_handle);
   }
 
   @Post(':handle/unfollow')
-  async unfollow(@Request() req: RequestType & { user: User }, @Param('handle') target_handle: string) {
+  async unfollow(@Request() req: RequestWithUser, @Param('handle') target_handle: string) {
     return await this.usersService.unfollow(req.user, target_handle);
   }
 

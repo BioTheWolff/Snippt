@@ -5,7 +5,8 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { BypassJwtAuth } from '../decorators/bypass-jwt-auth.decorator';
-import { Request as RequestType, Response as ResponseType } from 'express';
+import { Response as ResponseType } from 'express';
+import { RequestWithUser } from '../types/request-with-user.type';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +25,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @BypassJwtAuth()
-  async login(@Request() req: { user: User }, @Response({ passthrough: true }) res: ResponseType) {
+  async login(@Request() req: RequestWithUser, @Response({ passthrough: true }) res: ResponseType) {
     return this.authService.login(req.user, res);
   }
 
@@ -32,7 +33,7 @@ export class AuthController {
   // TODO: JWT refresh token?
   @Get('status')
   @UseGuards(JwtAuthGuard)
-  async status(@Request() req: RequestType & { user: User }) {
+  async status(@Request() req: RequestWithUser) {
     return { status: "OK", expiresIn: req.user.jwtExpirationDate - new Date().getTime()/1000 };
   }
 }
