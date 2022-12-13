@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
-import { Column, CreateDateColumn, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../users/entities/user.entity";
+import { Column, CreateDateColumn, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export class Post {
     @PrimaryGeneratedColumn()
@@ -27,6 +28,10 @@ export class Post {
     // Authoring
     @CreateDateColumn()
     created_at: number;
+
+    @ManyToOne(() => User, user => user.id)
+    @JoinColumn()
+    author: User;
 
     
     // State

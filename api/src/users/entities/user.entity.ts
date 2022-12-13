@@ -1,5 +1,6 @@
 import { ApiHideProperty } from "@nestjs/swagger";
 import { Exclude, Transform } from "class-transformer";
+import { Post } from "src/posts/entities/post.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -23,6 +24,10 @@ export class User {
 
     @ManyToMany(() => User, (user) => user.following)
     followers!: User[];
+
+    @OneToMany(() => Post, post => post.id)
+    posts: Post[];
+
 
     // Private profile
     @Exclude()
