@@ -27,9 +27,11 @@ export class Post {
 
 
     // Authoring
+    @Exclude()
     @CreateDateColumn()
     created_at: number;
 
+    @Exclude()
     @UpdateDateColumn()
     updated_at: number;
 

@@ -8,7 +8,7 @@ export const responseMessages = {
 
     // Auth
     REGISTRATION_FAILED: "Failed to register user account",
-    TARGET_NOT_SELF: "Cannot take action on another account",
+    TARGET_NOT_SELF: "Cannot take action on a resource that is not owned",
 
     // Updates
     EMPTY_MODIF_DTO: "Empty modification request",
@@ -22,4 +22,7 @@ export const responseMessages = {
 
     // Followers system
     USER_NOT_FOUND: "User not found",
+
+    // Posts
+    POST_NOT_FOUND: "Post not found",
 }
