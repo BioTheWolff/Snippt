@@ -30,6 +30,7 @@ export class PostsSeederService {
     }
 
     async drop() {
-        return await this.repository.createQueryBuilder().delete().execute();
+        await this.repository.createQueryBuilder().delete().execute();
+        await this.usersSeeder.drop();
     }
 }

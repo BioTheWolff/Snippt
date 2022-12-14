@@ -6,20 +6,11 @@ import { TypeOrmSqliteTestingModule } from '../src/database/typeorm-sqlite-testi
 import { User } from '../src/users/entities/user.entity';
 import { UsersSeederService } from '../src/users/seeds/users-seeder.service';
 import { followersForHandle, followingsForHandle, usersSeeds } from '../src/users/seeds/users-seeds';
-import { getBodyFromError, getBearerFromResponse } from './utils';
+import { getBodyFromError, loginAndGetToken } from './utils';
 import { responseMessages } from '../src/response-messages';
 let _async = require('async');
 import * as cookieParser from 'cookie-parser';
-
-async function loginAndGetToken(app, email: string, password: string) {
-  const response = await request(app.getHttpServer())
-    .post('/auth/login')
-    .send({
-      email: email,
-      password: password
-    });
-  return getBearerFromResponse(response);
-}
+import { Post } from '../src/posts/entities/post.entity';
 
 describe('Users', () => {
   let app: INestApplication;
@@ -31,7 +22,7 @@ describe('Users', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [...TypeOrmSqliteTestingModule([User]), UsersModule],
+      imports: [...TypeOrmSqliteTestingModule([User, Post]), UsersModule],
       providers: [UsersSeederService]
     }).compile();
 

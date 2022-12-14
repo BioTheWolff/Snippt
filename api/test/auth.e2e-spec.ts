@@ -10,17 +10,18 @@ import { getBodyFromError, getTokenFromResponse } from './utils';
 import { responseMessages } from '../src/response-messages';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
+import { Post } from '../src/posts/entities/post.entity';
 
 require('dotenv').config();
 
-describe('Users', () => {
+describe('Auth', () => {
   let app: INestApplication;
   let jwtService: JwtService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        ...TypeOrmSqliteTestingModule([User]), 
+        ...TypeOrmSqliteTestingModule([User, Post]), 
         AuthModule,
         JwtModule.register({
           secret: process.env.JWT_SECRET,

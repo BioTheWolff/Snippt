@@ -1,3 +1,5 @@
+import * as request from 'supertest';
+
 
 export function getBodyFromError(code: number, message?: string) {
     if (code === 404) {
@@ -30,3 +32,13 @@ export function getTokenFromResponse(response) {
 export function getBearerFromResponse(response) {
     return 'Bearer ' + getTokenFromResponse(response);
 }
+
+export async function loginAndGetToken(app, email: string, password: string) {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: email,
+        password: password
+      });
+    return getBearerFromResponse(response);
+  }

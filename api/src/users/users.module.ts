@@ -6,9 +6,10 @@ import { User } from './entities/user.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthModule } from '../auth/auth.module';
+import { Post } from '../posts/entities/post.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AuthModule],
+  imports: [TypeOrmModule.forFeature([User, Post]), AuthModule],
   controllers: [UsersController],
   providers: [
     UsersService,

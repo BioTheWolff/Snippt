@@ -1,4 +1,4 @@
-import { usersSeeds } from "src/users/seeds/users-seeds";
+import { usersSeeds } from "../../users/seeds/users-seeds";
 import { CreatePostDto } from "../dto/create-post.dto";
 
 export const postsSeeds: (CreatePostDto & { author: string })[] = [
