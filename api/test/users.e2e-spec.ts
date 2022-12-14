@@ -56,16 +56,24 @@ describe('Users', () => {
   });
 
   // TODO: test following system /follow and /unfollow
-  it('should 200 on found profile with relations', async () => {
+  it('should find the correct relations on profile', async () => {
     for (let index in users) {
-      await request(app.getHttpServer())
-        .get(`/users/${users[index].handle}`)
-        .expect({
-          handle: users[index].handle,
-          display_name: users[index].display_name,
-          following: followingsForHandle(users[index].handle),
-          followers: followersForHandle(users[index].handle),
-        });
+      const response = await request(app.getHttpServer())
+        .get(`/users/${users[index].handle}`);
+      const body = response.body;
+      
+      expect(body.handle).toBe(users[index].handle);
+      expect(body.display_name).toBe(users[index].display_name);
+
+      // followings
+      for(let item of followingsForHandle(users[index].handle)) {
+        expect(body.following.find((e) => e.handle == item.handle)).toBeTruthy();
+      }
+
+      // followers
+      for(let item of followersForHandle(users[index].handle)) {
+        expect(body.followers.find((e) => e.handle == item.handle)).toBeTruthy();
+      }
     }
   })
 
