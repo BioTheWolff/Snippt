@@ -138,4 +138,48 @@ describe('Posts', () => {
         .expect(404)
         .expect(getBodyFromError(404))
   })
+
+
+  // Delete
+  it('should remove post if author', async () => {
+    await request(app.getHttpServer())
+        .delete(`/posts/${posts[0].id}`)
+        .set('Authorization', jwt_bearer)
+        .expect(200)
+        .expect("OK");
+
+    return request(app.getHttpServer())
+        .get(`/posts/${posts[0].id}`)
+        .expect(200)
+        .expect({
+            title: posts[0].title,
+            deleted: true
+        })
+  })
+
+  it('should remove post if admin', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
+    await request(app.getHttpServer())
+        .delete(`/posts/${posts[0].id}`)
+        .set('Authorization', token)
+        .expect(200)
+        .expect("OK");
+
+    return request(app.getHttpServer())
+        .get(`/posts/${posts[0].id}`)
+        .expect(200)
+        .expect({
+            title: posts[0].title,
+            deleted: true
+        })
+  })
+
+  it('should not remove post if not self', () => {
+    return request(app.getHttpServer())
+        .delete(`/posts/${posts[1].id}`)
+        .set('Authorization', jwt_bearer)
+        .expect(403)
+        .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
+  })
 });

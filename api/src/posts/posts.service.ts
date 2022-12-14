@@ -33,6 +33,21 @@ export class PostsService {
     });
   }
 
+  async findOnePublic(id: number) {
+    const post = await this.findOne(id);
+
+    if (!post) return;
+
+    if (post.deleted) {
+      return {
+        title: post.title,
+        deleted: true,
+      }
+    } else {
+      return post;
+    }
+  }
+
   async update(id: number, updatePostDto: UpdatePostDto) {
     const post = await this.repository.findOneBy({ id: id });
 
@@ -44,7 +59,14 @@ export class PostsService {
     return updatePostDto;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    const post = await this.repository.findOneBy({ id: id });
+
+    if (!post) {
+      throw new BadRequestException(responseMessages.POST_NOT_FOUND);
+    }
+
+    await this.repository.update({id: id}, {deleted: true});
+    return "OK";
   }
 }

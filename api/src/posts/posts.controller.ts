@@ -11,6 +11,7 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   async create(@Req() req: RequestWithUser, @Body() createPostDto: CreatePostDto) {
     return await this.postsService.create(req.user, createPostDto);
   }
@@ -24,10 +25,12 @@ export class PostsController {
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const post = await this.postsService.findOne(id);
+    const post = await this.postsService.findOnePublic(id);
     if (!post) throw new NotFoundException();
     return post;
   }
+
+  // TODO: findOneDeleted with author permission
 
   @Patch(':id')
   @NeedsAuthorPermission()
@@ -36,7 +39,8 @@ export class PostsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  @NeedsAuthorPermission()
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.remove(id);
   }
 }
