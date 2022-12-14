@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { responseMessages } from '../../../response-messages';
-import { PERM_ADMIN_OVERRIDE, PERM_ROUTE_PARAM, PERM_USER_PROPERTY } from '../../../decorators/needs-owner-permission.decorator';
+import { PERM_ADMIN_OVERRIDE, PERM_ROUTE_PARAM, PERM_USER_PROPERTY } from '../../../decorators/permission.decorator.util';
 
 @Injectable()
 export class OwnerPermissionGuard implements CanActivate {
