@@ -50,24 +50,14 @@ export class Post {
     dislikes: User[];
 
     @Column('integer', { default: 0 })
-    private total_likes: number;
+    total_likes: number;
 
     @Column('integer', { default: 0 })
-    private total_dislikes: number;
+    total_dislikes: number;
 
     
     // State
     @Exclude()
     @Column('boolean', { default: false })
     deleted: boolean;
-
-
-    // Methods
-    getLikesCount() {
-        return this.total_likes;
-    }
-
-    getDislikesCount() {
-        return this.total_dislikes;
-    }
 }
