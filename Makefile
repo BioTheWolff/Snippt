@@ -28,6 +28,6 @@ migrate: up
 	@echo "Replaying migrations..."
 	@docker exec --workdir /srv $(COMPOSE_PROJECT_NAME)_api pwd
 
-api-typeorm-command: up
+typeorm: up
 	@echo "Warning: executing raw 'npm run typeorm' command"
 	@docker exec --workdir /srv $(COMPOSE_PROJECT_NAME)_api npm run typeorm:$(command)

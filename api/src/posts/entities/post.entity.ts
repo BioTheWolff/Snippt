@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 import { User } from "../../users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, RelationCount, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Post {
@@ -49,9 +49,25 @@ export class Post {
     @ManyToMany(() => User, { onDelete: 'CASCADE' })
     dislikes: User[];
 
+    @Column('integer', { default: 0 })
+    private total_likes: number;
+
+    @Column('integer', { default: 0 })
+    private total_dislikes: number;
+
     
     // State
     @Exclude()
     @Column('boolean', { default: false })
     deleted: boolean;
+
+
+    // Methods
+    getLikesCount() {
+        return this.total_likes;
+    }
+
+    getDislikesCount() {
+        return this.total_dislikes;
+    }
 }
