@@ -18,11 +18,11 @@ export const TypeOrmSqliteTestingModule = (
             entities: [
                 __dirname + '/../**/entities/*.entity{.ts,.js}',
             ],
-            synchronize: true,
-            // migrations: [
-            //     __dirname + './migrations/*{.ts,.js}'
-            // ],
-            // migrationsRun: true,
+            migrations: [
+                __dirname + '/migrations/*{.ts,.js}'
+            ],
+            dropSchema: true,
+            migrationsRun: true,
         }),
         TypeOrmModule.forFeature([...entities])
     ];

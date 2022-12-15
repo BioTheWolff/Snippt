@@ -12,7 +12,7 @@ import { UsersSeederService } from "../src/users/seeds/users-seeder.service";
 import { usersSeeds } from "../src/users/seeds/users-seeds";
 import { CreatePostDto } from "../src/posts/dto/create-post.dto";
 import { responseMessages } from "../src/response-messages";
-import { postsSeeds } from "../src/posts/seeds/posts.seeds";
+import { countDislikesForPost, countLikesForPost, postsSeeds } from "../src/posts/seeds/posts.seeds";
 
 require('dotenv').config();
 
@@ -122,10 +122,15 @@ describe('Posts', () => {
     expect(response.statusCode).toBe(200);
 
     const {author: expectedHandle, _id: a, ...expectedDto} = postsSeeds[0];
-    const {author: foundAuthor, id: b, ...foundDto} = body;
+    const {author: foundAuthor, id: b, total_likes, total_dislikes, ...foundDto} = body;
 
+    // the post itself
     expect(foundDto).toEqual(expectedDto);
     expect(foundAuthor.handle).toBe(expectedHandle);
+
+    // the likes and dislikes
+    expect(total_likes).toBe(countLikesForPost(0));
+    expect(total_dislikes).toBe(countDislikesForPost(0));
   })
 
   it('should 404 on unknown post', () => {

@@ -29,6 +29,14 @@ export function test() {}`
     }
 ];
 
+export function countLikesForPost(id: number) {
+    return likesSeeds.filter(e => e.post === id).length;
+}
+
+export function countDislikesForPost(id: number) {
+    return dislikesSeeds.filter(e => e.post === id).length;
+}
+
 export const likesSeeds: PostLikesType[] = [
     { user: usersSeeds[0].handle, post: postsSeeds[0]._id },
     { user: usersSeeds[0].handle, post: postsSeeds[1]._id },
