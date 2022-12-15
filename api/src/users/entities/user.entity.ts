@@ -25,8 +25,18 @@ export class User {
     @ManyToMany(() => User, (user) => user.following, { onDelete: 'CASCADE' })
     followers!: User[];
 
+
+    // Posts
     @OneToMany(() => Post, post => post.id, { onDelete: 'CASCADE' })
     posts: Post[];
+
+    @ManyToMany(() => Post, { onDelete: 'CASCADE' })
+    @JoinTable()
+    likes: Post[];
+
+    @ManyToMany(() => Post, { onDelete: 'CASCADE' })
+    @JoinTable()
+    dislikes: Post[];
 
 
     // Private profile
@@ -102,5 +112,52 @@ export class User {
 
         if (!target.followers) return;
         target.followers = target.followers.filter((u) => u.id != this.id);
+    }
+
+    likePost(target: Post) {
+        // make sure we are back to neutral before liking
+        this.backToNeutralForPost(target);
+
+        if (this.likes) {
+            this.likes.push(target);
+        } else {
+            this.likes = [target];
+        }
+
+        if (target.likes) {
+            target.likes.push(this);
+        } else {
+            target.likes = [this];
+        }
+    }
+
+    dislikePost(target: Post) {
+        // make sure we are back to neutral before disliking
+        this.backToNeutralForPost(target);
+
+        if (this.dislikes) {
+            this.dislikes.push(target);
+        } else {
+            this.dislikes = [target];
+        }
+
+        if (target.dislikes) {
+            target.dislikes.push(this);
+        } else {
+            target.dislikes = [this];
+        }
+    }
+
+    // remove like or dislike reaction
+    backToNeutralForPost(target: Post) {
+        if (this.likes && this.likes.includes(target)) {
+            // if it was a like
+            this.likes = this.likes.filter(p => p.id != target.id);
+            target.likes = target.likes.filter(u => u.id != this.id);
+        } else if (this.dislikes && this.dislikes.includes(target)) {
+            // if it was a dislike
+            this.dislikes = this.dislikes.filter(p => p.id != target.id);
+            target.dislikes = target.dislikes.filter(u => u.id != this.id);
+        }
     }
 }

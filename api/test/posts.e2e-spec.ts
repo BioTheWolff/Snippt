@@ -121,7 +121,7 @@ describe('Posts', () => {
 
     expect(response.statusCode).toBe(200);
 
-    const {author: expectedHandle, ...expectedDto} = postsSeeds[0];
+    const {author: expectedHandle, _id: a, ...expectedDto} = postsSeeds[0];
     const {author: foundAuthor, id: b, ...foundDto} = body;
 
     expect(foundDto).toEqual(expectedDto);

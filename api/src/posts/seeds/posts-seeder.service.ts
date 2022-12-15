@@ -3,13 +3,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UsersSeederService } from "../../users/seeds/users-seeder.service";
 import { Repository } from "typeorm";
 import { Post } from "../entities/post.entity";
-import { postsSeeds } from "./posts.seeds";
+import { dislikesSeeds, likesSeeds, postsSeeds } from "./posts.seeds";
 import { User } from "../../users/entities/user.entity";
 
 @Injectable()
 export class PostsSeederService {
     constructor (
         @InjectRepository(Post) private readonly repository: Repository<Post>,
+        @InjectRepository(User) private readonly usersRepository: Repository<User>,
         private readonly usersSeeder: UsersSeederService
     ) {}
 
@@ -19,14 +20,31 @@ export class PostsSeederService {
         }
 
         const users = await this.usersSeeder.create();
-
-        return Promise.all(postsSeeds.map(async (e) => {
+        const posts = await Promise.all(postsSeeds.map(async (e) => {
             const {author, ...dto} = e;
             
             let post = this.repository.create(dto);
             post.author = this.findUserByHandle(users, author);
             return await this.repository.save(post);
         }));
+
+        // likes
+        await Promise.all(likesSeeds.map(async (e) => {
+            // must use findOneBy, else it tries to create a whole new entity
+            // on save, and it crashes because of the primary key (obviously)
+            const user = await this.usersRepository.findOneBy({ handle: e.user});
+            user.likePost(posts[e.post]);
+            return await this.usersRepository.save(user);
+        }));
+
+        // dislikes
+        await Promise.all(dislikesSeeds.map(async (e) => {
+            const user = await this.usersRepository.findOneBy({ handle: e.user});
+            user.dislikePost(posts[e.post]);
+            return await this.usersRepository.save(user);
+        }));
+
+        return posts;
     }
 
     private findUserByHandle(users: User[], handle: string): User {
