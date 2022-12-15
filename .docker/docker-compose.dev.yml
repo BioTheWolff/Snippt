@@ -6,9 +6,19 @@ networks:
 
 services:
     adminer:
-        container_name: snippt_adminer
+        container_name: ${COMPOSE_PROJECT_NAME}_adminer
         image: adminer
         ports: ["8080:8080"]
         networks: [docker]
         environment:
             ADMINER_DEFAULT_SERVER: ${COMPOSE_PROJECT_NAME}_pgsql
+
+    pgsql_test:
+        container_name: ${COMPOSE_PROJECT_NAME}_pgsql_test
+        image: ${COMPOSE_PROJECT_NAME}_pgsql_test
+        build: pgsql
+        networks: [docker]
+        environment:
+            POSTGRES_DB: ${POSTGRES_TEST_DATABASE}
+            POSTGRES_USER: ${POSTGRES_TEST_USERNAME}
+            POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
