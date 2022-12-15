@@ -29,7 +29,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    if (!payload) return false;
+
     let user = await this.usersService.findOne(payload.handle);
+
+    if (!user) return false;
+
     user.jwtExpirationDate = payload.exp;
     return user;
   }
