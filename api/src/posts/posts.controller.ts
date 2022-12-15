@@ -43,4 +43,21 @@ export class PostsController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.remove(id);
   }
+
+
+  // Likes
+  @Post(':id/like')
+  async like(@Req() req: RequestWithUser, @Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.like(req.user, id);
+  }
+
+  @Post(':id/dislike')
+  async dislike(@Req() req: RequestWithUser, @Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.dislike(req.user, id);
+  }
+
+  @Post(':id/neutral')
+  async neutral(@Req() req: RequestWithUser, @Param('id', ParseIntPipe) id: number) {
+    return await this.postsService.neutral(req.user, id);
+  }
 }

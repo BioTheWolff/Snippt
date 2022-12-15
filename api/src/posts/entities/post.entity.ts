@@ -42,11 +42,11 @@ export class Post {
     
     // Likes
     @Exclude()
-    @ManyToMany(() => User, { onDelete: 'CASCADE' })
+    @ManyToMany(() => User, user => user.likes, { onDelete: 'CASCADE' })
     likes: User[];
 
     @Exclude()
-    @ManyToMany(() => User, { onDelete: 'CASCADE' })
+    @ManyToMany(() => User, user => user.dislikes, { onDelete: 'CASCADE' })
     dislikes: User[];
 
     @Column('integer', { default: 0 })

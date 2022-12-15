@@ -30,12 +30,30 @@ export class User {
     @OneToMany(() => Post, post => post.id, { onDelete: 'CASCADE' })
     posts: Post[];
 
-    @ManyToMany(() => Post, { onDelete: 'CASCADE' })
-    @JoinTable()
+    @ManyToMany(() => Post, post => post.likes, { onDelete: 'CASCADE' })
+    @JoinTable({
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "post_id",
+            referencedColumnName: "id"
+        }
+    })
     likes: Post[];
 
-    @ManyToMany(() => Post, { onDelete: 'CASCADE' })
-    @JoinTable()
+    @ManyToMany(() => Post, post => post.dislikes, { onDelete: 'CASCADE' })
+    @JoinTable({
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "post_id",
+            referencedColumnName: "id"
+        }
+    })
     dislikes: Post[];
 
 

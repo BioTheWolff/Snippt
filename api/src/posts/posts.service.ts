@@ -10,8 +10,8 @@ import { Post } from './entities/post.entity';
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private readonly repository: Repository<Post>
+    @InjectRepository(Post) private readonly repository: Repository<Post>,
+    @InjectRepository(User) private readonly usersRepository: Repository<User>
   ) {}
 
   async create(user: User, createPostDto: CreatePostDto) {
@@ -27,7 +27,9 @@ export class PostsService {
   async findOne(id: number) {
     return await this.repository.findOne({
       relations: {
-        author: true
+        author: true,
+        likes: true,
+        dislikes: true,
       },
       where: {id: id}
     });
@@ -68,5 +70,39 @@ export class PostsService {
 
     await this.repository.update({id: id}, {deleted: true});
     return "OK";
+  }
+
+  // likes
+  async like(user: User, id: number) {
+    const post = await this.repository.findOneBy({ id: id });
+
+    if (!post) {
+      throw new BadRequestException(responseMessages.POST_NOT_FOUND);
+    }
+
+    user.likePost(post);
+    await this.usersRepository.save(user);
+  }
+
+  async dislike(user: User, id: number) {
+    const post = await this.repository.findOneBy({ id: id });
+
+    if (!post) {
+      throw new BadRequestException(responseMessages.POST_NOT_FOUND);
+    }
+
+    user.dislikePost(post);
+    await this.usersRepository.save(user);
+  }
+
+  async neutral(user: User, id: number) {
+    const post = await this.repository.findOneBy({ id: id });
+
+    if (!post) {
+      throw new BadRequestException(responseMessages.POST_NOT_FOUND);
+    }
+
+    user.backToNeutralForPost(post);
+    await this.usersRepository.save(user);
   }
 }
