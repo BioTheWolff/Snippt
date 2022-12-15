@@ -43,12 +43,8 @@ describe('Posts', () => {
   });
 
   beforeEach(async () => {
-    posts = await seeder.create();
+    posts = await seeder.create(true);
     jwt_bearer = await loginAndGetToken(app, usersSeeds[0].email, usersSeeds[0].password);
-  })
-
-  afterEach(async () => {
-    await seeder.drop();
   })
 
 

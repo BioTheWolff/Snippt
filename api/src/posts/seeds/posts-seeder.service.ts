@@ -13,7 +13,11 @@ export class PostsSeederService {
         private readonly usersSeeder: UsersSeederService
     ) {}
 
-    async create(): Promise<Post[]> {
+    async create(drop: boolean = false): Promise<Post[]> {
+        if (drop) {
+            await this.drop();
+        }
+
         const users = await this.usersSeeder.create();
 
         return Promise.all(postsSeeds.map(async (e) => {

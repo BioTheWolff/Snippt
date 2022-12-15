@@ -18,6 +18,7 @@ services:
         image: ${COMPOSE_PROJECT_NAME}_pgsql_test
         build: pgsql
         networks: [docker]
+        ports: ["${POSTGRES_TEST_PORT}:5432"]
         environment:
             POSTGRES_DB: ${POSTGRES_TEST_DATABASE}
             POSTGRES_USER: ${POSTGRES_TEST_USERNAME}

@@ -36,7 +36,7 @@ describe('Users', () => {
   });
 
   beforeEach(async () => {
-    users = await seeder.create();
+    users = await seeder.create(true);
     jwt_bearer = await loginAndGetToken(app, usersSeeds[0].email, usersSeeds[0].password);
   })
 

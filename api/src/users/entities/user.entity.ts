@@ -18,14 +18,14 @@ export class User {
     @Column({ type: "varchar", length: 40 })
     display_name: string;
 
-    @ManyToMany(() => User, (user) => user.followers)
+    @ManyToMany(() => User, (user) => user.followers, { onDelete: 'CASCADE' })
     @JoinTable()
     following!: User[];
 
-    @ManyToMany(() => User, (user) => user.following)
+    @ManyToMany(() => User, (user) => user.following, { onDelete: 'CASCADE' })
     followers!: User[];
 
-    @OneToMany(() => Post, post => post.id)
+    @OneToMany(() => Post, post => post.id, { onDelete: 'CASCADE' })
     posts: Post[];
 
 
@@ -44,12 +44,12 @@ export class User {
     // Internal use
     @Exclude()
     @ApiHideProperty()
-    @Column({ type: "integer", default: 0 })
+    @Column({ type: "boolean", default: false })
     disabled: boolean;
 
     @Exclude()
     @ApiHideProperty()
-    @Column({ type: "integer", default: 0 })
+    @Column({ type: "boolean", default: false })
     admin: boolean;
 
 

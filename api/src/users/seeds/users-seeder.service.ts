@@ -4,7 +4,6 @@ import { Repository } from "typeorm";
 import { User } from "../entities/user.entity";
 import { followersSeeds, usersSeeds } from "./users-seeds";
 import * as bcrypt from 'bcrypt';
-import { exit } from "process";
 
 @Injectable()
 export class UsersSeederService {
@@ -12,7 +11,11 @@ export class UsersSeederService {
         @InjectRepository(User) private readonly repository: Repository<User>
     ) {}
 
-    async create(): Promise<User[]> {
+    async create(drop: boolean = false): Promise<User[]> {
+        if (drop) {
+            await this.drop();
+        }
+
         const users = await Promise.all(usersSeeds.map(async (e) => {
             let user = this.repository.create(e);
             user.password = await bcrypt.hash(user.password, 10);
@@ -31,6 +34,6 @@ export class UsersSeederService {
     }
 
     async drop() {
-        return await this.repository.createQueryBuilder().delete().execute();
+        await this.repository.createQueryBuilder().delete().execute();
     }
 }

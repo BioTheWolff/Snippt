@@ -35,13 +35,13 @@ export class Post {
     @UpdateDateColumn()
     updated_at: number;
 
-    @ManyToOne(() => User, user => user.id)
+    @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
     @JoinColumn()
     author: User;
 
     
     // State
     @Exclude()
-    @Column('integer', { default: 0 })
+    @Column('boolean', { default: false })
     deleted: boolean;
 }

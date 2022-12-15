@@ -11,6 +11,7 @@ import { responseMessages } from '../src/response-messages';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import * as cookieParser from 'cookie-parser';
 import { Post } from '../src/posts/entities/post.entity';
+import { UsersSeederService } from '../src/users/seeds/users-seeder.service';
 
 require('dotenv').config();
 
@@ -18,7 +19,9 @@ describe('Auth', () => {
   let app: INestApplication;
   let jwtService: JwtService;
 
-  beforeEach(async () => {
+  let seeder: UsersSeederService;
+
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ...TypeOrmSqliteTestingModule([User, Post]), 
@@ -28,7 +31,7 @@ describe('Auth', () => {
           signOptions: { expiresIn: '5s' },
         }),
       ],
-      providers: []
+      providers: [UsersSeederService]
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -38,7 +41,12 @@ describe('Auth', () => {
     await app.init();
 
     jwtService = moduleFixture.get<JwtService>(JwtService);
+    seeder = moduleFixture.get<UsersSeederService>(UsersSeederService);
   });
+
+  beforeEach(async () => {
+    await seeder.drop();
+  })
 
   // REGISTER
   it('should register a new user', async () => {
