@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
+import { Exclude, Transform } from "class-transformer";
 import { User } from "../../users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -37,6 +37,7 @@ export class Post {
 
     @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
     @JoinColumn()
+    @Transform(({ value }) => value.handle)
     author: User;
 
     

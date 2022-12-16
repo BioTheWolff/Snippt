@@ -183,4 +183,68 @@ describe('Posts', () => {
         .expect(403)
         .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
+
+
+  // Like/dislike
+  it('should increment total_likes when liking a post', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[3].email, usersSeeds[3].password);
+    
+    await request(app.getHttpServer())
+        .post(`/posts/${posts[0].id}/like`)
+        .set('Authorization', token)
+        .expect(201);
+    
+    const response = await request(app.getHttpServer())
+      .get(`/posts/${posts[0].id}`);
+    const body: Post = response.body;
+    
+    expect(response.statusCode).toBe(200);
+    expect(body.total_likes).toBe(countLikesForPost(0)+1)
+  })
+
+  it('should not increment total_likes when post is already liked', async () => {
+    await request(app.getHttpServer())
+        .post(`/posts/${posts[0].id}/like`)
+        .set('Authorization', jwt_bearer)
+        .expect(201);
+    
+    const response = await request(app.getHttpServer())
+      .get(`/posts/${posts[0].id}`);
+    const body: Post = response.body;
+    
+    expect(response.statusCode).toBe(200);
+    expect(body.total_likes).toBe(countLikesForPost(0))
+  })
+
+  it('should increment total_dislikes when disliking a post', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[3].email, usersSeeds[3].password);
+
+    await request(app.getHttpServer())
+        .post(`/posts/${posts[0].id}/dislike`)
+        .set('Authorization', token)
+        .expect(201);
+    
+    const response = await request(app.getHttpServer())
+      .get(`/posts/${posts[0].id}`);
+    const body: Post = response.body;
+    
+    expect(response.statusCode).toBe(200);
+    expect(body.total_dislikes).toBe(countDislikesForPost(0)+1)
+  })
+
+  it('should not increment total_dislikes when post is already disliked', async () => {
+    const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
+
+    await request(app.getHttpServer())
+        .post(`/posts/${posts[0].id}/dislike`)
+        .set('Authorization', token)
+        .expect(201);
+    
+    const response = await request(app.getHttpServer())
+      .get(`/posts/${posts[0].id}`);
+    const body: Post = response.body;
+    
+    expect(response.statusCode).toBe(200);
+    expect(body.total_dislikes).toBe(countDislikesForPost(0))
+  })
 });

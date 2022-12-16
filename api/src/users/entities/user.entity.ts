@@ -168,11 +168,12 @@ export class User {
 
     // remove like or dislike reaction
     backToNeutralForPost(target: Post) {
-        if (this.likes && this.likes.includes(target)) {
+        if (this.likes) {
             // if it was a like
             this.likes = this.likes.filter(p => p.id != target.id);
             target.likes = target.likes.filter(u => u.id != this.id);
-        } else if (this.dislikes && this.dislikes.includes(target)) {
+        }
+        if (this.dislikes) {
             // if it was a dislike
             this.dislikes = this.dislikes.filter(p => p.id != target.id);
             target.dislikes = target.dislikes.filter(u => u.id != this.id);

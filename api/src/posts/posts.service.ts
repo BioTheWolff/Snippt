@@ -74,7 +74,7 @@ export class PostsService {
 
   // likes
   async like(user: User, id: number) {
-    const post = await this.repository.findOneBy({ id: id });
+    const post = await this.findOne(id);
 
     if (!post) {
       throw new BadRequestException(responseMessages.POST_NOT_FOUND);
@@ -85,7 +85,7 @@ export class PostsService {
   }
 
   async dislike(user: User, id: number) {
-    const post = await this.repository.findOneBy({ id: id });
+    const post = await this.findOne(id);
 
     if (!post) {
       throw new BadRequestException(responseMessages.POST_NOT_FOUND);
@@ -96,7 +96,7 @@ export class PostsService {
   }
 
   async neutral(user: User, id: number) {
-    const post = await this.repository.findOneBy({ id: id });
+    const post = await this.findOne(id);
 
     if (!post) {
       throw new BadRequestException(responseMessages.POST_NOT_FOUND);
