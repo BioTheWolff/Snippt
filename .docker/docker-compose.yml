@@ -47,8 +47,6 @@ services:
         networks: [docker]
         volumes:
             - ../frontend/:/srv/:rw
-            - type: tmpfs
-              target: /nuxt/
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.frontend.rule=Host(`snippt.localhost`)"
