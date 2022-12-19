@@ -23,3 +23,15 @@ services:
             POSTGRES_DB: ${POSTGRES_TEST_DATABASE}
             POSTGRES_USER: ${POSTGRES_TEST_USERNAME}
             POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
+
+
+    traefik:
+        ports:
+            - "8000:8080"
+        command:
+            - "--entrypoints.web.address=:80"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--log.level=DEBUG"
+            - "--api.insecure=true"
+            - "--accesslog=true"
