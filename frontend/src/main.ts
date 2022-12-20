@@ -9,7 +9,6 @@ import router from './router'
 
 // global styles
 import '@oruga-ui/theme-bulma/dist/bulma.css'
-import './assets/main.css'
 
 
 // app init
