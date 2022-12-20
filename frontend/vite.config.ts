@@ -14,5 +14,14 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 80,
+  },
+  css: {
+    preprocessorOptions: {
+      sass: {
+        additionalData: `
+          @import "@/assets/styles/_variables.sass"
+        `
+      }
+    }
   }
 })

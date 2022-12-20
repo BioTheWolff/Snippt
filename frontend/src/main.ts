@@ -9,7 +9,7 @@ import router from './router'
 
 // global styles
 import '@oruga-ui/theme-bulma/dist/bulma.css'
-
+import './assets/styles/_all.sass'
 
 // app init
 const app = createApp(App)
