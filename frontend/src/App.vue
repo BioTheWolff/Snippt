@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
-import UserHeaderCardVue from '@@/users/UserHeaderCard.vue';
+import UserHeaderCard from '@@/users/UserHeaderCard.vue';
 </script>
 
 <template>
@@ -13,7 +13,7 @@ import UserHeaderCardVue from '@@/users/UserHeaderCard.vue';
             <RouterLinkButton variant="info" to="/register">Sign up</RouterLinkButton>
             <RouterLinkButton variant="primary" to="/login">Login</RouterLinkButton>
 
-            <UserHeaderCardVue></UserHeaderCardVue>
+            <UserHeaderCard handle="CHANGEME"></UserHeaderCard>
             <RouterLinkButton variant="primary" to="/logout">Logout</RouterLinkButton>
         </div>
     </header>
