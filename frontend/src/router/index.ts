@@ -9,12 +9,20 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Homepage',
       component: HomeView,
       meta: {
         title: "Home"
       }
     },
+    {
+      path: '/users/:handle',
+      name: 'Profile',
+      component: () => import('%/users/UserProfileView.vue'),
+      meta: {
+        title: "Profile"
+      }
+    }
   ]
 });
 

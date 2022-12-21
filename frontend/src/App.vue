@@ -18,7 +18,13 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
         </div>
     </header>
 
-    <RouterView />
+    <main>
+        <div class="filler"></div>
+        <div class="filler right"></div>
+        <div id="site-content">
+            <RouterView />
+        </div> 
+    </main>
 </template>
 
 <style scoped lang="sass">
@@ -29,7 +35,8 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
     height: $header-height
     line-height: $header-height
 
-    padding: 0 $header-padding
+    padding: 0 $header-horizontal-padding
+    margin-bottom: $header-margin-bottom
 
     background: $accent-bg
 
@@ -40,4 +47,16 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
         display: flex
         align-items: center
         gap: 1em
+
+main
+    display: flex
+    min-height: calc(100vh - $header-height-full)
+
+    .filler
+        width: 25vw
+        &.right
+            order: 3
+    
+    #site-content
+        flex-grow: 1
 </style>
