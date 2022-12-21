@@ -11,11 +11,21 @@ import router from './router'
 import './assets/styles/_bulma_override.sass'
 import './assets/styles/_all.sass'
 
+// fontawesome icons
+import { fas } from './fas-load';
+
 // app init
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(Oruga, bulmaConfig);
+
+app.component("vue-fontawesome", fas);
+app.use(Oruga, {
+    ...bulmaConfig,
+    iconComponent: "vue-fontawesome",
+    iconPack: "fas"
+});
+
 app.use(router)
 
 app.mount('#app')
