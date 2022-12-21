@@ -8,7 +8,7 @@ import App from './App.vue'
 import router from './router'
 
 // global styles
-import '@oruga-ui/theme-bulma/dist/bulma.css'
+import './assets/styles/_bulma_override.sass'
 import './assets/styles/_all.sass'
 
 // app init

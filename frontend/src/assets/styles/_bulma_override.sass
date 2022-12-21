@@ -1,0 +1,20 @@
+@import "~/bulma/sass/utilities/_all"
+
+@import "_variables"
+
+// Set your colors
+$primary-light: findLightColor($primary)
+$primary-dark: findDarkColor($primary)
+$primary-invert: findColorInvert($primary)
+
+// Lists and maps
+$custom-colors: null !default
+$custom-shades: null !default
+
+// Links
+$link: $primary
+$link-invert: $primary-invert
+$link-focus-border: $primary
+
+@import "~/bulma/bulma"
+@import '~/@oruga-ui/theme-bulma/dist/scss/bulma'
