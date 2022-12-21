@@ -1,11 +1,21 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router';
+import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
+import UserHeaderCardVue from '@@/users/UserHeaderCard.vue';
 </script>
 
 <template>
     <header id="site-header">
-        <div class="brand">Snippt</div>
-        <div>test</div>
+        <div class="brand">
+            Snippt
+        </div>
+        <div class="nav">
+            <RouterLinkButton variant="info" to="/register">Sign up</RouterLinkButton>
+            <RouterLinkButton variant="primary" to="/login">Login</RouterLinkButton>
+
+            <UserHeaderCardVue></UserHeaderCardVue>
+            <RouterLinkButton variant="primary" to="/logout">Logout</RouterLinkButton>
+        </div>
     </header>
 
     <RouterView />
@@ -25,4 +35,9 @@ import { RouterLink, RouterView } from 'vue-router'
 
     .brand
         font-size: 1.5rem
+
+    .nav
+        display: flex
+        align-items: center
+        gap: 1em
 </style>
