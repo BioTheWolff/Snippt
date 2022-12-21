@@ -1,14 +1,19 @@
+// importing bulma utilities and local variables
 @import "~/bulma/sass/utilities/_all"
-
 @import "_variables"
 
-// Set your colors
+
+// colours changes
 $primary-light: findLightColor($primary)
 $primary-dark: findDarkColor($primary)
 $primary-invert: findColorInvert($primary)
 
+$purple-light: findLightColor($purple-accent)
+$purple-dark: findDarkColor($purple-accent)
+$purple-invert: findColorInvert($purple-accent)
+
 // Lists and maps
-$custom-colors: null !default
+$custom-colors: ("purple": ($purple-accent, $purple-invert, $purple-light, $purple-dark)) !default
 $custom-shades: null !default
 
 // Links
@@ -16,5 +21,24 @@ $link: $primary
 $link-invert: $primary-invert
 $link-focus-border: $primary
 
+// Skeletons
+$skeleton-color: $secondary
+
+
+// importing bulma
 @import "~/bulma/bulma"
 @import '~/@oruga-ui/theme-bulma/dist/scss/bulma'
+
+
+// tabs
+.b-tabs > .tabs 
+    border-bottom-color: $secondary !important
+
+    a
+        &.is-active
+            background: $secondary !important
+        border-color: $secondary !important
+
+// icons
+.icon-purple
+    color: $purple-accent

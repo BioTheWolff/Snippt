@@ -11,7 +11,7 @@ defineProps({
     </div>
 </template>
 
-<style lang="sass">
+<style scoped lang="sass">
 .user-header-card
     display: flex
     align-items: center

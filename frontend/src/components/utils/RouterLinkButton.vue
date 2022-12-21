@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 function goto() {
-    router.push(String(props.to));
+    router.push(props.to as string);
 }
 </script>
 
