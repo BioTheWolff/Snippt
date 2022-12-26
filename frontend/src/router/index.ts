@@ -7,6 +7,7 @@ const SITE_TITLE = 'Snippt';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // Home
     {
       path: '/',
       name: 'Homepage',
@@ -15,6 +16,19 @@ const router = createRouter({
         title: "Home"
       }
     },
+
+    // Auth
+    {
+      path: '/register',
+      name: 'Register',
+      component: () => import('%/auth/RegisterView.vue'),
+      meta: {
+        title: 'Register'
+      }
+    },
+
+
+    // Users
     {
       path: '/users/:handle',
       name: 'Profile',

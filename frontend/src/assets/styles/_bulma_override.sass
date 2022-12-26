@@ -42,3 +42,14 @@ $skeleton-color: $secondary
 // icons
 .icon-purple
     color: $purple-accent
+
+// form inputs and fields
+input.input, textarea.input, .select select
+    &::placeholder
+        color: $text-color
+    background-color: $accent-bg
+    border-color: $accent-bg !important
+    color: $text-color
+
+label.label
+    color: $text-color
