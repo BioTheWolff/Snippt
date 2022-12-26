@@ -7,5 +7,11 @@ const handle = route.params.handle as string;
 </script>
 
 <template>
-    <UserProfile :handle="handle" loading></UserProfile>
+    <Suspense>
+        <UserProfile :handle="handle"></UserProfile>
+
+        <template #fallback>
+            <UserProfile :handle="handle" loading></UserProfile>
+        </template>
+    </Suspense>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
 import UserProfileCard from './UserProfileCard.vue';
 
 const props = defineProps({
@@ -12,12 +13,22 @@ const props = defineProps({
 
 <template>
     <div class="user-profile">
-        <UserProfileCard
-            :loading="loading"
-            :handle="(handle as string)"
-            display_name="My Super Display Name"
-            inline
-        ></UserProfileCard>
+        <div class="header">
+            <UserProfileCard
+                :loading="loading"
+                :handle="(handle as string)"
+                display_name="My Super Display Name"
+                inline
+            ></UserProfileCard>
+
+            <RouterLinkButton 
+                class="settings-button"
+                :to="`/users/${handle as string}/settings`"
+                variant="info"
+            >
+                My settings
+            </RouterLinkButton>
+        </div>
         <div class="relations">
             <o-tabs type="toggle">
                 <o-tab-item>
@@ -88,6 +99,14 @@ const props = defineProps({
 
     padding: 15px
     border-radius: 15px
+
+    .header
+        display: flex
+        justify-content: space-between
+        align-items: baseline
+
+        .settings-button
+            margin-right: 1em
     
     .relations
         .grid
