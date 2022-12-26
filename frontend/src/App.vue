@@ -6,14 +6,14 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
 
 <template>
     <header id="site-header">
-        <div class="brand">
+        <div class="brand" @click="$router.push('/')">
             Snippt
         </div>
         <div class="nav">
             <RouterLinkButton variant="info" to="/register">Sign up</RouterLinkButton>
             <RouterLinkButton variant="primary" to="/login">Login</RouterLinkButton>
 
-            <UserHeaderCard handle="CHANGEME"></UserHeaderCard>
+            <UserHeaderCard handle="CHANGEME" clickable></UserHeaderCard>
             <RouterLinkButton variant="primary" to="/logout">Logout</RouterLinkButton>
         </div>
     </header>
@@ -42,6 +42,7 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
 
     .brand
         font-size: 1.5rem
+        cursor: pointer
 
     .nav
         display: flex

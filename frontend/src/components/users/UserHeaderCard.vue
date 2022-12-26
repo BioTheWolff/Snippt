@@ -1,11 +1,24 @@
 <script setup lang="ts">
-defineProps({
-    handle: String
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const props = defineProps({
+    handle: {
+        type: String,
+        required: true,
+    },
+    clickable: Boolean,
 })
+
+function handleClick() {
+    if (props.clickable) {
+        router.push({ name: 'profile', params: { handle: props.handle } })
+    }
+}
 </script>
 
 <template>
-    <div class="user-header-card">
+    <div :class="`user-header-card ${clickable ? 'clickable' : ''}`" @click="handleClick()">
         <o-icon pack="fas" icon="user" size="large" variant="info"> </o-icon>
         <span class="handle">@{{ handle }}</span>
     </div>
@@ -26,4 +39,7 @@ defineProps({
 
     .handle
         font-weight: bold
+
+    &.clickable
+        cursor: pointer
 </style>

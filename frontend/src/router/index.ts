@@ -10,7 +10,7 @@ const router = createRouter({
     // Home
     {
       path: '/',
-      name: 'Homepage',
+      name: 'homepage',
       component: HomeView,
       meta: {
         title: "Home"
@@ -20,12 +20,15 @@ const router = createRouter({
     // Auth
     {
       path: '/register',
-      name: 'Register',
+      name: 'register',
       component: () => import('%/auth/RegisterView.vue'),
+      meta: {
+        title: 'Register'
+      }
     },
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: () => import('%/auth/LoginView.vue'),
       meta: {
         title: 'Log in'
@@ -36,7 +39,7 @@ const router = createRouter({
     // Users
     {
       path: '/users/:handle',
-      name: 'Profile',
+      name: 'profile',
       component: () => import('%/users/UserProfileView.vue'),
     }
   ]
