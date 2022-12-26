@@ -3,7 +3,7 @@
 
 <template>
     <div class="register-form">
-        <section class="horizontal">
+        <section class="split">
             <o-tooltip 
                 position="bottom"
                 label="Should only contain alphanumerical characters, underscores and dashes"
@@ -57,7 +57,7 @@
     section
         margin-bottom: 1.5em
 
-        &.horizontal
+        &.split
             display: flex
             gap: 1em
 
