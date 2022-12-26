@@ -26,6 +26,7 @@ app.use(Oruga, {
     iconPack: "fas"
 });
 
+app.config.globalProperties.window = window
 app.use(router)
 
 app.mount('#app')

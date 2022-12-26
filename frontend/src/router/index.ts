@@ -50,6 +50,16 @@ const router = createRouter({
         title: 'User settings'
       }
     },
+
+    // Posts & Feed
+    {
+      path: '/posts/new',
+      name: 'new-post',
+      component: () => import('%/posts/PostCreateView.vue'),
+      meta: {
+        title: 'New post'
+      }
+    },
   ]
 });
 
