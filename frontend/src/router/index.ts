@@ -22,8 +22,13 @@ const router = createRouter({
       path: '/register',
       name: 'Register',
       component: () => import('%/auth/RegisterView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('%/auth/LoginView.vue'),
       meta: {
-        title: 'Register'
+        title: 'Log in'
       }
     },
 
@@ -33,9 +38,6 @@ const router = createRouter({
       path: '/users/:handle',
       name: 'Profile',
       component: () => import('%/users/UserProfileView.vue'),
-      meta: {
-        title: "Profile"
-      }
     }
   ]
 });
@@ -44,10 +46,12 @@ const router = createRouter({
 // set title depending on page after every route change
 router.afterEach((to, from) => {
   nextTick(() => {
-    let title = '';
-    if (to.meta.title) {
-      title = `${to.meta.title} | `;
+    let title = to.meta.title as string || to.name as string || '';
+
+    if (title) {
+      title += ' | ';
     }
+
     title += SITE_TITLE;
 
     document.title = title;
