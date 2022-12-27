@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsString, IsNotEmpty, IsEmail, Length, Validate } from 'class-validator';
+import { MatchesWithProperty } from 'src/validators/match-other.validator';
 import { HandleValidator } from '../../validators/handle.validator';
 
 export class CreateUserDto {
@@ -30,5 +31,6 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     @Length(8)
+    @MatchesWithProperty(CreateUserDto, o => o.password)
     password_confirm: string;
 }
