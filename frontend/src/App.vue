@@ -12,8 +12,8 @@ import { useUserStore } from './stores/user';
 const router = useRouter();
 const userStore = useUserStore();
 
-function logout() {
-    apiLogout();
+async function logout() {
+    await apiLogout();
     router.push('/');
 }
 </script>

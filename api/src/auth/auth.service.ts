@@ -40,6 +40,18 @@ export class AuthService {
         return this.userDetails(user);
     }
 
+    async logout(response: ResponseType) {
+        const date = new Date();
+        date.setSeconds(date.getSeconds() + 10);
+
+        response.cookie('token', '', { 
+            expires: date,
+            httpOnly: true,
+            sameSite: true
+        })
+        return { "status": "logged-out" }
+    }
+
     async setAuthenticationToken(user: User, response: ResponseType) {
         // TODO: simplify payload to switch to cookie
         const payload = {

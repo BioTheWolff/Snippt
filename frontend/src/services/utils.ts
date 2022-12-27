@@ -6,7 +6,10 @@ const BASE_URL: string = "/api";
 const ENDPOINTS: { [key: string]: string } = {
     // make an endpoint with params like so:
     // my_endpoint: '/api/users/$username$/settings
-    'login': '/auth/login'
+
+    // auth
+    'login': '/auth/login',
+    'logout': '/auth/logout',
 };
 
 async function _api_request(
@@ -35,10 +38,10 @@ async function _api_request(
     };
 }
 
-export async function get(endpoint: string, params: ApiParamsType) {
-    return await _api_request(endpoint, 'GET', params);
+export async function get(endpoint: string, params?: ApiParamsType) {
+    return await _api_request(endpoint, 'GET', params ?? {});
 }
 
-export async function post(endpoint: string, params: ApiParamsType, body: ApiBodyType) {
-    return await _api_request(endpoint, 'POST', params, body);
+export async function post(endpoint: string, params?: ApiParamsType, body?: ApiBodyType) {
+    return await _api_request(endpoint, 'POST', params ?? {}, body);
 }

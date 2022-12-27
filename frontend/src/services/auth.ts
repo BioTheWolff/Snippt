@@ -1,6 +1,6 @@
 
 import { useUserStore } from '@/stores/user';
-import { post, type ApiBodyType } from './utils';
+import { get, post, type ApiBodyType } from './utils';
 
 export async function login(body: ApiBodyType): Promise<boolean> {
     const data = await post('login', {}, body);
@@ -14,5 +14,6 @@ export async function login(body: ApiBodyType): Promise<boolean> {
 }
 
 export async function logout() {
+    await get('logout');
     useUserStore().logout();
 }

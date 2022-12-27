@@ -29,6 +29,11 @@ export class AuthController {
     return this.authService.login(req.user, res);
   }
 
+  @Get('logout')
+  async logout(@Response({ passthrough: true }) res: ResponseType) {
+    return this.authService.logout(res);
+  }
+
 
   // TODO: JWT refresh token?
   @Get('status')
