@@ -17,7 +17,7 @@ export class AuthService {
         let user = await this.usersService.create(userInfo);
         if (user) {
             this.setAuthenticationToken(user, response);
-            return { handle: user.handle };
+            return this.userDetails(user);
         } else {
             throw new BadRequestException(responseMessages.REGISTRATION_FAILED);
         }
@@ -37,7 +37,7 @@ export class AuthService {
 
     async login(user: User, response: ResponseType) {
         this.setAuthenticationToken(user, response);
-        return "OK"
+        return this.userDetails(user);
     }
 
     async setAuthenticationToken(user: User, response: ResponseType) {
@@ -54,5 +54,13 @@ export class AuthService {
             httpOnly: true,
             sameSite: true
         });
+    }
+
+    userDetails(user: User) {
+        return {
+            handle: user.handle,
+            display_name: user.display_name,
+            email: user.email,
+        };
     }
 }
