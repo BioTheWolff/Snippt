@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { userProfile } from '@/services/users';
 import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
 import UserProfileCard from './UserProfileCard.vue';
 
@@ -9,6 +10,8 @@ const props = defineProps({
         default: false,
     }
 })
+
+const user = await userProfile(props.handle as string);
 </script>
 
 <template>
@@ -17,7 +20,7 @@ const props = defineProps({
             <UserProfileCard
                 :loading="loading"
                 :handle="(handle as string)"
-                display_name="My Super Display Name"
+                :display_name="user.display_name"
                 inline
             ></UserProfileCard>
 

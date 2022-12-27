@@ -37,7 +37,7 @@ async function logout() {
 
             <UserHeaderCard
                 v-if="userStore.is_logged_in"
-                handle="CHANGEME"
+                :handle="userStore.handle"
                 clickable
             ></UserHeaderCard>
             <o-button

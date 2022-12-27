@@ -10,6 +10,9 @@ const ENDPOINTS: { [key: string]: string } = {
     // auth
     'login': '/auth/login',
     'logout': '/auth/logout',
+
+    // users
+    'user-profile': '/users/$handle$'
 };
 
 async function _api_request(
