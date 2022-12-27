@@ -1,4 +1,4 @@
-import { get, post } from './utils';
+import { get, post } from './api-utils';
 
 export type UserProfileType = {
     __status: number,

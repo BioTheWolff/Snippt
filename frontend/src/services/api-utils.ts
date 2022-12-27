@@ -10,6 +10,7 @@ const ENDPOINTS: { [key: string]: string } = {
     // auth
     'login': '/auth/login',
     'logout': '/auth/logout',
+    'register': '/auth/register',
 
     // users
     'user-profile': '/users/$handle$'
