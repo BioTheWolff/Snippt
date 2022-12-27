@@ -6,6 +6,7 @@ const BASE_URL: string = "/api";
 const ENDPOINTS: { [key: string]: string } = {
     // make an endpoint with params like so:
     // my_endpoint: '/api/users/$username$/settings
+    'login': '/auth/login'
 };
 
 async function _api_request(
@@ -13,7 +14,7 @@ async function _api_request(
     method: string, 
     params: ApiParamsType, 
     body?: ApiBodyType
-) : Promise<{ [name: string]: any }> 
+) : Promise<{ __status: number, [name: string]: any }> 
 {
     // populate endpoint with params
     let fragment = ENDPOINTS[endpoint];
@@ -26,9 +27,12 @@ async function _api_request(
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body ?? {})
+        body: body ? JSON.stringify(body) : null,
     });
-    return response.json();
+    return {
+        __status: response.status,
+        ...(await response.json())
+    };
 }
 
 export async function get(endpoint: string, params: ApiParamsType) {
@@ -36,5 +40,5 @@ export async function get(endpoint: string, params: ApiParamsType) {
 }
 
 export async function post(endpoint: string, params: ApiParamsType, body: ApiBodyType) {
-    return await _api_request(endpoint, 'GET', params, body);
+    return await _api_request(endpoint, 'POST', params, body);
 }
