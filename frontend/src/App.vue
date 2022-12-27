@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+import { useRouter } from 'vue-router';
+
 import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
 import UserHeaderCard from '@@/users/UserHeaderCard.vue';
+
+import { logout as apiLogout } from './services/auth';
+import { useUserStore } from './stores/user';
+
+
+const router = useRouter();
+const userStore = useUserStore();
+
+function logout() {
+    apiLogout();
+    router.push('/');
+}
 </script>
 
 <template>
@@ -10,11 +24,27 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
             Snippt
         </div>
         <div class="nav">
-            <RouterLinkButton variant="info" to="/register">Sign up</RouterLinkButton>
-            <RouterLinkButton variant="primary" to="/login">Login</RouterLinkButton>
+            <RouterLinkButton 
+                v-if="!userStore.is_logged_in" 
+                variant="info" 
+                to="/register"
+            >Sign up</RouterLinkButton>
+            <RouterLinkButton 
+                v-if="!userStore.is_logged_in" 
+                variant="primary" 
+                to="/login"
+            >Login</RouterLinkButton>
 
-            <UserHeaderCard handle="CHANGEME" clickable></UserHeaderCard>
-            <RouterLinkButton variant="primary" to="/logout">Logout</RouterLinkButton>
+            <UserHeaderCard
+                v-if="userStore.is_logged_in"
+                handle="CHANGEME"
+                clickable
+            ></UserHeaderCard>
+            <o-button
+                @click="logout()"
+                v-if="userStore.is_logged_in"
+                variant="primary"
+            >Log out</o-button>
         </div>
     </header>
 

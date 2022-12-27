@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login as apiLogin, userStore } from '@/services/auth';
+import { login as apiLogin } from '@/services/auth';
 
 const router = useRouter();
 
@@ -55,12 +55,6 @@ async function login() {
             </o-field>
         </section>
     </form>
-
-    <div>
-        <div>handle: {{ userStore.handle }}</div>
-        <div>name: {{ userStore.display_name }}</div>
-        <div>email: {{ userStore.email }}</div>
-    </div>
 </template>
 
 <style scoped lang="sass">
