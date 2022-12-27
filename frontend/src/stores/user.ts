@@ -21,4 +21,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return { handle, display_name, email, is_logged_in, login, logout };
+},
+{
+  persist: true,
 })
