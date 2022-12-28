@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+
 const props = defineProps({
     handle: {
         type: String,
@@ -10,16 +12,28 @@ const props = defineProps({
     },
     loading: { type: Boolean, default: false },
     inline: { type: Boolean, default: false },
-    compact: { type: Boolean, default: false }
+    compact: { type: Boolean, default: false },
+    clickable: { type: Boolean, default: false },
 })
+
+const router = useRouter();
 
 const pfp_size = props.compact ? '48px' : '96px';
 const display_name_size = props.compact ? '1em' : '1.3em';
 const handle_size = props.compact ? '0.8em' : '1.1em';
+
+function handleClick() {
+    if (props.clickable) {
+        router.push({ name: 'profile', params: { handle: props.handle } })
+    }
+}
 </script>
 
 <template>
-    <div :class="`user-profile-card ${inline ? 'inline' : ''} ${compact ? 'compact' : ''}`">
+    <div 
+        :class="`user-profile-card ${inline ? 'inline' : ''} ${compact ? 'compact' : ''} ${clickable ? 'clickable' : ''}`"
+        @click="handleClick()"
+    >
         <div>
             <o-skeleton
                 v-if="loading" 
@@ -58,6 +72,9 @@ const handle_size = props.compact ? '0.8em' : '1.1em';
     align-items: center
     gap: 15px
     margin-bottom: 3em
+
+    &.clickable
+        cursor: pointer
 
     &:not(.inline)
         background: $card-bg

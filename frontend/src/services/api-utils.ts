@@ -13,7 +13,7 @@ const ENDPOINTS: { [key: string]: string } = {
     'register': '/auth/register',
 
     // users
-    'user-profile': '/users/$handle$'
+    'user-profile': '/users/$handle$?relations=true'
 };
 
 async function _api_request(

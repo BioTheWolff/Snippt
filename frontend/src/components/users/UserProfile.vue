@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { userProfile } from '@/services/users';
+import { userProfile, type UserProfileType } from '@/services/users';
 import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
+import { ref, watch, type Ref } from 'vue';
+import { useRoute } from 'vue-router';
 import UserProfileCard from './UserProfileCard.vue';
 
+const route = useRoute();
 const props = defineProps({
     handle: String,
     loading: {
@@ -11,7 +14,18 @@ const props = defineProps({
     }
 })
 
-const user = await userProfile(props.handle as string);
+const user: Ref<UserProfileType|{[key:string]:any}> = ref({});
+
+async function init() {
+    user.value = await userProfile(route.params.handle as string);
+}
+
+if (!props.loading) {
+    await init();
+    watch(() => route.fullPath, async () => {
+        await init();
+    })  
+}
 </script>
 
 <template>
@@ -66,6 +80,16 @@ const user = await userProfile(props.handle as string);
 
                             loading inline compact
                         ></UserProfileCard>
+
+                        <UserProfileCard
+                            v-if="!loading"
+                            v-for="u in user.followers"
+                            
+                            :handle="u.handle"
+                            :display_name="u.display_name"
+
+                            inline compact clickable
+                        ></UserProfileCard>
                     </div>
                 </o-tab-item>
                 <o-tab-item>
@@ -88,6 +112,16 @@ const user = await userProfile(props.handle as string);
                             display_name=""
 
                             loading inline compact
+                        ></UserProfileCard>
+
+                        <UserProfileCard
+                            v-if="!loading"
+                            v-for="u in user.following"
+                            
+                            :handle="u.handle"
+                            :display_name="u.display_name"
+
+                            inline compact clickable
                         ></UserProfileCard>
                     </div>
                 </o-tab-item>
