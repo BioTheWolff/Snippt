@@ -1,21 +1,34 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
+import { RouterView, useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 
 import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
 import UserHeaderCard from '@@/users/UserHeaderCard.vue';
 
-import { logout as apiLogout } from './services/auth';
+import { authStatus, logout as apiLogout } from './services/auth';
 import { useUserStore } from './stores/user';
+import { onMounted, watch } from 'vue';
 
 
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 
 async function logout() {
     await apiLogout();
     router.push('/');
 }
+
+async function checkLogin() {
+    if (!(await authStatus())) {
+        logout();
+    }
+}
+
+onMounted(async () => {
+    checkLogin();
+    watch(() => route.fullPath, checkLogin);
+})
 </script>
 
 <template>
