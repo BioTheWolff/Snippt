@@ -48,10 +48,12 @@ hr
 
 // form inputs and fields
 input.input, textarea.input, .select select
+    &:not(.is-primary):not(.is-success):not(.is-danger)
+        border-color: $accent-bg !important
+
     &::placeholder
         color: $text-color
     background-color: $accent-bg
-    border-color: $accent-bg !important
     color: $text-color
 
 input.input[type="submit"]

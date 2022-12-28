@@ -8,6 +8,7 @@ import {
     faAddressBook,
     faUsers,
     faExclamationCircle,
+    faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 // importing the FAS pack
@@ -20,6 +21,7 @@ library.add(
     faAddressBook,
     faUsers,
     faExclamationCircle,
+    faCheck,
 );
 
 // exporting the pack

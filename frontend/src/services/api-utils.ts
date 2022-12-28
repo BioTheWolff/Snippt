@@ -17,6 +17,9 @@ const ENDPOINTS: { [key: string]: string } = {
     'user-profile': '/users/$handle$?relations=true',
     'user-follow': '/users/$handle$/follow',
     'user-unfollow': '/users/$handle$/unfollow',
+
+    // user settings
+    'user-settings-email': '/users/$handle$/email',
 };
 
 async function _api_request(
@@ -51,4 +54,8 @@ export async function get(endpoint: string, params?: ApiParamsType) {
 
 export async function post(endpoint: string, params?: ApiParamsType, body?: ApiBodyType) {
     return await _api_request(endpoint, 'POST', params ?? {}, body);
+}
+
+export async function patch(endpoint: string, params?: ApiParamsType, body?: ApiBodyType) {
+    return await _api_request(endpoint, 'PATCH', params ?? {}, body);
 }

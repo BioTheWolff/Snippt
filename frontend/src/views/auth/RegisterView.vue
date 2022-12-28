@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { register as apiRegister } from '@/services/auth';
-import { makeRefArray, getRefFromArray, setRefFromArray } from '@/services/ref-array';
+import { makeRefArray, getRefFromArray, setErrorMessages } from '@/services/ref-array';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -25,29 +25,7 @@ async function register() {
     if (result === true) {
         router.push('/');
     } else {
-        setErrorMessages(result as string[]);
-    }
-}
-
-function setErrorMessages(list: string[]|string) {
-    // reset the variants and messages
-    for (let key of keys) {
-        setRefFromArray(variants, key, '');
-        setRefFromArray(messages, key, '');
-    }
-
-    // set the variants and messages according to recieved error
-    if (typeof list == 'string') list = [list];
-
-    for (let message of list) {
-        let split = message.toLowerCase().split(' ');
-
-        setRefFromArray(variants, split[0], 'danger');
-
-        let currentVal = getRefFromArray(messages, split[0]);
-        setRefFromArray(messages, split[0], 
-            (currentVal ? currentVal + '; ' : '') + split.slice(1).join(' ')
-        );
+        setErrorMessages(keys, variants, messages, result as string[]);
     }
 }
 </script>

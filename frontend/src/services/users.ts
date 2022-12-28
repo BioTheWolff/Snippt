@@ -1,4 +1,5 @@
-import { get, post } from './api-utils';
+import { useUserStore } from '@/stores/user';
+import { get, post, patch, type ApiBodyType } from './api-utils';
 
 export type UserProfileInfoType = {
     handle: string,
@@ -25,4 +26,16 @@ export async function followUser(handle: string): Promise<boolean> {
 export async function unfollowUser(handle: string): Promise<boolean> {
     const result = await post('user-unfollow', { handle: handle });
     return result.__status === 201;
+}
+
+// user settings
+export async function updateEmail(handle: string, body: ApiBodyType): Promise<boolean|string[]> {
+    const data = await patch('user-settings-email', { handle: handle }, body);
+
+    if (data.__status === 200) {
+        useUserStore().email = data.email;
+        return true;
+    } else {
+        return data['message'];
+    }
 }
