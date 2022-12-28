@@ -178,7 +178,7 @@ export class UsersService {
     await this.usersRepository.update({handle: handle}, {
       password: await this._password_hash(updateUserPasswordDto.new_password)
     });
-    return "OK";
+    return { "status": "OK" };
   }
 
 
