@@ -11,9 +11,12 @@ const ENDPOINTS: { [key: string]: string } = {
     'login': '/auth/login',
     'logout': '/auth/logout',
     'register': '/auth/register',
+    'auth-status': '/auth/status',
 
     // users
-    'user-profile': '/users/$handle$?relations=true'
+    'user-profile': '/users/$handle$?relations=true',
+    'user-follow': '/users/$handle$/follow',
+    'user-unfollow': '/users/$handle$/unfollow',
 };
 
 async function _api_request(

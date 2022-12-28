@@ -95,6 +95,8 @@ export class UsersService {
 
     user.unfollow(target);
     await this.usersRepository.save(user);
+
+    return { "status": "OK" };
   }
 
 

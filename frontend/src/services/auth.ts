@@ -23,6 +23,11 @@ export async function register(body: ApiBodyType): Promise<boolean|string[]> {
     }
 }
 
+export async function authStatus(): Promise<boolean> {
+    const data = await get('auth-status');
+    return data.__status === 200;
+}
+
 export async function logout() {
     await get('logout');
     useUserStore().logout();
