@@ -40,11 +40,21 @@ export function setErrorMessages(keys: string[], variants: RefArrayType, message
                 );
             }
         } else {
-            setRefFromArray(variants, split[0], 'danger');
+            // if the key isn't found in the array
+            // we add the whole message to the first key
+            let _key = split[0];
+            let _message = split.slice(1).join(' ');
+            if (!keys.includes(_key)) {
+                _key = keys[0];
+                _message = split.join(' ');
+            }
+            
+            _message = _message.replace('_', ' ');
+            setRefFromArray(variants, _key, 'danger');
 
-            let currentVal = getRefFromArray(messages, split[0]);
-            setRefFromArray(messages, split[0], 
-                (currentVal ? currentVal + '; ' : '') + split.slice(1).join(' ')
+            let currentVal = getRefFromArray(messages, _key);
+            setRefFromArray(messages, _key, 
+                (currentVal ? currentVal + '; ' : '') + _message
             );
         }
     }
@@ -53,7 +63,7 @@ export function setErrorMessages(keys: string[], variants: RefArrayType, message
 export function setSuccessMessages(keys: string[], variants: RefArrayType, messages: RefArrayType) {
     for (let key of keys) {
         setRefFromArray(variants, key, 'success');
-        setRefFromArray(messages, key, `Successfully updated ${key}`);
+        setRefFromArray(messages, key, `Successfully updated ${key.replace('_', ' ')}`);
     }
     setTimeout(() => resetMessages(keys, variants, messages), 5000);
 }

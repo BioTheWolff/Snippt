@@ -20,6 +20,8 @@ const ENDPOINTS: { [key: string]: string } = {
 
     // user settings
     'user-settings-email': '/users/$handle$/email',
+    'user-settings-details': '/users/$handle$/details',
+    'user-settings-password': '/users/$handle$/password',
 };
 
 async function _api_request(

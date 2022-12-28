@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getRefFromArray, makeRefArray, setErrorMessages, setRefFromArray, setSuccessMessages } from '@/services/ref-array';
-import { updateEmail as apiUpdateEmail } from '@/services/users';
+import { updateEmail as apiUpdateEmail, updateDetails as apiUpdateDetails, updatePassword as apiUpdatePassword } from '@/services/users';
 import { useUserStore } from '@/stores/user';
 import { ref } from 'vue';
 
@@ -29,7 +29,35 @@ async function updateEmail() {
     if (result === true) {
         setSuccessMessages(['email'], variants, messages);
     } else {
-        setErrorMessages(['email'], variants, messages, result as string[], true);
+        setErrorMessages(['email'], variants, messages, result as string[]);
+    }
+}
+
+async function updateDetails() {
+    const result = await apiUpdateDetails(currentUser.handle, { 
+        handle: getRefFromArray(inputs, 'handle'),
+        display_name: getRefFromArray(inputs, 'display_name'), 
+    });
+
+    if (result === true) {
+        setSuccessMessages(['handle', 'display_name'], variants, messages);
+    } else {
+        setErrorMessages(['handle', 'display_name'], variants, messages, result as string[]);
+    }
+}
+
+async function updatePassword() {
+    const _keys = ['password', 'new_password', 'new_password_confirm'];
+    const result = await apiUpdatePassword(currentUser.handle, { 
+        password: getRefFromArray(inputs, 'password'),
+        new_password: getRefFromArray(inputs, 'new_password'), 
+        new_password_confirm: getRefFromArray(inputs, 'new_password_confirm'), 
+    });
+
+    if (result === true) {
+        setSuccessMessages(_keys, variants, messages);
+    } else {
+        setErrorMessages(_keys, variants, messages, result as string[]);
     }
 }
 
@@ -43,7 +71,7 @@ if (!admin_editing) {
 
 <template>
     <div class="user-settings">
-        <section class="s-form">
+        <form class="s-form" @submit.prevent="updateDetails()">
             <h2>Public Details</h2>
 
             <section class="split">
@@ -86,7 +114,7 @@ if (!admin_editing) {
                     type="submit"
                 ></o-input>
             </section>
-        </section>
+        </form>
 
         <form class="s-form" @submit.prevent="updateEmail()">
             <h2>E-mail</h2>
@@ -118,7 +146,7 @@ if (!admin_editing) {
             </section>
         </form>
 
-        <section class="s-form" v-if="!admin_editing">
+        <form class="s-form" v-if="!admin_editing" @submit.prevent="updatePassword()">
             <h2>Privacy & Security</h2>
 
             <section>
@@ -173,7 +201,7 @@ if (!admin_editing) {
                     ></o-input>
                 </o-field>
             </section>
-        </section>
+        </form>
     </div>
 </template>
 

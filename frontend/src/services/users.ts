@@ -39,3 +39,25 @@ export async function updateEmail(handle: string, body: ApiBodyType): Promise<bo
         return data['message'];
     }
 }
+
+export async function updateDetails(handle: string, body: ApiBodyType): Promise<boolean|string[]> {
+    const data = await patch('user-settings-details', { handle: handle }, body);
+
+    if (data.__status === 200) {
+        useUserStore().handle = data.handle;
+        useUserStore().display_name = data.display_name;
+        return true;
+    } else {
+        return data['message'];
+    }
+}
+
+export async function updatePassword(handle: string, body: ApiBodyType): Promise<boolean|string[]> {
+    const data = await patch('user-settings-password', { handle: handle }, body);
+
+    if (data.__status === 200) {
+        return true;
+    } else {
+        return data['message'];
+    }
+}
