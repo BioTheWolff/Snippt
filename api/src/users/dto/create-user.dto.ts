@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsString, IsNotEmpty, IsEmail, Length, Validate } from 'class-validator';
-import { MatchesWithProperty } from 'src/validators/match-other.validator';
+import { MatchesWithProperty } from '../../validators/match-other.validator';
 import { HandleValidator } from '../../validators/handle.validator';
 
 export class CreateUserDto {

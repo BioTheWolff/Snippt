@@ -1,5 +1,5 @@
 import { ApiHideProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
+import { Exclude, Transform } from "class-transformer";
 import { Post } from "../../posts/entities/post.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -20,9 +20,23 @@ export class User {
 
     @ManyToMany(() => User, (user) => user.followers, { onDelete: 'CASCADE' })
     @JoinTable()
+    @Transform(({ value }) => {
+        const result = [];
+        for (let user of value) {
+            result.push({ handle: user.handle, display_name: user.display_name })
+        }
+        return result;
+    })
     following!: User[];
 
     @ManyToMany(() => User, (user) => user.following, { onDelete: 'CASCADE' })
+    @Transform(({ value }) => {
+        const result = [];
+        for (let user of value) {
+            result.push({ handle: user.handle, display_name: user.display_name })
+        }
+        return result;
+    })
     followers!: User[];
 
 

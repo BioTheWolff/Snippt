@@ -22,6 +22,7 @@ export const responseMessages = {
 
     // Followers system
     USER_NOT_FOUND: "User not found",
+    FOLLOW_SELF_FORBIDDEN: "Impossible to follow yourself",
 
     // Posts
     POST_NOT_FOUND: "Post not found",

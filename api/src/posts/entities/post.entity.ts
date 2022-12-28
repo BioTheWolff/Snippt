@@ -37,17 +37,19 @@ export class Post {
 
     @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
     @JoinColumn()
-    @Transform(({ value }) => value.handle)
+    @Transform(({ value }) => ({ handle: value.handle, display_name: value.display_name }))
     author: User;
 
     
     // Likes
     @Exclude()
     @ManyToMany(() => User, user => user.likes, { onDelete: 'CASCADE' })
+    @Transform(({ value }) => ({ handle: value.handle, display_name: value.display_name }))
     likes: User[];
 
     @Exclude()
     @ManyToMany(() => User, user => user.dislikes, { onDelete: 'CASCADE' })
+    @Transform(({ value }) => ({ handle: value.handle, display_name: value.display_name }))
     dislikes: User[];
 
     @Column('integer', { default: 0 })

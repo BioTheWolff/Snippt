@@ -264,8 +264,8 @@ describe('Posts', () => {
     const body: Post = response.body;
     
     expect(response.statusCode).toBe(200);
-    expect(body.total_likes).toBe(countLikesForPost(0)-1);
-    expect(body.total_dislikes).toBe(countDislikesForPost(0));
+    expect(body.total_likes).toBe(countLikesForPost(0));
+    expect(body.total_dislikes).toBe(countDislikesForPost(0)-1);
   })
 
   it('should not increment total_dislikes when post is already disliked', async () => {

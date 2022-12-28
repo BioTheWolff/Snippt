@@ -69,6 +69,11 @@ export class UsersService {
 
   // Followers system
   async follow(user: User, target_handle: string) {
+    // impossible to follow yourself
+    if (user.handle === target_handle) {
+      throw new ForbiddenException(responseMessages.FOLLOW_SELF_FORBIDDEN);
+    }
+
     // getting the user to follow
     let target = await this.usersRepository.findOneBy({handle: target_handle});
     if (!target) {
@@ -77,6 +82,8 @@ export class UsersService {
 
     user.follow(target);
     await this.usersRepository.save(user);
+
+    return { "status": "OK" };
   }
 
   async unfollow(user: User, target_handle: string) {
