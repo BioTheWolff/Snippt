@@ -101,7 +101,7 @@ export class UsersService {
 
 
   // Update
-  async updateInfo(id: number, updateUserDetailsDto: UpdateUserDetailsDto) {
+  async updateInfo(handle: string, updateUserDetailsDto: UpdateUserDetailsDto) {
     // if the update DTO is empty
     if (UpdateUserDetailsDto.isEmpty(updateUserDetailsDto)) {
       throw new BadRequestException(responseMessages.EMPTY_MODIF_DTO);
@@ -109,14 +109,14 @@ export class UsersService {
 
     // getting the user to update
     // TODO: refactor with findOneByOrDie?
-    let user = await this.usersRepository.findOneBy({id: id});
+    let user = await this.usersRepository.findOneBy({handle: handle});
     if (!user) {
       throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
     }
 
     // updating the user
     try {
-      let result = await this.usersRepository.update({id: id}, updateUserDetailsDto);
+      let result = await this.usersRepository.update({handle: handle}, updateUserDetailsDto);
       if (result.affected > 0) {
         return updateUserDetailsDto;
       } else {
@@ -132,16 +132,16 @@ export class UsersService {
     }
   }
 
-  async updateEmail(id: number, updateUserEmailDto: UpdateUserEmailDto) {
+  async updateEmail(handle: string, updateUserEmailDto: UpdateUserEmailDto) {
     // getting the user to update
-    let user = await this.usersRepository.findOneBy({id: id});
+    let user = await this.usersRepository.findOneBy({handle: handle});
     if (!user) {
       throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
     }
 
     // updating the user
     try {
-      let result = await this.usersRepository.update({id: id}, updateUserEmailDto);
+      let result = await this.usersRepository.update({handle: handle}, updateUserEmailDto);
       if (result.affected > 0) {
         return updateUserEmailDto;
       } else {
@@ -157,14 +157,14 @@ export class UsersService {
     }
   }
 
-  async updatePassword(id: number, updateUserPasswordDto: UpdateUserPasswordDto) {
+  async updatePassword(handle: string, updateUserPasswordDto: UpdateUserPasswordDto) {
     // checking new passwords are equal
     if (updateUserPasswordDto.new_password !== updateUserPasswordDto.new_password_confirm) {
       throw new BadRequestException(responseMessages.NEW_PASS_MISMATCH);
     }
 
     // getting the user to update
-    let user = await this.usersRepository.findOneBy({id: id});
+    let user = await this.usersRepository.findOneBy({handle: handle});
     if (!user) {
       throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);
     }
@@ -175,7 +175,7 @@ export class UsersService {
     }
 
     // hashing password and updating user
-    await this.usersRepository.update({id: id}, {
+    await this.usersRepository.update({handle: handle}, {
       password: await this._password_hash(updateUserPasswordDto.new_password)
     });
     return "OK";

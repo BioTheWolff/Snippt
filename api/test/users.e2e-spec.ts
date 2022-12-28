@@ -92,7 +92,7 @@ describe('Users', () => {
     return _async.series([
       function (cb) { 
         request(app.getHttpServer())
-          .patch(`/users/${users[0].id}/details`)
+          .patch(`/users/${users[0].handle}/details`)
           .set("Authorization", jwt_bearer)
           .send(new_handle)
           .expect(new_handle, cb)
@@ -109,7 +109,7 @@ describe('Users', () => {
   it('should update details even if same', () => {
     let new_handle = { handle: users[0].handle };
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/details`)
+      .patch(`/users/${users[0].handle}/details`)
       .set("Authorization", jwt_bearer)
       .send(new_handle)
       .expect(200)
@@ -118,7 +118,7 @@ describe('Users', () => {
 
   it('should not update details on empty body', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/details`)
+      .patch(`/users/${users[0].handle}/details`)
       .set("Authorization", jwt_bearer)
       .expect(400)
       .expect(getBodyFromError(400, responseMessages.EMPTY_MODIF_DTO));
@@ -126,7 +126,7 @@ describe('Users', () => {
 
   it('should not update details on existing handle', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/details`)
+      .patch(`/users/${users[0].handle}/details`)
       .set("Authorization", jwt_bearer)
       .send({ handle: users[1].handle })
       .expect(403)
@@ -135,7 +135,7 @@ describe('Users', () => {
 
   it('should not see user doesn\'t exist when updating details if not admin', () => {
     return request(app.getHttpServer())
-      .patch(`/users/-1/details`)
+      .patch(`/users/notfound/details`)
       .set("Authorization", jwt_bearer)
       .send({ handle: "superlongtest" })
       .expect(403)
@@ -146,7 +146,7 @@ describe('Users', () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
-      .patch(`/users/-1/details`)
+      .patch(`/users/notfound/details`)
       .set("Authorization", token)
       .send({ handle: "superlongtest" })
       .expect(400)
@@ -155,7 +155,7 @@ describe('Users', () => {
 
   it('should not update details of another user', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[1].id}/details`)
+      .patch(`/users/${users[1].handle}/details`)
       .set("Authorization", jwt_bearer)
       .send({ handle: "superlongtest" })
       .expect(403)
@@ -166,7 +166,7 @@ describe('Users', () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/details`)
+      .patch(`/users/${users[0].handle}/details`)
       .set("Authorization", token)
       .send({ display_name: "Should work!" })
       .expect(200)
@@ -180,7 +180,7 @@ describe('Users', () => {
 
     // TODO: check returned email is correct from private profile route once implemented
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/email`)
+      .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", jwt_bearer)
       .send(new_email)
       .expect(200)
@@ -189,7 +189,7 @@ describe('Users', () => {
 
   it('should update email even if same', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/email`)
+      .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", jwt_bearer)
       .send({ email: users[0].email })
       .expect(200);
@@ -197,7 +197,7 @@ describe('Users', () => {
 
   it('should not update email if already taken', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/email`)
+      .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", jwt_bearer)
       .send({ email: users[1].email })
       .expect(403)
@@ -206,7 +206,7 @@ describe('Users', () => {
 
   it('should not see user doesn\'t exist when updating email if not admin', () => {
     return request(app.getHttpServer())
-      .patch(`/users/-1/email`)
+      .patch(`/users/notfound/email`)
       .set("Authorization", jwt_bearer)
       .send({ email: "nope@example.com" })
       .expect(403)
@@ -217,7 +217,7 @@ describe('Users', () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
-      .patch(`/users/-1/email`)
+      .patch(`/users/notfound/email`)
       .set("Authorization", token)
       .send({ email: users[1].email })
       .expect(400)
@@ -226,14 +226,14 @@ describe('Users', () => {
 
   it('should not update email on empty body', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/email`)
+      .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", jwt_bearer)
       .expect(400);
   })
 
   it('should not update email of another user', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[1].id}/email`)
+      .patch(`/users/${users[1].handle}/email`)
       .set("Authorization", jwt_bearer)
       .send({ email: "any@example.com" })
       .expect(403)
@@ -244,7 +244,7 @@ describe('Users', () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/email`)
+      .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", token)
       .send({ email: "notadmin@example.com" })
       .expect(200)
@@ -255,7 +255,7 @@ describe('Users', () => {
   // UPDATE PASSWORD
   it('should update password', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/password`)
+      .patch(`/users/${users[0].handle}/password`)
       .set("Authorization", jwt_bearer)
       .send({
         password: usersSeeds[0].password,
@@ -268,14 +268,14 @@ describe('Users', () => {
 
   it('should not update password on empty body', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/password`)
+      .patch(`/users/${users[0].handle}/password`)
       .set("Authorization", jwt_bearer)
       .expect(400);
   })
 
   it('should not see user doesn\'t exist when updating password if not admin', () => {
     return request(app.getHttpServer())
-      .patch(`/users/-1/password`)
+      .patch(`/users/notfound/password`)
       .set("Authorization", jwt_bearer)
       .send({
         password: usersSeeds[0].password,
@@ -290,7 +290,7 @@ describe('Users', () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
-      .patch(`/users/-1/password`)
+      .patch(`/users/notfound/password`)
       .set("Authorization", token)
       .send({
         password: usersSeeds[0].password,
@@ -303,7 +303,7 @@ describe('Users', () => {
 
   it('should not update password on mismatched new password confirm', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/password`)
+      .patch(`/users/${users[0].handle}/password`)
       .set("Authorization", jwt_bearer)
       .send({
         password: usersSeeds[0].password,
@@ -316,7 +316,7 @@ describe('Users', () => {
 
   it('should not update password on wrong current password', () => {
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/password`)
+      .patch(`/users/${users[0].handle}/password`)
       .set("Authorization", jwt_bearer)
       .send({
         password: "wrongpassword",
@@ -331,7 +331,7 @@ describe('Users', () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
-      .patch(`/users/${users[0].id}/password`)
+      .patch(`/users/${users[0].handle}/password`)
       .set("Authorization", token)
       .send({
         password: usersSeeds[0].password,

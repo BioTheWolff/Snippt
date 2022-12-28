@@ -47,25 +47,25 @@ export class UsersController {
 
 
   // User settings
-  @Patch(':id/details')
-  @NeedsOwnerPermission()
+  @Patch(':handle/details')
+  @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle' })
   @ApiOperation({ summary: "Update a user's public details" })
-  async updateDetails(@Param('id', ParseIntPipe) id: number, @Body() updateUserDetailsDto: UpdateUserDetailsDto) {
-    return await this.usersService.updateInfo(id, updateUserDetailsDto);
+  async updateDetails(@Param('handle') handle: string, @Body() updateUserDetailsDto: UpdateUserDetailsDto) {
+    return await this.usersService.updateInfo(handle, updateUserDetailsDto);
   }
 
-  @Patch(':id/email')
-  @NeedsOwnerPermission()
+  @Patch(':handle/email')
+  @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle' })
   @ApiOperation({ summary: "Update a user's email" })
-  async updateEmail(@Param('id', ParseIntPipe) id: number, @Body() updateUserEmailDto: UpdateUserEmailDto) {
-    return await this.usersService.updateEmail(id, updateUserEmailDto);
+  async updateEmail(@Param('handle') handle: string, @Body() updateUserEmailDto: UpdateUserEmailDto) {
+    return await this.usersService.updateEmail(handle, updateUserEmailDto);
   }
 
-  @Patch(':id/password')
-  @NeedsOwnerPermission({ allow_admins: false })
+  @Patch(':handle/password')
+  @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle', allow_admins: false })
   @ApiOperation({ summary: "Update a user's password" })
-  async updatePassword(@Param('id', ParseIntPipe) id: number, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
-    return await this.usersService.updatePassword(id, updateUserPasswordDto)
+  async updatePassword(@Param('handle') handle: string, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
+    return await this.usersService.updatePassword(handle, updateUserPasswordDto)
   }
 
   // TODO: create a "delete" route that would disable the user
