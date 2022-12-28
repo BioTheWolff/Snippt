@@ -11,7 +11,6 @@ import { onMounted, watch } from 'vue';
 
 
 const router = useRouter();
-const route = useRoute();
 const userStore = useUserStore();
 
 async function logout() {
@@ -23,11 +22,11 @@ async function checkLogin() {
     if (!(await authStatus())) {
         logout();
     }
+    setTimeout(checkLogin, 1000*60);
 }
 
 onMounted(async () => {
     checkLogin();
-    watch(() => route.fullPath, checkLogin);
 })
 </script>
 
