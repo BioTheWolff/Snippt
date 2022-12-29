@@ -60,6 +60,16 @@ if (!props.loading) {
             <pre v-if="loading"><code></code></pre>
             <pre v-else ref="previewElement"></pre>
         </section>
+        <section class="relations">
+            <o-tooltip triggerClass="wrapper" label="Likes">
+                <span class="value">{{ post.total_likes }}</span>
+                <o-icon pack="fas" icon="heart" size="large" variant=""> </o-icon>
+            </o-tooltip>
+            <o-tooltip triggerClass="wrapper" label="Dislikes">
+                <span class="value">{{ post.total_dislikes }}</span>
+                <o-icon pack="fas" icon="heart-broken" size="large" variant=""> </o-icon>
+            </o-tooltip>
+        </section>
     </article>
 </template>
 
@@ -70,6 +80,8 @@ if (!props.loading) {
     flex-direction: column
 
     .content
+        margin-bottom: 1em
+
         &--title
             font-size: 1.7em
             margin-bottom: 0.5em
@@ -77,4 +89,12 @@ if (!props.loading) {
         &--description
             font-size: 1.1em
             margin-bottom: 1em
+
+    .relations
+        display: flex
+        gap: 1em
+
+        .wrapper
+            .value
+                font-size: 1.3em
 </style>
