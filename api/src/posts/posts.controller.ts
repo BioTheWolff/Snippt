@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, NotFoundException, ParseIntPipe, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, NotFoundException, ParseIntPipe, UseInterceptors, ClassSerializerInterceptor, Query, DefaultValuePipe, ValidationPipe, BadRequestException } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -16,9 +16,18 @@ export class PostsController {
     return await this.postsService.create(req.user, createPostDto);
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  async findAll(
+    @Query('limit', new DefaultValuePipe(0), ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    if (limit > 0) {
+      if (page < 1) throw new BadRequestException();
+      return await this.postsService.findByPage(limit, page);
+    } else {
+      return await this.postsService.findAll();
+    }
   }
 
   @Public()

@@ -20,8 +20,22 @@ export class PostsService {
     return await this.repository.save(post);
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll() {
+    return await this.repository.find({
+      order: {
+        created_at: 'DESC',
+      }
+    });
+  }
+
+  async findByPage(limit: number, page: number) {
+    return await this.repository.find({
+      order: {
+        created_at: 'DESC',
+      },
+      skip: (page-1)*limit,
+      take: limit,
+    });
   }
 
   async findOne(id: number) {
