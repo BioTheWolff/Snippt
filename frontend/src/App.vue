@@ -19,7 +19,7 @@ async function logout() {
 }
 
 async function checkLogin() {
-    if (!(await authStatus())) {
+    if (userStore.is_logged_in && !(await authStatus())) {
         logout();
     }
     setTimeout(checkLogin, 1000*60);
@@ -96,7 +96,7 @@ main
     min-height: calc(100vh - $header-height-full)
 
     .filler
-        width: 25vw
+        width: 30vw
         &.right
             order: 3
     
