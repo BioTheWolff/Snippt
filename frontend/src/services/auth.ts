@@ -1,11 +1,21 @@
 import { useUserStore } from '@/stores/user';
-import { get, post, type ApiBodyType } from './api-utils';
+import { get, post, _api_request_raw, type ApiBodyType } from './api-utils';
 
 export async function login(body: ApiBodyType): Promise<boolean> {
     const data = await post('login', {}, body);
 
     if (data.__status === 201) {
         useUserStore().login(data.handle, data.display_name, data.email);
+
+        // we try to load likes and dislikes for the user
+        // it should fail silently as it is not part of the login process
+        // we are just collecting some more data if we can
+        const likes = await _api_request_raw('user-profile', 'GET', { handle: data.handle });
+        if (likes.status === 200) {
+            let user = await likes.json();
+            useUserStore().likes.push(...(user.likes))
+        }
+
         return true;
     } else {
         return false;

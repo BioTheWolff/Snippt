@@ -2,12 +2,14 @@
 import Post from '@@/posts/Post.vue';
 import { loadPosts as apiLoadPosts, type PostType } from '@/services/posts';
 import { ref, type Ref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 const limit = 2;
 let page = 1;
 
 const posts: Ref<PostType[]> = ref([]);
 const loadMore = ref(true);
+const currentUser = useUserStore();
 
 async function loadPosts() {
     let retrieved = await apiLoadPosts(limit, page);
@@ -29,6 +31,8 @@ loadPosts();
             v-for="post in posts"
             :key="post.id"
             :post="post"
+            :current-user-likes="currentUser.likes"
+            :current-user-dislikes="currentUser.dislikes"
         ></Post>
 
         <o-button 

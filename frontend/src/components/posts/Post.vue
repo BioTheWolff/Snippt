@@ -7,8 +7,12 @@ import { ref } from 'vue';
 const props = defineProps({
     loading: Boolean,
     post: {},
+    currentUserLikes: Array,
+    currentUserDislikes: Array,
 })
 const post: PostType = props.post as PostType;
+
+const isLiked = ref(props.currentUserLikes?.includes(post.id));
 
 const previewElement = ref();
 
@@ -63,7 +67,12 @@ if (!props.loading) {
         <section class="relations">
             <o-tooltip triggerClass="wrapper" label="Likes">
                 <span class="value">{{ post.total_likes }}</span>
-                <o-icon pack="fas" icon="heart" size="large" variant=""> </o-icon>
+                <o-icon 
+                    pack="fas" 
+                    icon="heart" 
+                    size="large" 
+                    :variant="isLiked ? 'danger' : ''"
+                > </o-icon>
             </o-tooltip>
             <o-tooltip triggerClass="wrapper" label="Dislikes">
                 <span class="value">{{ post.total_dislikes }}</span>
