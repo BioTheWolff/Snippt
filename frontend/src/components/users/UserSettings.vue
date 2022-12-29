@@ -89,6 +89,7 @@ if (!admin_editing) {
                             v-model.trim="inputs.handle"
                             placeholder="your_handle_here" 
                             expanded
+                            required
                         ></o-input>
                     </o-field>
                 </o-tooltip>
@@ -103,6 +104,7 @@ if (!admin_editing) {
                         v-model.trim="inputs.display_name"
                         placeholder="Your Display Name" 
                         expanded
+                        required
                     ></o-input>
                 </o-field>
             </section>
@@ -131,6 +133,7 @@ if (!admin_editing) {
                         type="email"
                         placeholder="your.email@gmail.com"
                         :disabled="admin_editing"
+                        required
                     ></o-input>
                 </o-field>
             </section>
@@ -160,6 +163,7 @@ if (!admin_editing) {
                         type="password"
                         v-model="inputs.password"
                         placeholder="Type your current password"
+                        required
                     ></o-input>
                 </o-field>
             </section>
@@ -175,6 +179,7 @@ if (!admin_editing) {
                         type="password"
                         v-model="inputs.new_password"
                         placeholder="Type your new password"
+                        required
                     ></o-input>
                 </o-field>
                 
@@ -188,6 +193,7 @@ if (!admin_editing) {
                         type="password"
                         v-model="inputs.new_password_confirm"
                         placeholder="Confirm your new password"
+                        required
                     ></o-input>
                 </o-field>
             </section>

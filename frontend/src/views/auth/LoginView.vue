@@ -32,6 +32,7 @@ async function login() {
                     type="email"
                     placeholder="your.email@gmail.com"
                     v-model="email"
+                    required
                 ></o-input>
             </o-field>
             
@@ -41,6 +42,7 @@ async function login() {
                     type="password"
                     placeholder="Type your password"
                     v-model="password"
+                    required
                 ></o-input>
             </o-field>
         </section>

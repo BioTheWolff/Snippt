@@ -25,6 +25,7 @@ function previewCode() {
                     name="title"
                     placeholder="My super title!"
                     maxlength="60"
+                    required
                 ></o-input>
             </o-field>
             
@@ -34,6 +35,7 @@ function previewCode() {
                     type="textarea"
                     placeholder="Your description here..."
                     maxlength="250"
+                    required
                 ></o-input>
             </o-field>
         </section>
@@ -45,6 +47,7 @@ function previewCode() {
                     v-model="language"
                     placeholder="the code snippet's language"
                     maxlength="20"
+                    required
                 ></o-input>
             </o-field>
             
@@ -55,6 +58,7 @@ function previewCode() {
                     v-model="content"
                     placeholder="Your snippet here..."
                     maxlength="2000"
+                    required
                 ></o-input>
             </o-field>
         </section>

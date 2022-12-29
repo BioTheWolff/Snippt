@@ -47,6 +47,7 @@ async function register() {
                         expanded
                         maxlength="30"
                         v-model="inputs.handle"
+                        required
                     ></o-input>
                 </o-field>
             </o-tooltip>
@@ -61,6 +62,7 @@ async function register() {
                     expanded
                     maxlength="30"
                     v-model="inputs.display_name"
+                    required
                 ></o-input>
             </o-field>
         </section>
@@ -76,6 +78,7 @@ async function register() {
                     placeholder="your.email@gmail.com"
                     maxlength="80"
                     v-model="inputs.email"
+                    required
                 ></o-input>
             </o-field>
             
@@ -88,6 +91,7 @@ async function register() {
                     type="password"
                     placeholder="Type your password"
                     v-model="inputs.password"
+                    required
                 ></o-input>
             </o-field>
 
@@ -100,6 +104,7 @@ async function register() {
                     type="password"
                     placeholder="Confirm your password"
                     v-model="inputs.password_confirm"
+                    required
                 ></o-input>
             </o-field>
         </section>
