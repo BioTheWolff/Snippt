@@ -1,19 +1,13 @@
 <script setup lang="ts">
+import { previewCode } from '@/services/rainbow';
 import { ref } from 'vue';
 
-const language = ref("javascript");
-const content = ref("var foo = true;");
-const preview = ref();
+const language = ref("html");
+const content = ref("<section>test</section>");
+const codePreview = ref();
 
-
-function previewCode() {
-    // setting the code preview content
-    (preview.value as unknown as {innerHTML: string})
-        .innerHTML = `<pre><code data-language="${language.value}">${content.value}</code></pre>`;
-    
-    // calling Rainbow to color the preview content
-    (window as unknown as { Rainbow: { color: Function } })
-        .Rainbow.color();
+function preview() {
+    previewCode(codePreview, content.value, language.value);
 }
 </script>
 
@@ -65,11 +59,11 @@ function previewCode() {
 
         <hr/>
 
-        <button @click="previewCode()">Preview code</button>
+        <button @click="preview()">Preview code</button>
 
         <section>
             <o-field label="Preview">
-                <div ref="preview"></div>
+                <pre><code ref="codePreview">Here will be your code preview</code></pre>
             </o-field>
         </section>
 

@@ -13,6 +13,7 @@ const props = defineProps({
     loading: { type: Boolean, default: false },
     inline: { type: Boolean, default: false },
     compact: { type: Boolean, default: false },
+    reducedmargin: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
 })
 
@@ -31,7 +32,7 @@ function handleClick() {
 
 <template>
     <div 
-        :class="`user-profile-card ${inline ? 'inline' : ''} ${compact ? 'compact' : ''} ${clickable ? 'clickable' : ''}`"
+        :class="`user-profile-card ${inline ? 'inline' : ''} ${compact ? 'compact' : ''} ${clickable ? 'clickable' : ''} ${reducedmargin ? 'reducedmargin' : ''}`"
         @click="handleClick()"
     >
         <div>
@@ -75,6 +76,9 @@ function handleClick() {
 
     &.clickable
         cursor: pointer
+
+    &.reducedmargin
+        margin-bottom: 1em
 
     &:not(.inline)
         background: $card-bg
