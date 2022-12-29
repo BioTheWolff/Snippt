@@ -22,7 +22,33 @@ const ENDPOINTS: { [key: string]: string } = {
     'user-settings-email': '/users/$handle$/email',
     'user-settings-details': '/users/$handle$/details',
     'user-settings-password': '/users/$handle$/password',
+
+    // posts
+    'post-get-all': '/posts?limit=$limit$&page=$page$'
 };
+
+
+export async function _api_request_raw(
+    endpoint: string, 
+    method: string, 
+    params: ApiParamsType, 
+    body?: ApiBodyType
+) : Promise<Response> 
+{
+    // populate endpoint with params
+    let fragment = ENDPOINTS[endpoint];
+    for (let p in params) {
+        fragment = fragment.replace(`$${p}$`, params[p]);
+    }
+
+    return await fetch(BASE_URL + fragment, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: body ? JSON.stringify(body) : null,
+    });
+}
 
 async function _api_request(
     endpoint: string, 
@@ -31,19 +57,7 @@ async function _api_request(
     body?: ApiBodyType
 ) : Promise<{ __status: number, [name: string]: any }> 
 {
-    // populate endpoint with params
-    let fragment = ENDPOINTS[endpoint];
-    for (let p in params) {
-        fragment = fragment.replace(`$${p}$`, params[p]);
-    }
-
-    const response = await fetch(BASE_URL + fragment, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: body ? JSON.stringify(body) : null,
-    });
+    const response = await _api_request_raw(endpoint, method, params, body);
     return {
         __status: response.status,
         ...(await response.json())
