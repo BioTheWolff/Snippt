@@ -102,6 +102,8 @@ export class PostsService {
 
     user.likePost(post);
     await this.usersRepository.save(user);
+
+    return { "status": "OK" };
   }
 
   async dislike(user: User, id: number) {
@@ -113,6 +115,8 @@ export class PostsService {
 
     user.dislikePost(post);
     await this.usersRepository.save(user);
+
+    return { "status": "OK" };
   }
 
   async neutral(user: User, id: number) {
@@ -124,5 +128,7 @@ export class PostsService {
 
     user.backToNeutralForPost(post);
     await this.usersRepository.save(user);
+
+    return { "status": "OK" };
   }
 }

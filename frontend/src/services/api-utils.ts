@@ -24,7 +24,10 @@ const ENDPOINTS: { [key: string]: string } = {
     'user-settings-password': '/users/$handle$/password',
 
     // posts
-    'post-get-all': '/posts?limit=$limit$&page=$page$'
+    'post-get-all': '/posts?limit=$limit$&page=$page$',
+    'post-like': '/posts/$id$/like',
+    'post-dislike': '/posts/$id$/dislike',
+    'post-neutral': '/posts/$id$/neutral',
 };
 
 
