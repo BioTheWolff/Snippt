@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { nextTick } from 'vue';
-import HomeView from '../views/HomeView.vue'
+import PostFeedView from '%/posts/PostFeedView.vue';
 
 const SITE_TITLE = 'Snippt';
 
@@ -11,7 +11,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'homepage',
-      component: HomeView,
+      component: PostFeedView,
       meta: {
         title: "Home"
       }
