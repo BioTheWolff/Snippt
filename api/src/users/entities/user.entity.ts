@@ -55,6 +55,7 @@ export class User {
             referencedColumnName: "id"
         }
     })
+    @Transform(({ value }) => value.map((post: Post) => post.id))
     likes: Post[];
 
     @ManyToMany(() => Post, post => post.dislikes, { onDelete: 'CASCADE' })
@@ -68,6 +69,7 @@ export class User {
             referencedColumnName: "id"
         }
     })
+    @Transform(({ value }) => value.map((post: Post) => post.id))
     dislikes: Post[];
 
 

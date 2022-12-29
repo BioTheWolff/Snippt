@@ -18,6 +18,7 @@ export class PostsController {
 
   @Public()
   @Get()
+  @UseInterceptors(ClassSerializerInterceptor)
   async findAll(
     @Query('limit', new DefaultValuePipe(0), ParseIntPipe) limit: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,

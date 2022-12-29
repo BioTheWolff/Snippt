@@ -24,6 +24,9 @@ export class PostsService {
     return await this.repository.find({
       order: {
         created_at: 'DESC',
+      },
+      relations: {
+        author: true
       }
     });
   }
@@ -32,6 +35,9 @@ export class PostsService {
     return await this.repository.find({
       order: {
         created_at: 'DESC',
+      },
+      relations: {
+        author: true
       },
       skip: (page-1)*limit,
       take: limit,
