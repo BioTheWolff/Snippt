@@ -6,10 +6,11 @@ import { SiteLogo as logo } from "@/assets/img";
 import { useRouter } from 'vue-router';
 import { authStatus, logout as apiLogout } from '@/services/auth';
 import { useUserStore } from '@/stores/user';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const router = useRouter();
 const userStore = useUserStore();
+const isNavOpened = ref(false);
 
 async function logout() {
     await apiLogout();
@@ -36,7 +37,7 @@ onMounted(async () => {
             </div>
             <div>Snippt</div>
         </div>
-        <div class="nav">
+        <div :class="`nav ${isNavOpened ? 'mobile-opened': ''}`">
             <RouterLinkButton 
                 v-if="!userStore.is_logged_in" 
                 variant="info" 
@@ -65,8 +66,18 @@ onMounted(async () => {
             >Log out</o-button>
         </div>
         <div class="nav-mobile-trigger">
-            <o-button variant="primary" icon-right="bars" />
-            <o-button variant="primary" icon-right="xmark" />
+            <o-button 
+                variant="primary" 
+                icon-right="bars"
+                v-if="!isNavOpened"
+                @click="isNavOpened = true"
+            />
+            <o-button 
+                variant="primary" 
+                icon-right="xmark" 
+                v-if="isNavOpened"
+                @click="isNavOpened = false"
+            />
         </div>
     </header>
 </template>
@@ -103,6 +114,23 @@ onMounted(async () => {
 
         @include for-up-to-tablet
             display: none
+
+        &.mobile-opened
+            position: fixed
+            top: $header-height
+            left: 0
+
+            width: 100vw
+            height: 100vh - $header-height
+            z-index: 9999
+
+            background: $accent-bg
+            border-top: 3px solid $primary
+
+            display: flex
+            flex-direction: column
+            justify-content: center
+            align-items: center
 
     .nav-mobile-trigger
         display: none
