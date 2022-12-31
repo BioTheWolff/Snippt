@@ -9,6 +9,7 @@ import { authStatus, logout as apiLogout } from './services/auth';
 import { useUserStore } from './stores/user';
 import { onMounted } from 'vue';
 
+import { SiteLogo as logo } from "@/assets/img";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -33,7 +34,10 @@ onMounted(async () => {
 <template>
     <header id="site-header">
         <div class="brand" @click="$router.push('/')">
-            Snippt
+            <div class="logo">
+                <img :src="logo">
+            </div>
+            <div>Snippt</div>
         </div>
         <div class="nav">
             <RouterLinkButton 
@@ -96,6 +100,14 @@ onMounted(async () => {
     .brand
         font-size: 1.5rem
         cursor: pointer
+        
+        display: flex
+        align-items: center
+        gap: 15px
+
+        .logo
+            height: $header-height * 0.8
+            width: $header-height * 0.8
 
     .nav
         display: flex
