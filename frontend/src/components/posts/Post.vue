@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dislikePost, likePost, neutralPost, type PostType } from '@/services/posts';
 import { previewCode } from '@/services/rainbow';
+import { useUserStore } from '@/stores/user';
 import UserProfileCard from '@@/users/UserProfileCard.vue';
 import { ref } from 'vue';
 
@@ -11,6 +12,7 @@ const props = defineProps({
     currentUserDislikes: Set,
 })
 const post: PostType = props.post as PostType;
+const currentUser = useUserStore();
 
 const isLiked = ref(props.currentUserLikes?.has(post.id));
 const isDisliked = ref(props.currentUserDislikes?.has(post.id));
@@ -29,6 +31,8 @@ if (!props.loading) {
 
 
 async function like() {
+    if (!currentUser.is_logged_in) return;
+
     if (isLiked.value) {
         await neutralPost(post.id);
         totalLikes.value--;
@@ -40,6 +44,8 @@ async function like() {
 }
 
 async function dislike() {
+    if (!currentUser.is_logged_in) return;
+
     if (isDisliked.value) {
         await neutralPost(post.id);
         totalDislikes.value--;
