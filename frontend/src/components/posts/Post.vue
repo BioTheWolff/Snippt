@@ -39,6 +39,7 @@ async function like() {
     } else {
         await likePost(post.id);
         totalLikes.value++;
+        totalDislikes.value--;
     }
     updateLikeStatus();
 }
@@ -52,6 +53,7 @@ async function dislike() {
     } else {
         await dislikePost(post.id);
         totalDislikes.value++;
+        totalLikes.value--;
     }
     updateLikeStatus();
 }
