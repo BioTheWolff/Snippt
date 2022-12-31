@@ -7,7 +7,7 @@ import UserHeaderCard from '@@/users/UserHeaderCard.vue';
 
 import { authStatus, logout as apiLogout } from './services/auth';
 import { useUserStore } from './stores/user';
-import { onMounted, watch } from 'vue';
+import { onMounted } from 'vue';
 
 
 const router = useRouter();
@@ -47,6 +47,11 @@ onMounted(async () => {
                 to="/login"
             >Login</RouterLinkButton>
 
+            <RouterLinkButton
+                v-if="userStore.is_logged_in"
+                variant="info"
+                to="/posts/new"
+            >Create post</RouterLinkButton>
             <UserHeaderCard
                 v-if="userStore.is_logged_in"
                 :handle="userStore.handle"
@@ -64,7 +69,13 @@ onMounted(async () => {
         <div class="filler"></div>
         <div class="filler right"></div>
         <div id="site-content">
-            <RouterView />
+            <Suspense>
+                <RouterView />
+
+                <template #fallback>
+                    Loading...
+                </template>
+            </Suspense>
         </div> 
     </main>
 </template>

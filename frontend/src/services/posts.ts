@@ -1,5 +1,5 @@
 import { useUserStore } from "@/stores/user";
-import { post, _api_request_raw } from "./api-utils";
+import { get, post, _api_request_raw, type ApiBodyType } from "./api-utils";
 
 export type PostType = {
     id: number;
@@ -14,6 +14,25 @@ export type PostType = {
         display_name: string;
     };
 };
+
+
+export async function getAllowedLanguages() {
+    const response = await _api_request_raw('post-languages', 'GET', {});
+    if (response.status !== 200) return {};
+    return response.json();
+}
+
+export async function createPost(body: ApiBodyType) {
+    const data = await post('post-new', {}, body);
+
+    if (data.__status === 201) {
+        return true;
+    } else {
+        return data['message'];
+    }
+}
+
+
 
 export async function loadPosts(limit: number, page: number): Promise<PostType[]> {
     const response = await _api_request_raw(

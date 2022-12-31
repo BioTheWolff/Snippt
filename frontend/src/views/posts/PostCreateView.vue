@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { redirectUnlessLoggedIn } from '@/services/auth';
+import { getAllowedLanguages } from '@/services/posts';
 import { previewCode } from '@/services/rainbow';
 import { ref } from 'vue';
 
-const language = ref("html");
-const content = ref("<section>test</section>");
+const language = ref("text");
+const content = ref("");
 const codePreview = ref();
 
 function preview() {
@@ -12,6 +13,8 @@ function preview() {
 }
 
 redirectUnlessLoggedIn();
+
+const languages = await getAllowedLanguages();
 </script>
 
 <template>
@@ -39,13 +42,13 @@ redirectUnlessLoggedIn();
 
         <section>
             <o-field label="Language">
-                <o-input
-                    name="language"
-                    v-model="language"
-                    placeholder="the code snippet's language"
-                    maxlength="20"
-                    required
-                ></o-input>
+                <o-select placeholder="Select a language" v-model="language">
+                    <option
+                        v-for="language, key of languages"
+                        :key="key"
+                        :value="key"
+                    >{{ language }}</option>
+                </o-select>
             </o-field>
             
             <o-field label="Code snippet">
@@ -62,9 +65,11 @@ redirectUnlessLoggedIn();
 
         <hr/>
 
-        <button @click="preview()">Preview code</button>
-
         <section>
+            <o-button 
+                @click="preview()"
+                variant="primary"
+            >Preview code</o-button>
             <o-field label="Preview">
                 <pre><code ref="codePreview">Here will be your code preview</code></pre>
             </o-field>

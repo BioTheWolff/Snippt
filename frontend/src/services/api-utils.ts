@@ -28,6 +28,8 @@ const ENDPOINTS: { [key: string]: string } = {
     'post-like': '/posts/$id$/like',
     'post-dislike': '/posts/$id$/dislike',
     'post-neutral': '/posts/$id$/neutral',
+    'post-languages': '/posts/languages',
+    'post-new': '/posts'
 };
 
 
