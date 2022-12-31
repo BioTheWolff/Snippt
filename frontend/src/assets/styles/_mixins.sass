@@ -1,0 +1,23 @@
+@mixin for-phone-only
+  @media screen and (max-width: 600px)
+    @content
+
+@mixin for-up-to-tablet
+  @media screen and (max-width: 900px)
+    @content
+
+@mixin for-up-to-wide
+  @media screen and (max-width: 1500px)
+    @content
+
+@mixin for-tablet-and-up
+  @media screen and (min-width: 601px)
+    @content
+
+@mixin for-desktop-and-up
+  @media screen and (min-width: 901px)
+    @content
+
+@mixin for-wide-and-up
+  @media screen and (min-width: 1501px)
+    @content

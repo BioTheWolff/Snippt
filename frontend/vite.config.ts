@@ -23,6 +23,7 @@ export default defineConfig({
       sass: {
         additionalData: `
           @import "@/assets/styles/_variables.sass"
+          @import "@/assets/styles/_mixins.sass"
         `
       }
     }

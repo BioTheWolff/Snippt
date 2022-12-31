@@ -9,8 +9,10 @@ import {
     faUsers,
     faExclamationCircle,
     faCheck,
-faHeart,
-faHeartBroken,
+    faHeart,
+    faHeartBroken,
+    faBars,
+    faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
 // importing the FAS pack
@@ -26,6 +28,8 @@ library.add(
     faCheck,
     faHeart,
     faHeartBroken,
+    faBars,
+    faXmark,
 );
 
 // exporting the pack

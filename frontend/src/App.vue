@@ -67,6 +67,10 @@ onMounted(async () => {
                 variant="primary"
             >Log out</o-button>
         </div>
+        <div class="nav-mobile-trigger">
+            <o-button variant="primary" icon-right="bars" />
+            <o-button variant="primary" icon-right="xmark" />
+        </div>
     </header>
 
     <main>
@@ -113,6 +117,15 @@ onMounted(async () => {
         display: flex
         align-items: center
         gap: 1em
+
+        @include for-up-to-tablet
+            display: none
+
+    .nav-mobile-trigger
+        display: none
+        @include for-up-to-tablet
+            display: flex
+            align-items: center
 
 main
     display: flex
