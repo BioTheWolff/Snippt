@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, NotFoundException, ParseIntPipe, UseInterceptors, ClassSerializerInterceptor, Query, DefaultValuePipe, ValidationPipe, BadRequestException } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/create-post.dto';
+import { CreatePostDto, languages } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { RequestWithUser } from '../types/request-with-user.type';
 import { NeedsAuthorPermission } from '../decorators/needs-author-permission.decorator';
@@ -9,6 +9,12 @@ import { Public } from '../decorators/public.decorator';
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
+
+  @Public()
+  @Get('languages')
+  languages() {
+    return languages;
+  }
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
