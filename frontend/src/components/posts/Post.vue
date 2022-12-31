@@ -37,9 +37,9 @@ async function like() {
         await neutralPost(post.id);
         totalLikes.value--;
     } else {
+        if (isDisliked.value) totalDislikes.value--;
         await likePost(post.id);
         totalLikes.value++;
-        totalDislikes.value--;
     }
     updateLikeStatus();
 }
@@ -51,9 +51,9 @@ async function dislike() {
         await neutralPost(post.id);
         totalDislikes.value--;
     } else {
+        if (isLiked.value) totalLikes.value--;
         await dislikePost(post.id);
         totalDislikes.value++;
-        totalLikes.value--;
     }
     updateLikeStatus();
 }
