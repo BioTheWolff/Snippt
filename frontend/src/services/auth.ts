@@ -1,4 +1,5 @@
 import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
 import { get, post, _api_request_raw, type ApiBodyType } from './api-utils';
 
 export async function login(body: ApiBodyType): Promise<boolean> {
@@ -43,4 +44,11 @@ export async function authStatus(): Promise<boolean> {
 export async function logout() {
     await get('logout');
     useUserStore().logout();
+}
+
+export async function redirectUnlessLoggedIn() {
+    if (!useUserStore().is_logged_in) {
+        let router = useRouter();
+        router.push({ name: 'login' })
+    }
 }

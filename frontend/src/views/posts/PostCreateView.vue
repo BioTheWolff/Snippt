@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { redirectUnlessLoggedIn } from '@/services/auth';
 import { previewCode } from '@/services/rainbow';
 import { ref } from 'vue';
 
@@ -9,6 +10,8 @@ const codePreview = ref();
 function preview() {
     previewCode(codePreview, content.value, language.value);
 }
+
+redirectUnlessLoggedIn();
 </script>
 
 <template>
