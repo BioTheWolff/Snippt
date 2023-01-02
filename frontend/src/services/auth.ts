@@ -7,7 +7,7 @@ export async function login(body: ApiBodyType): Promise<boolean> {
     const data = await post('login', {}, body);
 
     if (data.__status === 201) {
-        user.login(data.handle, data.display_name, data.email);
+        user.login(data.handle, data.display_name, data.email, data.admin);
 
         // we try to load likes and dislikes for the user
         // it should fail silently as it is not part of the login process
@@ -29,7 +29,7 @@ export async function register(body: ApiBodyType): Promise<boolean|string[]> {
     const data = await post('register', {}, body);
 
     if (data.__status === 201) {
-        useUserStore().login(data.handle, data.display_name, data.email);
+        useUserStore().login(data.handle, data.display_name, data.email, data.admin);
         return true;
     } else {
         return data['message'];

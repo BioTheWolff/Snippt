@@ -1,6 +1,12 @@
 
 export type ApiParamsType = { [key: string]: string };
 export type ApiBodyType = { [key: string]: any };
+export type TableColumnsType = [{ 
+    field: string, 
+    label: string, 
+    numeric?: boolean, 
+    boolean?: boolean
+}];
 
 const BASE_URL: string = "/api";
 const ENDPOINTS: { [key: string]: string } = {
@@ -14,6 +20,7 @@ const ENDPOINTS: { [key: string]: string } = {
     'auth-status': '/auth/status',
 
     // users
+    'user-get-all': '/users/',
     'user-profile': '/users/$handle$?relations=true',
     'user-follow': '/users/$handle$/follow',
     'user-unfollow': '/users/$handle$/unfollow',

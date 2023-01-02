@@ -7,11 +7,13 @@ export const useUserStore = defineStore('user', () => {
   const display_name = ref("");
   const email = ref("");
   const is_logged_in = ref(false);
+  const is_admin = ref(false);
 
-  function login(_handle: string, _display_name: string, _email: string) {
+  function login(_handle: string, _display_name: string, _email: string, _admin: boolean) {
     handle.value = _handle;
     display_name.value = _display_name;
     email.value = _email;
+    is_admin.value = _admin;
     is_logged_in.value = true;
   }
   function logout() {
@@ -19,6 +21,7 @@ export const useUserStore = defineStore('user', () => {
     display_name.value = "";
     email.value = "";
     is_logged_in.value = false;
+    is_admin.value = false;
 
     likes.value.clear();
     dislikes.value.clear();
@@ -52,7 +55,7 @@ export const useUserStore = defineStore('user', () => {
 
   return { 
     handle, display_name, email, 
-    is_logged_in, 
+    is_logged_in, is_admin,
     login, logout,
     likes, dislikes, 
     likePost, dislikePost, neutralPost,

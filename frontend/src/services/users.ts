@@ -1,5 +1,5 @@
 import { useUserStore } from '@/stores/user';
-import { get, post, patch, type ApiBodyType } from './api-utils';
+import { get, post, patch, type ApiBodyType, _api_request_raw } from './api-utils';
 import type { UserPostType } from './posts';
 
 export type UserProfileInfoType = {
@@ -15,6 +15,23 @@ export type UserProfileType = {
     followers: UserProfileInfoType[],
     posts: UserPostType[],
 };
+
+export type AdminUserProfileType = {
+    handle: string,
+    display_name: string,
+    email: string,
+    disabled: string,
+    admin: string,
+    created_at: string,
+    updated_at: string,
+}
+
+export async function getAllUsers(): Promise<AdminUserProfileType[]|false> {
+    const response =  await _api_request_raw('user-get-all', 'GET', {});
+
+    if (response.status !== 200) return false;
+    return await response.json();
+}
 
 export async function userProfile(handle: string): Promise<UserProfileType> {
     return await get('user-profile', { handle: handle }) as UserProfileType
