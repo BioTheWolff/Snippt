@@ -1,12 +1,14 @@
 
 export type ApiParamsType = { [key: string]: string };
 export type ApiBodyType = { [key: string]: any };
-export type TableColumnsType = [{ 
+export type TableColType = { 
     field: string, 
     label: string, 
     numeric?: boolean, 
-    boolean?: boolean
-}];
+    boolean?: boolean,
+    preprocessor?: (data: any) => any,
+};
+export type TableColumnsType = TableColType[];
 
 const BASE_URL: string = "/api";
 const ENDPOINTS: { [key: string]: string } = {

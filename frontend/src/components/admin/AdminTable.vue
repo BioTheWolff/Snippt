@@ -7,8 +7,18 @@ const props = defineProps({
     columns: {}
 })
 const _columns = props.columns as TableColumnsType;
+const _data = ref(props.data as any[]);
 
 const currentPage = ref(1);
+
+// preprocessing data
+for (let col of _columns) {
+    if (col.preprocessor) {
+        for (let index in _data.value) {
+            _data.value[index][col.field] = col.preprocessor(_data.value[index][col.field]);
+        }
+    }
+}
 </script>
 
 <template>

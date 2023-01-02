@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AdminTable from '@/components/admin/AdminTable.vue';
+import type { TableColumnsType } from '@/services/api-utils';
 import { getAllUsers, type AdminUserProfileType } from '@/services/users';
 import { useRouter } from 'vue-router';
 
@@ -11,7 +12,7 @@ if (!users) {
     router.replace('/');
 }
 
-const columns = [
+const columns: TableColumnsType = [
     {
         field: 'id',
         label: 'ID',
@@ -42,10 +43,12 @@ const columns = [
     {
         field: 'created_at',
         label: 'Created at',
+        preprocessor: (data: string) => (new Date(data)).toLocaleString("fr-FR")
     },
     {
         field: 'updated_at',
-        label: 'Updated at'
+        label: 'Updated at',
+        preprocessor: (data: string) => (new Date(data)).toLocaleString("fr-FR")
     }
 ];
 </script>
