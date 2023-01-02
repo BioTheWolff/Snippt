@@ -20,6 +20,16 @@ export class PostsService {
     return await this.repository.save(post);
   }
 
+  async createAnswer(user: User, postId: number, createPostDto: CreatePostDto) {
+    const parent = await this.repository.findOneBy({id: postId});
+    if (!parent || parent.deleted) throw new BadRequestException(responseMessages.PARENT_NOT_FOUND);
+
+    let post = this.repository.create(createPostDto);
+    post.author = user;
+    post.parent = parent;
+    return await this.repository.save(post);
+  }
+
   async findAll() {
     return await this.repository.find({
       order: {

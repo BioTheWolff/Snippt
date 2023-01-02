@@ -46,6 +46,16 @@ export class PostsController {
     return post;
   }
 
+  @Post(':id/answer')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async createAnswer(
+    @Req() req: RequestWithUser, 
+    @Param('id', ParseIntPipe) postId: number,
+    @Body() createPostDto: CreatePostDto
+  ) {
+    return await this.postsService.createAnswer(req.user, postId, createPostDto);
+  }
+
   // TODO: findOneDeleted with author permission
 
   @Patch(':id')
