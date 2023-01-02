@@ -159,11 +159,6 @@ export class UsersService {
   }
 
   async updatePassword(handle: string, updateUserPasswordDto: UpdateUserPasswordDto) {
-    // checking new passwords are equal
-    if (updateUserPasswordDto.new_password !== updateUserPasswordDto.new_password_confirm) {
-      throw new BadRequestException(responseMessages.NEW_PASS_MISMATCH);
-    }
-
     // getting the user to update
     let user = await this.usersRepository.findOneBy({handle: handle});
     if (!user) {

@@ -17,7 +17,6 @@ export const responseMessages = {
     // User-specific
     HANDLE_IN_USE: "Handle is already taken",
     EMAIL_IN_USE: "Email is already taken",
-    NEW_PASS_MISMATCH: "New passwords don't match",
     WRONG_OLD_PASS: "Old password is incorrect",
 
     // Followers system
@@ -26,4 +25,5 @@ export const responseMessages = {
 
     // Posts
     POST_NOT_FOUND: "Post not found",
+    PARENT_NOT_FOUND: "Cannot answer to non-existing post",
 }

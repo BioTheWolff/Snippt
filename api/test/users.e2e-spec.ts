@@ -263,7 +263,7 @@ describe('Users', () => {
         new_password_confirm: "azertyuiop"
       })
       .expect(200)
-      .expect("OK");
+      .expect({ "status": "OK" });
   })
 
   it('should not update password on empty body', () => {
@@ -310,8 +310,7 @@ describe('Users', () => {
         new_password: "azertyuiop",
         new_password_confirm: "azertyuiopp"
       })
-      .expect(400)
-      .expect(getBodyFromError(400, responseMessages.NEW_PASS_MISMATCH));
+      .expect(400);
   })
 
   it('should not update password on wrong current password', () => {
