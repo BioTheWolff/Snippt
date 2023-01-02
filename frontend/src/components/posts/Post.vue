@@ -12,6 +12,7 @@ const props = defineProps({
     isFocused: Boolean,
     isCompact: Boolean,
     noAnswers: Boolean,
+    disableActions: Boolean,
     post: {},
     currentUserLikes: Set,
     currentUserDislikes: Set,
@@ -53,6 +54,7 @@ if (!props.loading && !props.isCompact) {
 
 async function like() {
     if (!currentUser.is_logged_in) return;
+    if (props.disableActions) return;
 
     if (isLiked.value) {
         await neutralPost(post.value.id);
@@ -67,6 +69,7 @@ async function like() {
 
 async function dislike() {
     if (!currentUser.is_logged_in) return;
+    if (props.disableActions) return;
 
     if (isDisliked.value) {
         await neutralPost(post.value.id);
@@ -103,6 +106,9 @@ function focus() {
 
 function answer() {
     if (props.isFocused) {
+        // cancel answering and focus instead if actions are disabled
+        if (props.disableActions) focus();
+
         if (currentUser.is_logged_in) {
             router.push({ name: 'answer-post', params: {id: post.value.id} })
         }

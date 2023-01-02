@@ -71,7 +71,7 @@ const router = createRouter({
     {
       path: '/posts/:id/answer',
       name: 'answer-post',
-      component: () => import('%/posts/PostCreateView.vue'),
+      component: () => import('%/posts/PostAnswerView.vue'),
       meta: {
         title: 'Answer post'
       }

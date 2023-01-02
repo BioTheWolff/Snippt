@@ -23,16 +23,25 @@ export async function getAllowedLanguages() {
     return response.json();
 }
 
-export async function createPost(body: ApiBodyType) {
+export async function createPost(body: ApiBodyType): Promise<number|[]> {
     const data = await post('post-new', {}, body);
 
     if (data.__status === 201) {
-        return true;
+        return data.id;
     } else {
         return data['message'];
     }
 }
 
+export async function answerPost(id: string, body: ApiBodyType): Promise<number|[]> {
+    const data = await post('post-answer', {id: id}, body);
+
+    if (data.__status === 201) {
+        return data.id;
+    } else {
+        return data['message'];
+    }
+}
 
 
 export async function loadPosts(limit: number, page: number): Promise<PostType[]> {

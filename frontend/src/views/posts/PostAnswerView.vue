@@ -1,19 +1,24 @@
 <script setup lang="ts">
+import Post from '@@/posts/Post.vue';
 import { redirectUnlessLoggedIn } from '@/services/auth';
-import { createPost, getAllowedLanguages } from '@/services/posts';
+import { answerPost, getAllowedLanguages, viewPost, type PostType } from '@/services/posts';
 import { previewCode } from '@/services/rainbow';
 import { getRefFromArray, makeRefArray, setErrorMessages, setRefFromArray } from '@/services/ref-array';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
 const keys = ['title', 'description', 'language', 'content'];
 const inputs = makeRefArray(keys);
 const variants = makeRefArray(keys);
 const messages = makeRefArray(keys);
 
-const submit_text = ref("Create new post");
+const submit_text = ref("Answer post");
 const codePreview = ref();
+
+const route = useRoute();
 const router = useRouter();
+const currentUser = useUserStore();
 
 function preview() {
     previewCode(
@@ -24,11 +29,15 @@ function preview() {
 }
 
 redirectUnlessLoggedIn();
+
+const posts_chain = await viewPost(route.params.id as string);
+const post = posts_chain.pop() as PostType;
+
 const languages = await getAllowedLanguages();
 setRefFromArray(inputs, 'language', 'text');
 
 async function submit() {
-    const result = await createPost({
+    const result = await answerPost(route.params.id as string, {
         title: getRefFromArray(inputs, 'title'),
         description: getRefFromArray(inputs, 'description'),
         language: getRefFromArray(inputs, 'language'),
@@ -44,6 +53,17 @@ async function submit() {
 </script>
 
 <template>
+    <div class="answering-to">
+        <div class="answering-to--title">You are answering to</div>
+        <Post
+            :post="post"
+            disable-actions
+
+            :current-user-dislikes="currentUser.dislikes"
+            :current-user-likes="currentUser.likes"
+        ></Post>
+    </div>
+
     <form class="create-post" @submit.prevent="submit()">
         <section>
             <o-field label="Title"
@@ -129,7 +149,20 @@ async function submit() {
 </template>
 
 <style scoped lang="sass">
+.answering-to
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    width: 90%
+    margin: 0 5% 3em 5%
+
+    &--title
+        font-size: 2em
+
 .create-post
+    margin-bottom: 4em
+
     section
         margin-bottom: 1.5em
 
