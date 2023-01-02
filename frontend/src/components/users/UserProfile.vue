@@ -102,9 +102,11 @@ if (!props.loading) {
 
                             :post="post"
                             isUserPost
+                            no-answers
                         ></Post>
 
                         <div
+                            class="nothing"
                             v-if="!loading && user.posts.length === 0"
                         >This user has not posted anything yet</div>
                     </div>
@@ -223,16 +225,26 @@ if (!props.loading) {
             grid-template: auto / repeat(3, auto)
 
             .nothing
-                grid-column: 1/3
+                grid-column: 1/4
+                text-align: center
 
             @include for-up-to-tablet
                 display: flex
                 flex-direction: column
+                align-items: center
 
         .posts
             display: flex
+            align-items: center
+            justify-content: stretch
             flex-direction: column
             gap: 1em
+
+            & > *
+                width: 100%
+
+            .nothing
+                width: initial
 
         &--title
             @include for-up-to-tablet
