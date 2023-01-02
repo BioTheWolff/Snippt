@@ -121,8 +121,21 @@ describe('Posts', () => {
 
     expect(response.statusCode).toBe(200);
 
-    const {author: expectedHandle, _id: a, ...expectedDto} = postsSeeds[0];
-    const {author: foundAuthor, id: b, total_likes, total_dislikes, ...foundDto} = body;
+    const {
+      author: expectedHandle, 
+      _id: _a, 
+      ...expectedDto
+    } = postsSeeds[0];
+
+    const {
+      author: foundAuthor, 
+      id: _b, 
+      total_likes, 
+      total_dislikes,
+      answers: _c,
+      parent: _d,
+      ...foundDto
+    } = body;
 
     // the post itself
     expect(foundDto).toEqual(expectedDto);

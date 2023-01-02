@@ -36,7 +36,8 @@ export class PostsService {
         created_at: 'DESC',
       },
       relations: {
-        author: true
+        author: true,
+        answers: true,
       }
     });
   }
@@ -47,7 +48,8 @@ export class PostsService {
         created_at: 'DESC',
       },
       relations: {
-        author: true
+        author: true,
+        answers: true,
       },
       skip: (page-1)*limit,
       take: limit,
@@ -60,6 +62,8 @@ export class PostsService {
         author: true,
         likes: true,
         dislikes: true,
+        answers: true,
+        parent: true,
       },
       where: {id: id}
     });
