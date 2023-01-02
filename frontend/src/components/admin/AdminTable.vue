@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import type { TableColumnsType } from '@/services/api-utils';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
     data: Array,
     columns: {}
 })
+const emit = defineEmits<{
+  (event: 'selected', data: any): void
+}>()
+
 const _columns = props.columns as TableColumnsType;
 const _data = ref(props.data as any[]);
 
 const currentPage = ref(1);
+const selected = ref();
 
 // preprocessing data
 for (let col of _columns) {
@@ -19,6 +24,8 @@ for (let col of _columns) {
         }
     }
 }
+
+watch(selected, () => emit('selected', selected.value));
 </script>
 
 <template>
@@ -26,6 +33,7 @@ for (let col of _columns) {
         :data="data"
         striped hoverable
         mobile-cards
+        v-model:selected="selected"
 
         v-model:current-page="currentPage"
         paginated per-page="5"
@@ -43,4 +51,13 @@ for (let col of _columns) {
             {{ row[column.field]}}
         </o-table-column>
     </o-table>
+
+    <div class="admin-table-slot">
+        <slot/>
+    </div>
 </template>
+
+<style scoped lang="sass">
+.admin-table-slot
+    margin: 4em 0
+</style>

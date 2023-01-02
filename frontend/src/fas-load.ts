@@ -20,6 +20,7 @@ import {
     faAngleRight,
     faCaretUp,
     faCaretDown,
+    faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
 // importing the FAS pack
@@ -44,6 +45,7 @@ library.add(
     faAngleRight,
     faCaretUp,
     faCaretDown,
+    faUserSlash,
 );
 
 // exporting the pack
