@@ -76,6 +76,16 @@ const router = createRouter({
         title: 'Answer post'
       }
     },
+
+    // Admin
+    {
+      path: '/admin/users',
+      name: 'admin-users',
+      component: () => import('%/admin/AdminUsers.vue'),
+      meta: {
+        title: 'Users list'
+      }
+    }
   ]
 });
 

@@ -15,6 +15,9 @@ import {
     faXmark,
     faMessage,
     faArrowDown,
+    faArrowUp,
+    faAngleLeft,
+    faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 
 // importing the FAS pack
@@ -34,6 +37,9 @@ library.add(
     faXmark,
     faMessage,
     faArrowDown,
+    faArrowUp,
+    faAngleLeft,
+    faAngleRight,
 );
 
 // exporting the pack

@@ -39,6 +39,14 @@ const columns = [
         label: 'Admin',
         boolean: true
     },
+    {
+        field: 'created_at',
+        label: 'Created at',
+    },
+    {
+        field: 'updated_at',
+        label: 'Updated at'
+    }
 ];
 </script>
 

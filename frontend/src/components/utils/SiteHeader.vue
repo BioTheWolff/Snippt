@@ -55,6 +55,11 @@ watch(() => route.fullPath, () => {
             >Login</RouterLinkButton>
 
             <RouterLinkButton
+                v-if="userStore.is_logged_in && userStore.is_admin"
+                variant="warning"
+                to="/admin/users"
+            >Admin panel</RouterLinkButton>
+            <RouterLinkButton
                 v-if="userStore.is_logged_in"
                 variant="info"
                 to="/posts/new"
