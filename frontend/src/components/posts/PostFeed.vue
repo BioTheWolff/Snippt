@@ -55,4 +55,8 @@ loadPosts();
 
     .end-posts
         margin-bottom: 4em
+
+    @include for-up-to-tablet
+        width: 95%
+        margin: 0 2.5%
 </style>

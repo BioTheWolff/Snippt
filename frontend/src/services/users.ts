@@ -1,5 +1,6 @@
 import { useUserStore } from '@/stores/user';
 import { get, post, patch, type ApiBodyType } from './api-utils';
+import type { UserPostType } from './posts';
 
 export type UserProfileInfoType = {
     handle: string,
@@ -12,6 +13,7 @@ export type UserProfileType = {
     display_name: string,
     following: UserProfileInfoType[],
     followers: UserProfileInfoType[],
+    posts: UserPostType[],
 };
 
 export async function userProfile(handle: string): Promise<UserProfileType> {

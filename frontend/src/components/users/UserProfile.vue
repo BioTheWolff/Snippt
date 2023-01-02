@@ -91,13 +91,23 @@ if (!props.loading) {
                         <span class="relations--title">Posts</span>
                     </template>
 
-                    <Post
-                        v-if="loading"
-                    ></Post>
+                    <div class="posts">
+                        <Post
+                            v-if="loading"
+                        ></Post>
 
-                    <div
-                        v-if="!loading"
-                    >This user has not posted anything yet</div>
+                        <Post
+                            v-if="!loading && user.posts.length > 0"
+                            v-for="post in user.posts"
+
+                            :post="post"
+                            isUserPost
+                        ></Post>
+
+                        <div
+                            v-if="!loading && user.posts.length === 0"
+                        >This user has not posted anything yet</div>
+                    </div>
                 </o-tab-item>
 
                 <!-- Followers -->
@@ -121,6 +131,7 @@ if (!props.loading) {
                             display_name=""
 
                             loading inline compact
+                            reducedmargin
                         ></UserProfileCard>
 
                         <UserProfileCard
@@ -131,9 +142,11 @@ if (!props.loading) {
                             :display_name="u.display_name"
 
                             inline compact clickable
+                            reducedmargin
                         ></UserProfileCard>
 
                         <div
+                            class="nothing"
                             v-if="!loading && user.followers.length === 0"
                         >This user has no followers</div>
                     </div>
@@ -160,6 +173,7 @@ if (!props.loading) {
                             display_name=""
 
                             loading inline compact
+                            reducedmargin
                         ></UserProfileCard>
 
                         <UserProfileCard
@@ -170,9 +184,11 @@ if (!props.loading) {
                             :display_name="u.display_name"
 
                             inline compact clickable
+                            reducedmargin
                         ></UserProfileCard>
 
                         <div
+                            class="nothing"
                             v-if="!loading && user.following.length === 0"
                         >This user is not following any account</div>
                     </div>
@@ -196,7 +212,7 @@ if (!props.loading) {
 
         @include for-up-to-tablet
             flex-direction: column
-            margin-bottom: 3em
+            margin-bottom: 2em
 
         .settings-button
             margin-right: 1em
@@ -205,6 +221,18 @@ if (!props.loading) {
         .grid
             display: grid
             grid-template: auto / repeat(3, auto)
+
+            .nothing
+                grid-column: 1/3
+
+            @include for-up-to-tablet
+                display: flex
+                flex-direction: column
+
+        .posts
+            display: flex
+            flex-direction: column
+            gap: 1em
 
         &--title
             @include for-up-to-tablet

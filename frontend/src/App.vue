@@ -40,6 +40,5 @@ main
 
         @include for-up-to-tablet
             flex-grow: 0
-            width: 95vw
-            margin: 0 2.5vw
+            width: 100vw
 </style>

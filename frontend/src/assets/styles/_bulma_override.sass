@@ -31,13 +31,21 @@ $skeleton-color: $secondary
 
 
 // tabs
-.b-tabs > .tabs 
-    border-bottom-color: $secondary !important
+.b-tabs 
+    & > .tabs 
+        border-bottom-color: $secondary !important
 
-    a
-        &.is-active
-            background: $secondary !important
-        border-color: $secondary !important
+        & > *[role="tab"]
+            flex-grow: 1
+
+        a
+            &.is-active
+                background: $secondary !important
+            border-color: $secondary !important
+
+    & > .tab-content
+        @include for-up-to-tablet
+            padding: 1em 0 0 0
 
 // icons
 .icon-purple

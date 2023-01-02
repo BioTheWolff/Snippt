@@ -1,7 +1,8 @@
 import { useUserStore } from "@/stores/user";
 import { get, post, _api_request_raw, type ApiBodyType } from "./api-utils";
+import type { UserProfileInfoType } from "./users";
 
-export type PostType = {
+export type UserPostType = {
     id: number;
     title: string;
     description: string;
@@ -9,11 +10,9 @@ export type PostType = {
     content: string;
     total_likes: number;
     total_dislikes: number;
-    author: {
-        handle: string;
-        display_name: string;
-    };
-};
+}
+
+export type PostType = UserPostType & { author: UserProfileInfoType };
 
 
 export async function getAllowedLanguages() {

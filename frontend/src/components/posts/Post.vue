@@ -7,6 +7,7 @@ import { ref } from 'vue';
 
 const props = defineProps({
     loading: Boolean,
+    isUserPost: Boolean,
     post: {},
     currentUserLikes: Set,
     currentUserDislikes: Set,
@@ -65,8 +66,8 @@ function updateLikeStatus() {
 </script>
 
 <template>
-    <article class="post make-card">
-        <div class="author">
+    <article :class="`post make-card ${isUserPost ? 'user-post' : ''}`">
+        <div class="author" v-if="!isUserPost">
             <UserProfileCard
                 v-if="loading"
                 handle=""
@@ -137,6 +138,9 @@ function updateLikeStatus() {
 
     @include for-up-to-tablet
         width: 100%
+
+    &.user-post
+        background: $primary
 
     .content
         margin-bottom: 1em
