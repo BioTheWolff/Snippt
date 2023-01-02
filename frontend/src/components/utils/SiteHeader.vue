@@ -54,11 +54,19 @@ watch(() => route.fullPath, () => {
                 to="/login"
             >Login</RouterLinkButton>
 
-            <RouterLinkButton
-                v-if="userStore.is_logged_in && userStore.is_admin"
-                variant="warning"
-                to="/admin/users"
-            >Admin panel</RouterLinkButton>
+            <o-dropdown aria-role="list" v-if="userStore.is_logged_in && userStore.is_admin">
+                <template #trigger="{ active }">
+                    <o-button variant="warning">
+                    <span>Admin panel</span>
+                    <o-icon :icon="active ? 'caret-up' : 'caret-down'"></o-icon>
+                    </o-button>
+                </template>
+
+                <o-dropdown-item 
+                    aria-role="listitem" 
+                    @click="$router.push('/admin/users')"
+                >Users</o-dropdown-item>
+            </o-dropdown>
             <RouterLinkButton
                 v-if="userStore.is_logged_in"
                 variant="info"
