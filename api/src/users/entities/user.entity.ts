@@ -41,7 +41,7 @@ export class User {
 
 
     // Posts
-    @OneToMany(() => Post, post => post.id, { onDelete: 'CASCADE' })
+    @OneToMany(() => Post, post => post.author, { onDelete: 'CASCADE' })
     posts: Post[];
 
     @ManyToMany(() => Post, post => post.likes, { onDelete: 'CASCADE' })

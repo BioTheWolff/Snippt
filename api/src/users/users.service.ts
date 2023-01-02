@@ -58,6 +58,7 @@ export class UsersService {
         followers: get_relations,
         likes: get_relations,
         dislikes: get_relations,
+        posts: get_relations,
       },
       where: { handle: handle }
     });

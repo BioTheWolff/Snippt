@@ -35,7 +35,7 @@ export class Post {
     @UpdateDateColumn()
     updated_at: number;
 
-    @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, user => user.posts, { onDelete: 'CASCADE' })
     @JoinColumn()
     @Transform(({ value }) => ({ handle: value.handle, display_name: value.display_name }))
     author: User;
