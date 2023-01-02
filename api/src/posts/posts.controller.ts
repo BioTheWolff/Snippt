@@ -45,6 +45,15 @@ export class PostsController {
     if (!post) throw new NotFoundException();
     return post;
   }
+  
+  @Public()
+  @Get(':id/chain')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findOneChain(@Param('id', ParseIntPipe) id: number) {
+    const chain = await this.postsService.findOneChain(id);
+    if (!chain) throw new NotFoundException();
+    return chain;
+  }
 
   @Post(':id/answer')
   @UseInterceptors(ClassSerializerInterceptor)

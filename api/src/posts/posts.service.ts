@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class PostsService {
@@ -69,6 +70,44 @@ export class PostsService {
       },
       where: {id: id}
     });
+  }
+
+  async findOneChain(id: number) {
+    const last = await this.repository.findOne({
+      relations: {
+        author: true,
+        answers: {
+          author: true, // include the author of the answer
+        },
+        parent: {
+          author: true,
+        },
+      },
+      where: {id: id}
+    });
+    if (!last) return [];
+
+    const chain = []
+    let current = last;
+    do {
+      // push the sanitized output to the array
+      let {parent: _1, ...rest} = instanceToPlain(current);
+      chain.push(rest);
+
+      // find next parent in the chain
+      if (!current.parent) break;
+      current = await this.repository.findOne({
+        relations: {
+          author: true,
+          parent: true,
+        },
+        where: {id: current.parent.id}
+      });
+    } while(current)
+
+    // reverse then return the chain
+    chain.reverse();
+    return chain;
   }
 
   async findOnePublic(id: number) {
