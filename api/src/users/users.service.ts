@@ -195,5 +195,6 @@ export class UsersService {
 
   async setStatus(handle: string, disabled: boolean) {
     await this.usersRepository.update({handle: handle}, {disabled: disabled});
+    return { "disabled": disabled };
   }
 }

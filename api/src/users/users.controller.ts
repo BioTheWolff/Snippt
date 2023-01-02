@@ -82,6 +82,6 @@ export class UsersController {
     @Param('handle') handle: string, 
     @Body('disabled', ParseBoolPipe) disabled: boolean
   ) {
-
+    return await this.usersService.setStatus(handle, disabled);
   }
 }
