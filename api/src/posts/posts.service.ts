@@ -62,7 +62,9 @@ export class PostsService {
         author: true,
         likes: true,
         dislikes: true,
-        answers: true,
+        answers: {
+          author: true, // include the author of the answer
+        },
         parent: true,
       },
       where: {id: id}

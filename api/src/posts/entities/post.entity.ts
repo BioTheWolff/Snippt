@@ -61,6 +61,7 @@ export class Post {
 
     // Answers chain
     @ManyToOne(() => Post, post => post.answers, { onDelete: 'CASCADE', nullable: true })
+    @Transform(({ value }) => value ? value.id : null)
     parent: Post;
 
     @OneToMany(() => Post, post => post.parent, { onDelete: 'CASCADE' })

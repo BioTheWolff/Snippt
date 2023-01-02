@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UsersSeederService } from "../../users/seeds/users-seeder.service";
 import { Repository } from "typeorm";
 import { Post } from "../entities/post.entity";
-import { dislikesSeeds, likesSeeds, postsSeeds } from "./posts.seeds";
+import { answersSeeds, dislikesSeeds, likesSeeds, postsSeeds } from "./posts.seeds";
 import { User } from "../../users/entities/user.entity";
 
 @Injectable()
@@ -44,7 +44,27 @@ export class PostsSeederService {
             return await this.usersRepository.save(user);
         }));
 
-        return posts;
+        // answers
+        const answers: Post[] = [];
+        for (let e of answersSeeds) {
+            const {author, parent, ...dto} = e;
+            
+            let post = this.repository.create(dto);
+            post.author = this.findUserByHandle(users, author);
+            post.parent = posts.find(e => {
+                    let found = postsSeeds.find(e => e._id === parent);
+                    if (found && e.title === found.title) return true;
+                    else return false;
+                })
+                || answers.find(e => {
+                    let found = answersSeeds.find(e => e._id === parent);
+                    if (found && e.title === found.title) return true;
+                    else return false;
+                });
+            answers.push(await this.repository.save(post));
+        }
+
+        return [...posts, ...answers];
     }
 
     private findUserByHandle(users: User[], handle: string): User {

@@ -2,6 +2,7 @@ import { usersSeeds } from "../../users/seeds/users-seeds";
 import { CreatePostDto } from "../dto/create-post.dto";
 
 export type PostSeedType = ( CreatePostDto & { _id: number, author: string } );
+export type PostAnswerType = ( PostSeedType & { parent: number } )
 export type PostLikesType = ( { user: string, post: number } );
 export type PostDislikesType = PostLikesType;
 
@@ -27,6 +28,31 @@ export const postsSeeds: PostSeedType[] = [
 `export const seeds: (MyDto & { myVar: string })[] = [];
 export function test() {}`
     }
+];
+
+export const answersSeeds: PostAnswerType[] = [
+    {
+        _id: 10,
+        parent: 0,
+        title: "My answer",
+        description: "Lorem ipsum dolor sin amet.",
+        language: "python",
+        author: usersSeeds[1].handle,
+        content: 
+`def nope():
+    return "not hooray!"
+`
+    },
+    {
+        _id: 11,
+        parent: 10,
+        title: "My second answer",
+        description: "This is a very big test",
+        language: "javascript",
+        author: usersSeeds[0].handle,
+        content: 
+`let noidea = true;`
+    },
 ];
 
 export function countLikesForPost(id: number) {

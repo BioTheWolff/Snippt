@@ -12,7 +12,7 @@ import { UsersSeederService } from "../src/users/seeds/users-seeder.service";
 import { usersSeeds } from "../src/users/seeds/users-seeds";
 import { CreatePostDto } from "../src/posts/dto/create-post.dto";
 import { responseMessages } from "../src/response-messages";
-import { countDislikesForPost, countLikesForPost, postsSeeds } from "../src/posts/seeds/posts.seeds";
+import { answersSeeds, countDislikesForPost, countLikesForPost, postsSeeds } from "../src/posts/seeds/posts.seeds";
 
 require('dotenv').config();
 
@@ -144,6 +144,58 @@ describe('Posts', () => {
     // the likes and dislikes
     expect(total_likes).toBe(countLikesForPost(0));
     expect(total_dislikes).toBe(countDislikesForPost(0));
+  })
+
+  it('should return correct relations on middle of chain', async () => {
+    const response = await request(app.getHttpServer())
+        .get(`/posts/${posts[2].id}`);
+    const body: Post = response.body;
+    expect(response.statusCode).toBe(200);
+
+    const response_parent = await request(app.getHttpServer())
+    .get(`/posts/${posts[0].id}`);
+
+    const response_child = await request(app.getHttpServer())
+    .get(`/posts/${posts[3].id}`);
+    const {
+      answers: _a,
+      parent: _b,
+      ...child
+    } = response_child.body;
+
+
+    const {
+      id: _c, 
+      ...foundDto
+    } = body;
+
+    // check answers
+    expect(foundDto.answers).toEqual([child]);
+
+    // check parent id is correct
+    expect(foundDto.parent).toBe(response_parent.body.id);
+  })
+
+  it('should return correct relations on end of chain', async () => {
+    const response = await request(app.getHttpServer())
+        .get(`/posts/${posts[3].id}`);
+    const body: Post = response.body;
+    expect(response.statusCode).toBe(200);
+
+    const response_parent = await request(app.getHttpServer())
+    .get(`/posts/${posts[2].id}`);
+
+
+    const {
+      id: _c, 
+      ...foundDto
+    } = body;
+
+    // check answers
+    expect(foundDto.answers).toEqual([]);
+
+    // check parent id is correct
+    expect(foundDto.parent).toBe(response_parent.body.id);
   })
 
   it('should 404 on unknown post', () => {
