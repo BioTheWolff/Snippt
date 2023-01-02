@@ -132,4 +132,8 @@ async function submit() {
 .create-post
     section
         margin-bottom: 1.5em
+
+    @include for-up-to-tablet
+        width: 95%
+        margin: 0 2.5%
 </style>

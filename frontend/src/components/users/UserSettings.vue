@@ -231,4 +231,8 @@ if (!admin_editing) {
 
                 *
                     flex-grow: 1
+
+    @include for-up-to-tablet
+        width: 95%
+        margin: 0 2.5%
 </style>
