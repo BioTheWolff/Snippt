@@ -73,6 +73,7 @@ export class AuthService {
             handle: user.handle,
             display_name: user.display_name,
             email: user.email,
+            admin: user.admin,
         };
     }
 }
