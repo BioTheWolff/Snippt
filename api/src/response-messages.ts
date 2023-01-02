@@ -10,6 +10,7 @@ export const responseMessages = {
     REGISTRATION_FAILED: "Failed to register user account",
     TARGET_NOT_SELF: "Cannot take action on a resource that is not owned",
     ADMIN_PERM_REQUIRED: "This action requires administrative privileges",
+    USER_DISABLED: "This account is disabled. Contact administrators.",
 
     // Updates
     EMPTY_MODIF_DTO: "Empty modification request",

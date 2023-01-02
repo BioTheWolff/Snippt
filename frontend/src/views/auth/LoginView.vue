@@ -14,11 +14,14 @@ const password = ref("");
 
 async function login() {
     const res = await apiLogin({ email: email.value, password: password.value });
-    if (res) {
+    if (res === true) {
         router.push('/');
-    } else {
+    } else if (res === "incorrect") {
         variant.value = "danger";
         message.value = "Email or password incorrect";
+    } else {
+        variant.value = "danger";
+        message.value = res as string;
     }
 }
 </script>

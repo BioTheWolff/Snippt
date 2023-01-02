@@ -2,9 +2,13 @@ import { useUserStore } from '@/stores/user';
 import { useRouter } from 'vue-router';
 import { get, post, _api_request_raw, type ApiBodyType } from './api-utils';
 
-export async function login(body: ApiBodyType): Promise<boolean> {
+export async function login(body: ApiBodyType): Promise<boolean|string> {
     const user = useUserStore();
     const data = await post('login', {}, body);
+
+    if (data.__status === 403) {
+        return data.message;
+    }
 
     if (data.__status === 201) {
         user.login(data.handle, data.display_name, data.email, data.admin);
@@ -21,7 +25,7 @@ export async function login(body: ApiBodyType): Promise<boolean> {
 
         return true;
     } else {
-        return false;
+        return "incorrect";
     }
 }
 

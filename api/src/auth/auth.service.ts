@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { responseMessages } from '../response-messages';
@@ -36,6 +36,9 @@ export class AuthService {
     }
 
     async login(user: User, response: ResponseType) {
+        if (!user.admin && user.disabled) 
+            throw new ForbiddenException(responseMessages.USER_DISABLED);
+
         this.setAuthenticationToken(user, response);
         return this.userDetails(user);
     }
