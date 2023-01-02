@@ -135,6 +135,9 @@ function updateLikeStatus() {
     width: 70%
     flex-direction: column
 
+    @include for-up-to-tablet
+        width: 100%
+
     .content
         margin-bottom: 1em
 

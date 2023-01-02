@@ -37,7 +37,7 @@ async function register() {
                 position="bottom"
                 label="Should only contain alphanumerical characters, underscores and dashes"
             >
-                <o-field label="Username (handle)" 
+                <o-field label="Handle" 
                     :variant="variants.handle" 
                     :message="messages.handle"
                 >

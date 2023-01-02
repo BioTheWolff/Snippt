@@ -184,7 +184,7 @@ if (!admin_editing) {
                 </o-field>
                 
                 <o-field 
-                    label="Password confirmation"
+                    label="Confirmation"
                     :variant="variants.new_password_confirm"
                     :message="messages.new_password_confirm"
                 >

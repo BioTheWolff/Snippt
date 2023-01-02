@@ -3,11 +3,12 @@ import RouterLinkButton from './RouterLinkButton.vue';
 import UserHeaderCard from '@@/users/UserHeaderCard.vue';
 import { SiteLogo as logo } from "@/assets/img";
 
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { authStatus, logout as apiLogout } from '@/services/auth';
 import { useUserStore } from '@/stores/user';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
+const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const isNavOpened = ref(false);
@@ -26,6 +27,10 @@ async function checkLogin() {
 
 onMounted(async () => {
     checkLogin();
+})
+
+watch(() => route.fullPath, () => {
+    isNavOpened.value = false;
 })
 </script>
 

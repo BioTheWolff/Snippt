@@ -31,7 +31,15 @@ main
         width: 30vw
         &.right
             order: 3
+
+        @include for-up-to-tablet
+            display: none
     
     #site-content
         flex-grow: 1
+
+        @include for-up-to-tablet
+            flex-grow: 0
+            width: 95vw
+            margin: 0 2.5vw
 </style>

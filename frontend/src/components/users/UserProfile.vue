@@ -5,6 +5,7 @@ import RouterLinkButton from '@@/utils/RouterLinkButton.vue';
 import { ref, watch, type Ref } from 'vue';
 import { useRoute } from 'vue-router';
 import UserProfileCard from './UserProfileCard.vue';
+import Post from '@@/posts/Post.vue';
 
 const currentUser = useUserStore();
 const route = useRoute();
@@ -55,7 +56,7 @@ if (!props.loading) {
                 :loading="loading"
                 :handle="(handle as string)"
                 :display_name="user.display_name"
-                inline
+                inline reducedmargin
             ></UserProfileCard>
 
             <RouterLinkButton 
@@ -78,26 +79,37 @@ if (!props.loading) {
         </div>
         <div class="relations">
             <o-tabs type="toggle">
+                <!-- Posts -->
                 <o-tab-item>
                     <template #header>
                         <o-icon 
                             pack="fas"
                             icon="paste"
                             size="large"
-                            rootClass="icon-purple"
+                            rootClass="icon-purple relations--icon"
                         ></o-icon>
-                        <span>Posts</span>
+                        <span class="relations--title">Posts</span>
                     </template>
+
+                    <Post
+                        v-if="loading"
+                    ></Post>
+
+                    <div
+                        v-if="!loading"
+                    >This user has not posted anything yet</div>
                 </o-tab-item>
+
+                <!-- Followers -->
                 <o-tab-item>
                     <template #header>
                         <o-icon 
                             pack="fas"
                             icon="users"
                             size="large"
-                            rootClass="icon-purple"
+                            rootClass="icon-purple relations--icon"
                         ></o-icon>
-                        <span>Followers</span>
+                        <span class="relations--title">Followers</span>
                     </template>
 
                     <div class="grid">
@@ -112,7 +124,7 @@ if (!props.loading) {
                         ></UserProfileCard>
 
                         <UserProfileCard
-                            v-if="!loading"
+                            v-if="!loading && user.followers.length > 0"
                             v-for="u in user.followers"
                             
                             :handle="u.handle"
@@ -120,17 +132,23 @@ if (!props.loading) {
 
                             inline compact clickable
                         ></UserProfileCard>
+
+                        <div
+                            v-if="!loading && user.followers.length === 0"
+                        >This user has no followers</div>
                     </div>
                 </o-tab-item>
+
+                <!-- Following -->
                 <o-tab-item>
                     <template #header>
                         <o-icon 
                             pack="fas"
                             icon="address-book"
                             size="large"
-                            rootClass="icon-purple"
+                            rootClass="icon-purple relations--icon"
                         ></o-icon>
-                        <span>Following</span>
+                        <span class="relations--title">Following</span>
                     </template>
 
                     <div class="grid">
@@ -145,7 +163,7 @@ if (!props.loading) {
                         ></UserProfileCard>
 
                         <UserProfileCard
-                            v-if="!loading"
+                            v-if="!loading && user.following.length > 0"
                             v-for="u in user.following"
                             
                             :handle="u.handle"
@@ -153,6 +171,10 @@ if (!props.loading) {
 
                             inline compact clickable
                         ></UserProfileCard>
+
+                        <div
+                            v-if="!loading && user.following.length === 0"
+                        >This user is not following any account</div>
                     </div>
                 </o-tab-item>
             </o-tabs>
@@ -172,6 +194,10 @@ if (!props.loading) {
         justify-content: space-between
         align-items: baseline
 
+        @include for-up-to-tablet
+            flex-direction: column
+            margin-bottom: 3em
+
         .settings-button
             margin-right: 1em
     
@@ -179,4 +205,12 @@ if (!props.loading) {
         .grid
             display: grid
             grid-template: auto / repeat(3, auto)
+
+        &--title
+            @include for-up-to-tablet
+                display: none
+
+        &--icon
+            @include for-up-to-tablet
+                margin-right: 0
 </style>
