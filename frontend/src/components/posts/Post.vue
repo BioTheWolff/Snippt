@@ -5,9 +5,6 @@ import { previewCode } from '@/services/rainbow';
 import { useUserStore } from '@/stores/user';
 import UserProfileCard from '@@/users/UserProfileCard.vue';
 import { ref, watch, type Ref } from 'vue';
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
 
 const props = defineProps({
     loading: Boolean,
@@ -27,6 +24,22 @@ const isDisliked = ref(props.currentUserDislikes?.has(post.value.id));
 
 const totalLikes = ref(post.value.total_likes);
 const totalDislikes = ref(post.value.total_dislikes);
+
+const likesText = ref(
+    !currentUser.is_logged_in
+    ? 'Likes'
+    : (isLiked ? 'Remove reaction' : 'Like')
+);
+const dislikesText = ref(
+    !currentUser.is_logged_in
+    ? 'Dislikes'
+    : (isDisliked ? 'Remove reaction' : 'Dislike')
+);
+const answersText = ref(
+    props.isFocused
+    ? (!currentUser.is_logged_in ? 'Log in to write an answer' : 'Write an answer')
+    : 'Answers'
+);
 
 
 const previewElement = ref();
@@ -66,10 +79,6 @@ async function dislike() {
     updateLikeStatus();
 }
 
-function focus() {
-    router.push({ name: 'view-post', params: {id: post.value.id} })
-}
-
 function updateLikeStatus() {
     isLiked.value = props.currentUserLikes?.has(post.value.id);
     isDisliked.value = props.currentUserDislikes?.has(post.value.id);
@@ -86,6 +95,21 @@ watch(() => props.post, () => {
     resetLikes();
     previewCode(previewElement, post.value.content, post.value.language, true);
 })
+
+
+function focus() {
+    router.push({ name: 'view-post', params: {id: post.value.id} })
+}
+
+function answer() {
+    if (props.isFocused) {
+        if (currentUser.is_logged_in) {
+            router.push({ name: 'answer-post', params: {id: post.value.id} })
+        }
+    } else {
+        focus();
+    }
+}
 </script>
 
 <template>
@@ -139,7 +163,7 @@ watch(() => props.post, () => {
             ></pre>
         </section>
         <section class="relations" v-if="!loading">
-            <o-tooltip triggerClass="wrapper" label="Likes">
+            <o-tooltip triggerClass="wrapper" :label="likesText">
                 <span class="value">{{ totalLikes }}</span>
                 <o-icon 
                     pack="fas" 
@@ -149,7 +173,7 @@ watch(() => props.post, () => {
                     @click="like()"
                 > </o-icon>
             </o-tooltip>
-            <o-tooltip triggerClass="wrapper" label="Dislikes">
+            <o-tooltip triggerClass="wrapper" :label="dislikesText">
                 <span class="value">{{ totalDislikes }}</span>
                 <o-icon 
                     pack="fas" 
@@ -160,13 +184,13 @@ watch(() => props.post, () => {
                 > </o-icon>
             </o-tooltip>
 
-            <o-tooltip triggerClass="wrapper" label="Answers" v-if="!isCompact && !noAnswers">
+            <o-tooltip triggerClass="wrapper" :label="answersText" v-if="!isCompact && !noAnswers">
                 <span class="value">{{ post.answers.length }}</span>
                 <o-icon 
                     pack="fas" 
                     icon="message" 
                     size="large"
-                    @click="focus()"
+                    @click="answer()"
                 > </o-icon>
             </o-tooltip>
         </section>
