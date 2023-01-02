@@ -51,6 +51,21 @@ export class UsersService {
 
 
   // Search
+  async findAll() {
+    const users = await this.usersRepository.find();
+
+    return users.map(user => ({
+      id: user.id,
+      handle: user.handle,
+      display_name: user.display_name,
+      email: user.email,
+      disabled: user.disabled,
+      admin: user.admin,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    }))
+  }
+
   async findOne(handle: string, get_relations: boolean = true) {
     return await this.usersRepository.findOne({
       relations: {
@@ -178,8 +193,7 @@ export class UsersService {
   }
 
 
-  // TODO: implement remove
-  remove(id: number) {
-    return "NOK";
+  async setStatus(handle: string, disabled: boolean) {
+    await this.usersRepository.update({handle: handle}, {disabled: disabled});
   }
 }

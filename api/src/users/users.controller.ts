@@ -1,17 +1,25 @@
 import { Controller, Get, Body, Patch, Param, Post, NotFoundException, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, Request, ParseBoolPipe, Query, DefaultValuePipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDetailsDto } from './dto/update-user-details.dto';
-import { ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiNotFoundResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LowercasePipe } from '../pipes/lowercase.pipe';
 import { UpdateUserEmailDto } from './dto/update-user-email.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { Public } from '../decorators/public.decorator';
 import { NeedsOwnerPermission } from '../decorators/needs-owner-permission.decorator';
 import { RequestWithUser } from '../types/request-with-user.type';
+import { NeedsAdminPermission } from 'src/decorators/needs-admin-permission.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  @NeedsAdminPermission()
+  @ApiExcludeEndpoint()
+  async findAll() {
+    return await this.usersService.findAll();
+  }
 
   // User profile
   @Public()
@@ -69,4 +77,11 @@ export class UsersController {
   }
 
   // TODO: create a "delete" route that would disable the user
+  @Patch(':handle/status')
+  async setStatus(
+    @Param('handle') handle: string, 
+    @Body('disabled', ParseBoolPipe) disabled: boolean
+  ) {
+
+  }
 }
