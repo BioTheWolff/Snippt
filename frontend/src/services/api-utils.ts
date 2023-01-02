@@ -40,7 +40,10 @@ const ENDPOINTS: { [key: string]: string } = {
     'post-dislike': '/posts/$id$/dislike',
     'post-neutral': '/posts/$id$/neutral',
     'post-languages': '/posts/languages',
-    'post-new': '/posts'
+    'post-new': '/posts',
+
+    // admin
+    'admin-user-status': '/users/$handle$/status',
 };
 
 

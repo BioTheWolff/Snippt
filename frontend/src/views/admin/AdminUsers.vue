@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AdminTable from '@/components/admin/AdminTable.vue';
 import type { TableColumnsType } from '@/services/api-utils';
-import { getAllUsers, type AdminUserProfileType } from '@/services/users';
+import { disableUser, enableUser, getAllUsers, type AdminUserProfileType } from '@/services/admin';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import UserProfileCard from '@/components/users/UserProfileCard.vue';
@@ -55,6 +55,27 @@ const columns: TableColumnsType = [
 ];
 
 const selectedData = ref();
+
+
+async function disable() {
+    if (await disableUser(selectedData.value.handle)) {
+        let _users = (users.value as AdminUserProfileType[])
+        let index = _users.indexOf(
+            (_users.find(u => u.handle === selectedData.value.handle) as AdminUserProfileType)
+        );
+        (users.value as AdminUserProfileType[])[index]['disabled'] = "true";
+    } 
+}
+
+async function enable() {
+    if (await enableUser(selectedData.value.handle)) {
+        let _users = (users.value as AdminUserProfileType[])
+        let index = _users.indexOf(
+            (_users.find(u => u.handle === selectedData.value.handle) as AdminUserProfileType)
+        );
+        (users.value as AdminUserProfileType[])[index]['disabled'] = "false";
+    } 
+}
 </script>
 
 <template>
@@ -74,11 +95,13 @@ const selectedData = ref();
                     v-if="selectedData.disabled"
                     variant="success"
                     icon-right="user"
+                    @click="enable()"
                 >Enable account</o-button>
                 <o-button 
                     v-else
                     variant="danger"
                     icon-right="user-slash"
+                    @click="disable()"
                 >Disable account</o-button>
             </div>
         </div>
