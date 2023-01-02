@@ -25,6 +25,7 @@ const ENDPOINTS: { [key: string]: string } = {
 
     // posts
     'post-get-all': '/posts?limit=$limit$&page=$page$',
+    'post-get': '/posts/$id$/chain',
     'post-like': '/posts/$id$/like',
     'post-dislike': '/posts/$id$/dislike',
     'post-neutral': '/posts/$id$/neutral',

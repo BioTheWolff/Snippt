@@ -13,6 +13,8 @@ import {
     faHeartBroken,
     faBars,
     faXmark,
+    faMessage,
+    faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 // importing the FAS pack
@@ -30,6 +32,8 @@ library.add(
     faHeartBroken,
     faBars,
     faXmark,
+    faMessage,
+    faArrowDown,
 );
 
 // exporting the pack

@@ -10,6 +10,8 @@ export type UserPostType = {
     content: string;
     total_likes: number;
     total_dislikes: number;
+    parent: number|null;
+    answers: PostType[];
 }
 
 export type PostType = UserPostType & { author: UserProfileInfoType };
@@ -44,6 +46,15 @@ export async function loadPosts(limit: number, page: number): Promise<PostType[]
 
     return response.json();
 }
+
+export async function viewPost(id: string): Promise<PostType[]> {
+    const response = await _api_request_raw('post-get', 'GET', { id: id });
+
+    if (response.status !== 200) return [];
+
+    return response.json();
+}
+
 
 export async function likePost(id: number) {
     // this is a "go back to neutral"

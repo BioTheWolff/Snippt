@@ -1,31 +1,38 @@
 <script setup lang="ts">
+import router from '@/router';
 import { dislikePost, likePost, neutralPost, type PostType } from '@/services/posts';
 import { previewCode } from '@/services/rainbow';
 import { useUserStore } from '@/stores/user';
 import UserProfileCard from '@@/users/UserProfileCard.vue';
-import { ref } from 'vue';
+import { ref, watch, type Ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const props = defineProps({
     loading: Boolean,
     isUserPost: Boolean,
+    isFocused: Boolean,
+    isCompact: Boolean,
+    noAnswers: Boolean,
     post: {},
     currentUserLikes: Set,
     currentUserDislikes: Set,
 })
-const post: PostType = props.post as PostType;
+let post: Ref<PostType> = ref(props.post as PostType);
 const currentUser = useUserStore();
 
-const isLiked = ref(props.currentUserLikes?.has(post.id));
-const isDisliked = ref(props.currentUserDislikes?.has(post.id));
+const isLiked = ref(props.currentUserLikes?.has(post.value.id));
+const isDisliked = ref(props.currentUserDislikes?.has(post.value.id));
 
-const totalLikes = ref(post.total_likes);
-const totalDislikes = ref(post.total_dislikes);
+const totalLikes = ref(post.value.total_likes);
+const totalDislikes = ref(post.value.total_dislikes);
 
 
 const previewElement = ref();
-if (!props.loading) {
+if (!props.loading && !props.isCompact) {
     setTimeout(
-        () => previewCode(previewElement, post.content, post.language, true), 
+        () => previewCode(previewElement, post.value.content, post.value.language, true), 
         50
     );
 }
@@ -35,11 +42,11 @@ async function like() {
     if (!currentUser.is_logged_in) return;
 
     if (isLiked.value) {
-        await neutralPost(post.id);
+        await neutralPost(post.value.id);
         totalLikes.value--;
     } else {
         if (isDisliked.value) totalDislikes.value--;
-        await likePost(post.id);
+        await likePost(post.value.id);
         totalLikes.value++;
     }
     updateLikeStatus();
@@ -49,30 +56,49 @@ async function dislike() {
     if (!currentUser.is_logged_in) return;
 
     if (isDisliked.value) {
-        await neutralPost(post.id);
+        await neutralPost(post.value.id);
         totalDislikes.value--;
     } else {
         if (isLiked.value) totalLikes.value--;
-        await dislikePost(post.id);
+        await dislikePost(post.value.id);
         totalDislikes.value++;
     }
     updateLikeStatus();
 }
 
-function updateLikeStatus() {
-    isLiked.value = props.currentUserLikes?.has(post.id);
-    isDisliked.value = props.currentUserDislikes?.has(post.id);
+function focus() {
+    router.push({ name: 'view-post', params: {id: post.value.id} })
 }
+
+function updateLikeStatus() {
+    isLiked.value = props.currentUserLikes?.has(post.value.id);
+    isDisliked.value = props.currentUserDislikes?.has(post.value.id);
+}
+
+function resetLikes() {
+    totalLikes.value = post.value.total_likes;
+    totalDislikes.value = post.value.total_dislikes;
+    updateLikeStatus();
+}
+
+watch(() => props.post, () => {
+    post.value = props.post as PostType;
+    resetLikes();
+    previewCode(previewElement, post.value.content, post.value.language, true);
+})
 </script>
 
 <template>
-    <article :class="`post make-card ${isUserPost ? 'user-post' : ''}`">
+    <article :class="`post make-card ${isUserPost ? 'user-post' : ''} 
+        ${isCompact ? 'compact' : ''}`"
+    >
         <div class="author" v-if="!isUserPost">
             <UserProfileCard
                 v-if="loading"
                 handle=""
                 display_name=""
                 loading inline reducedmargin
+                :compact="isCompact"
             ></UserProfileCard>
 
             <UserProfileCard
@@ -80,9 +106,10 @@ function updateLikeStatus() {
                 :handle="post.author.handle"
                 :display_name="post.author.display_name"
                 inline clickable reducedmargin
+                :compact="isCompact"
             ></UserProfileCard>
         </div>
-        <section class="content">
+        <section class="content" @click="focus()">
             <!-- Title -->
             <o-skeleton 
                 v-if="loading"
@@ -99,19 +126,25 @@ function updateLikeStatus() {
                 width="85%"
                 class="content--description"
             ></o-skeleton>
-            <p v-else class="content--description">{{ post.description }}</p>
+            <p 
+                v-if="!loading && !isCompact"
+                class="content--description"
+            >{{ post.description }}</p>
 
             <!-- Snippet -->
             <pre v-if="loading"><code></code></pre>
-            <pre v-else ref="previewElement"></pre>
+            <pre 
+                v-if="!loading && !isCompact"
+                ref="previewElement"
+            ></pre>
         </section>
-        <section class="relations">
+        <section class="relations" v-if="!loading">
             <o-tooltip triggerClass="wrapper" label="Likes">
                 <span class="value">{{ totalLikes }}</span>
                 <o-icon 
                     pack="fas" 
-                    icon="heart" 
-                    size="large" 
+                    icon="heart"
+                    :size="!isCompact ? 'large' : 'medium'" 
                     :variant="isLiked ? 'danger' : ''"
                     @click="like()"
                 > </o-icon>
@@ -120,10 +153,20 @@ function updateLikeStatus() {
                 <span class="value">{{ totalDislikes }}</span>
                 <o-icon 
                     pack="fas" 
-                    icon="heart-broken" 
-                    size="large" 
+                    icon="heart-broken"
+                    :size="!isCompact ? 'large' : 'medium'" 
                     :variant="isDisliked ? 'info' : ''"
                     @click="dislike()"
+                > </o-icon>
+            </o-tooltip>
+
+            <o-tooltip triggerClass="wrapper" label="Answers" v-if="!isCompact && !noAnswers">
+                <span class="value">{{ post.answers.length }}</span>
+                <o-icon 
+                    pack="fas" 
+                    icon="message" 
+                    size="large"
+                    @click="focus()"
                 > </o-icon>
             </o-tooltip>
         </section>
@@ -160,4 +203,16 @@ function updateLikeStatus() {
         .wrapper
             .value
                 font-size: 1.3em
+
+    &.compact
+
+        .content
+            margin-bottom: 0
+
+            &--title
+                font-size: 1.3em
+                margin-bottom: 0
+
+        .relations .wrapper .value
+            font-size: 0.9em
 </style>

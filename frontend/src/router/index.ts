@@ -60,6 +60,22 @@ const router = createRouter({
         title: 'New post'
       }
     },
+    {
+      path: '/posts/:id',
+      name: 'view-post',
+      component: () => import('%/posts/PostFocusView.vue'),
+      meta: {
+        title: 'post'
+      }
+    },
+    {
+      path: '/posts/:id/answer',
+      name: 'answer-post',
+      component: () => import('%/posts/PostCreateView.vue'),
+      meta: {
+        title: 'Answer post'
+      }
+    },
   ]
 });
 
