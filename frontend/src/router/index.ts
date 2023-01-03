@@ -85,7 +85,15 @@ const router = createRouter({
       meta: {
         title: 'Users list'
       }
-    }
+    },
+    {
+      path: '/admin/posts',
+      name: 'admin-posts',
+      component: () => import('%/admin/AdminPosts.vue'),
+      meta: {
+        title: 'Posts list'
+      }
+    },
   ]
 });
 

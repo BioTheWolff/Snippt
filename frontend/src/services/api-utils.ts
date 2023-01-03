@@ -41,9 +41,11 @@ const ENDPOINTS: { [key: string]: string } = {
     'post-neutral': '/posts/$id$/neutral',
     'post-languages': '/posts/languages',
     'post-new': '/posts',
+    'post-delete': '/posts/$id$',
 
     // admin
     'admin-user-status': '/users/$handle$/status',
+    'post-admin-get-all': '/posts/admin',
 };
 
 
@@ -93,4 +95,8 @@ export async function post(endpoint: string, params?: ApiParamsType, body?: ApiB
 
 export async function patch(endpoint: string, params?: ApiParamsType, body?: ApiBodyType) {
     return await _api_request(endpoint, 'PATCH', params ?? {}, body);
+}
+
+export async function delete_(endpoint: string, params?: ApiParamsType, body?: ApiBodyType) {
+    return await _api_request(endpoint, 'DELETE', params ?? {}, body);
 }

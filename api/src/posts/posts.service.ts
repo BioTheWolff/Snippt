@@ -44,6 +44,14 @@ export class PostsService {
     });
   }
 
+  async findAllAdmin() {
+    return await this.repository.find({
+      relations: {
+        author: true,
+      }
+    })
+  }
+
   async findByPage(limit: number, page: number) {
     return await this.repository.find({
       order: {

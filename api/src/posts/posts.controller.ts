@@ -5,6 +5,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { RequestWithUser } from '../types/request-with-user.type';
 import { NeedsAuthorPermission } from '../decorators/needs-author-permission.decorator';
 import { Public } from '../decorators/public.decorator';
+import { NeedsAdminPermission } from 'src/decorators/needs-admin-permission.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -35,6 +36,12 @@ export class PostsController {
     } else {
       return await this.postsService.findAll();
     }
+  }
+
+  @Get('/admin')
+  @NeedsAdminPermission()
+  async findAllAdmin() {
+    return await this.postsService.findAllAdmin();
   }
 
   @Public()

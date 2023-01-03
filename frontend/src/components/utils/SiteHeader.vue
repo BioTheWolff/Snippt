@@ -66,6 +66,10 @@ watch(() => route.fullPath, () => {
                     aria-role="listitem" 
                     @click="$router.push('/admin/users')"
                 >Users</o-dropdown-item>
+                <o-dropdown-item 
+                    aria-role="listitem" 
+                    @click="$router.push('/admin/posts')"
+                >Posts</o-dropdown-item>
             </o-dropdown>
             <RouterLinkButton
                 v-if="userStore.is_logged_in"
