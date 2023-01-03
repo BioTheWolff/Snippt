@@ -5,6 +5,16 @@ networks:
         name: ${COMPOSE_PROJECT_NAME}_network
 
 services:
+    # Main services overrides
+    api:
+        volumes:
+            - ../api/:/srv/:rw
+
+    frontend:
+        volumes:
+            - ../frontend/:/srv/:rw
+
+    # Dev-only images
     adminer:
         container_name: ${COMPOSE_PROJECT_NAME}_adminer
         image: adminer
@@ -25,11 +35,12 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
 
 
+    # Overriding traefik for debug config
     traefik:
         ports:
             - "8000:8080"
         command:
-            - "--entrypoints.web.address=:80"
+            - "--entrypoints.web.address=:${PROJECT_ENTRY_PORT}"
             - "--providers.docker=true"
             - "--providers.docker.exposedbydefault=false"
             - "--log.level=DEBUG"

@@ -1,1 +1,8 @@
 version: "3.9"
+
+services:
+    traefik:
+        command:
+            - "--entrypoints.web.address=:${PROJECT_ENTRY_PORT}"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
