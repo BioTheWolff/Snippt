@@ -52,7 +52,12 @@ export class UsersService {
 
   // Search
   async findAll() {
-    const users = await this.usersRepository.find();
+    const users = await this.usersRepository.find({
+      order: {
+        created_at: 'DESC',
+        updated_at: 'DESC',
+      },
+    });
 
     return users.map(user => ({
       id: user.id,

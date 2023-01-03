@@ -46,6 +46,10 @@ export class PostsService {
 
   async findAllAdmin() {
     return await this.repository.find({
+      order: {
+        created_at: 'DESC',
+        updated_at: 'DESC',
+      },
       relations: {
         author: true,
       }
