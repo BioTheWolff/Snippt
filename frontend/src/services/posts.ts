@@ -12,6 +12,7 @@ export type UserPostType = {
     total_dislikes: number;
     parent: number|null;
     answers: PostType[];
+    deleted?: boolean;
 }
 
 export type PostType = UserPostType & { author: UserProfileInfoType };

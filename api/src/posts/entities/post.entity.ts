@@ -73,4 +73,26 @@ export class Post {
     @Exclude()
     @Column('boolean', { default: false })
     deleted: boolean;
+
+    getPublicVersion() {
+        let post = {
+            id: this.id,
+            title: this.title,
+            parent: this.parent,
+            answers: this.answers 
+                ? this.answers.map(p => p.getPublicVersion())
+                : undefined,
+            author: this.author,
+        }
+
+        if (this.deleted) {
+            post['deleted'] = true;
+        } else {
+            post['description'] = this.description;
+            post['content'] = this.content;
+            post['language'] = this.language;
+        }
+
+        return post;
+    }
 }

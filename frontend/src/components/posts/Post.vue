@@ -44,12 +44,13 @@ const answersText = ref(
 
 
 const previewElement = ref();
-if (!props.loading && !props.isCompact) {
-    setTimeout(
-        () => previewCode(previewElement, post.value.content, post.value.language, true), 
-        50
-    );
+function runCodePreview() {
+    if (!props.loading && !props.isCompact && !post.value.deleted) {
+        previewCode(previewElement, post.value.content, post.value.language, true)
+    }
 }
+
+setTimeout(runCodePreview, 50);
 
 
 async function like() {
@@ -96,7 +97,7 @@ function resetLikes() {
 watch(() => props.post, () => {
     post.value = props.post as PostType;
     resetLikes();
-    previewCode(previewElement, post.value.content, post.value.language, true);
+    runCodePreview();
 })
 
 
@@ -149,6 +150,14 @@ function answer() {
             ></o-skeleton>
             <div v-else class="content--title">{{ post.title }}</div>
 
+            <o-notification 
+                v-if="!loading && post.deleted"
+                noticeClass="empty"
+                type="danger" variant="danger"
+            >
+                This post has been deleted.
+            </o-notification>
+
             <!-- Description -->
             <o-skeleton
                 v-if="loading"
@@ -157,14 +166,14 @@ function answer() {
                 class="content--description"
             ></o-skeleton>
             <p 
-                v-if="!loading && !isCompact"
+                v-if="!loading && !isCompact && !post.deleted"
                 class="content--description"
             >{{ post.description }}</p>
 
             <!-- Snippet -->
             <pre v-if="loading"><code></code></pre>
             <pre 
-                v-if="!loading && !isCompact"
+                v-if="!loading && !isCompact && !post.deleted"
                 ref="previewElement"
             ></pre>
         </section>

@@ -39,7 +39,8 @@ export class PostsService {
       relations: {
         author: true,
         answers: true,
-      }
+      },
+      where: {deleted: false}
     });
   }
 
@@ -54,6 +55,7 @@ export class PostsService {
       },
       skip: (page-1)*limit,
       take: limit,
+      where: {deleted: false}
     });
   }
 
@@ -91,8 +93,7 @@ export class PostsService {
     let current = last;
     do {
       // push the sanitized output to the array
-      let {parent: _1, ...rest} = instanceToPlain(current);
-      chain.push(rest);
+      chain.push(current.getPublicVersion());
 
       // find next parent in the chain
       if (!current.parent) break;
@@ -115,14 +116,7 @@ export class PostsService {
 
     if (!post) return;
 
-    if (post.deleted) {
-      return {
-        title: post.title,
-        deleted: true,
-      }
-    } else {
-      return post;
-    }
+    return post.getPublicVersion();
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
@@ -144,14 +138,14 @@ export class PostsService {
     }
 
     await this.repository.update({id: id}, {deleted: true});
-    return "OK";
+    return { "status": "deleted" };
   }
 
   // likes
   async like(user: User, id: number) {
     const post = await this.findOne(id);
 
-    if (!post) {
+    if (!post || post.deleted) {
       throw new BadRequestException(responseMessages.POST_NOT_FOUND);
     }
 
@@ -164,7 +158,7 @@ export class PostsService {
   async dislike(user: User, id: number) {
     const post = await this.findOne(id);
 
-    if (!post) {
+    if (!post || post.deleted) {
       throw new BadRequestException(responseMessages.POST_NOT_FOUND);
     }
 
@@ -177,7 +171,7 @@ export class PostsService {
   async neutral(user: User, id: number) {
     const post = await this.findOne(id);
 
-    if (!post) {
+    if (!post || post.deleted) {
       throw new BadRequestException(responseMessages.POST_NOT_FOUND);
     }
 
