@@ -6,6 +6,10 @@ networks:
 
 services:
     # Main services overrides
+    pgsql:
+        volumes:
+            - ./pgsql/data:/var/lib/postgresql/data:rw
+
     api:
         container_name: ${COMPOSE_PROJECT_NAME}_dev_api
         image: ${COMPOSE_PROJECT_NAME}_dev_api

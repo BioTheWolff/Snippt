@@ -4,6 +4,9 @@ networks:
     docker:
         name: ${COMPOSE_PROJECT_NAME}_network
 
+volumes:
+    pgdata:
+
 services:
     # DATABASE #
     pgsql:
@@ -18,7 +21,7 @@ services:
         volumes:
             # save data on the disk, so it doesn't get erased
             # even if the container goes down
-            - ${POSTGRES_DATA_DIRECTORY}:/var/lib/postgresql/data:rw
+            - pgdata:/var/lib/postgresql/data:rw
         environment:
             POSTGRES_DB: ${POSTGRES_DATABASE}
             POSTGRES_USER: ${POSTGRES_USERNAME}
