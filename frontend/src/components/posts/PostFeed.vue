@@ -24,6 +24,7 @@ async function loadPosts() {
     }
 }
 
+loadPosts();
 
 const placeholderPost: UserPostType = {
     id: -1,
