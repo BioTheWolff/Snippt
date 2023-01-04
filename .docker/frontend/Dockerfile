@@ -11,7 +11,7 @@ FROM node:16.19.0-alpine as prod_builder
 COPY ./frontend /srv
 WORKDIR /srv
 
-RUN npm install
+RUN npm ci
 RUN npm run build-only
 
 

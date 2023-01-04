@@ -10,7 +10,7 @@ FROM node:19-alpine as prod
 COPY ./api /srv
 WORKDIR /srv
 
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 CMD ["npm", "run", "start:prod"]
