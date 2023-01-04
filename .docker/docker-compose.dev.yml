@@ -8,16 +8,20 @@ services:
     # Main services overrides
     api:
         container_name: ${COMPOSE_PROJECT_NAME}_dev_api
+        image: ${COMPOSE_PROJECT_NAME}_dev_api
         build:
-            context: ./api
+            context: ./../
+            dockerfile: ./.docker/api/Dockerfile
             target: dev
         volumes:
             - ../api/:/srv/:rw
 
     frontend:
         container_name: ${COMPOSE_PROJECT_NAME}_dev_frontend
+        image: ${COMPOSE_PROJECT_NAME}_dev_frontend
         build:
-            context: ./frontend
+            context: ./../
+            dockerfile: ./.docker/frontend/Dockerfile
             target: dev
         volumes:
             - ../frontend/:/srv/:rw
