@@ -20,3 +20,4 @@ FROM nginx:stable-alpine as prod
 
 COPY ./.docker/frontend/conf/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=prod_builder /srv/dist /usr/share/nginx/html
+RUN chmod -R a+r /usr/share/nginx/html
