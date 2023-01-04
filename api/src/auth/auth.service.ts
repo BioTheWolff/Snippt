@@ -6,12 +6,23 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { Response as ResponseType } from 'express';
 
+require('dotenv').config();
+
 @Injectable()
 export class AuthService {
     constructor (
         private readonly usersService: UsersService,
         private readonly jwtService: JwtService
     ) {}
+
+    private _setTokenCookie(response: ResponseType, payload: any, date: Date) {
+        response.cookie('token', payload, { 
+            expires: date,
+            httpOnly: true,
+            sameSite: true,
+            secure: process.env.MODE === 'prod',
+        })
+    }
 
     async register(userInfo: CreateUserDto, response: ResponseType) {
         let user = await this.usersService.create(userInfo);
@@ -47,11 +58,7 @@ export class AuthService {
         const date = new Date();
         date.setSeconds(date.getSeconds() + 10);
 
-        response.cookie('token', '', { 
-            expires: date,
-            httpOnly: true,
-            sameSite: true
-        })
+        this._setTokenCookie(response, '', date);
         return { "status": "logged-out" }
     }
 
@@ -64,11 +71,8 @@ export class AuthService {
 
         const token = this.jwtService.sign(payload);
 
-        response.cookie('token', token, { 
-            expires: new Date(this.jwtService.decode(token)['exp']*1000),
-            httpOnly: true,
-            sameSite: true
-        });
+        this._setTokenCookie(response, token, 
+            new Date(this.jwtService.decode(token)['exp']*1000));
     }
 
     userDetails(user: User) {
