@@ -1,5 +1,5 @@
 import { useUserStore } from "@/stores/user";
-import { get, post, _api_request_raw, type ApiBodyType } from "./api-utils";
+import { get, patch, post, _api_request_raw, type ApiBodyType } from "./api-utils";
 import type { UserProfileInfoType } from "./users";
 
 export type UserPostType = {
@@ -34,6 +34,17 @@ export async function createPost(body: ApiBodyType): Promise<number|[]> {
     }
 }
 
+export async function editPost(id: string, body: ApiBodyType): Promise<number|[]> {
+    const data = await patch('post-edit', {id: id}, body);
+
+    if (data.__status === 200) {
+        return data.id;
+    } else {
+        return data['message'];
+    }
+}
+
+
 export async function answerPost(id: string, body: ApiBodyType): Promise<number|[]> {
     const data = await post('post-answer', {id: id}, body);
 
@@ -55,6 +66,10 @@ export async function loadPosts(limit: number, page: number): Promise<PostType[]
     if (response.status !== 200) return [];
 
     return response.json();
+}
+
+export async function getSinglePost(id: string): Promise<PostType> {
+    return await get('post-get-single', {id: id}) as {} as PostType;
 }
 
 export async function viewPost(id: string): Promise<PostType[]> {

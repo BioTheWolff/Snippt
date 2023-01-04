@@ -139,7 +139,7 @@ export class PostsService {
     }
 
     await this.repository.update({id: id}, updatePostDto);
-    return updatePostDto;
+    return { id: id, updated: updatePostDto };
   }
 
   async remove(id: number) {

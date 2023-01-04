@@ -83,6 +83,8 @@ export class Post {
                 ? this.answers.map(p => p.getPublicVersion())
                 : undefined,
             author: this.author,
+            total_likes: this.total_likes,
+            total_dislikes: this.total_dislikes,
         }
 
         if (this.deleted) {

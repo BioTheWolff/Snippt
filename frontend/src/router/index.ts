@@ -69,6 +69,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/posts/:id/edit',
+      name: 'edit-post',
+      component: () => import('%/posts/PostEditView.vue'),
+      meta: {
+        title: 'Edit post'
+      }
+    },
+    {
       path: '/posts/:id/answer',
       name: 'answer-post',
       component: () => import('%/posts/PostAnswerView.vue'),

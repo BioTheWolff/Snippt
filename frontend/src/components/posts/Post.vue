@@ -14,6 +14,7 @@ const props = defineProps({
     noAnswers: Boolean,
     disableActions: Boolean,
     post: {},
+    authorHandle: String,
     currentUserLikes: Set,
     currentUserDislikes: Set,
 })
@@ -99,6 +100,22 @@ watch(() => props.post, () => {
     resetLikes();
     runCodePreview();
 })
+
+
+function canEdit() {
+    if (props.isUserPost) {
+        if (currentUser.is_admin || currentUser.handle === props.authorHandle) {
+            return props.isFocused && !props.disableActions && !post.value.deleted;
+        } else {
+            return false;
+        }
+    }
+    else if (currentUser.is_admin || currentUser.handle === post.value.author.handle) {
+        return props.isFocused && !props.disableActions && !post.value.deleted;
+    } else {
+        return false;
+    }
+}
 
 
 function focus() {
@@ -208,6 +225,13 @@ function answer() {
                     @click="answer()"
                 > </o-icon>
             </o-tooltip>
+
+            <o-button
+                v-if="canEdit()"
+                icon-left="pen-to-square"
+                variant="info"
+                @click="$router.push({ name: 'edit-post', params: {id: post.id} })"
+            >Edit post</o-button>
         </section>
     </article>
 </template>
