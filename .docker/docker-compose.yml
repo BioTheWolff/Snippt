@@ -29,7 +29,6 @@ services:
     api:
         container_name: ${COMPOSE_PROJECT_NAME}_api
         image: ${COMPOSE_PROJECT_NAME}_api
-        build: api
         networks: [docker]
         labels:
             # Enable traefik to redirect traffic to the API

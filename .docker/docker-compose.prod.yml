@@ -1,6 +1,16 @@
 version: "3.9"
 
 services:
+    api:
+        build:
+            context: ./api
+            target: prod
+
+    frontend:
+        build:
+            context: ./frontend
+            target: prod
+
     traefik:
         command:
             - "--entrypoints.web.address=:${PROJECT_ENTRY_PORT}"
