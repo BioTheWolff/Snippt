@@ -13,6 +13,7 @@ const props = defineProps({
     isCompact: Boolean,
     noAnswers: Boolean,
     disableActions: Boolean,
+    disableClick: Boolean,
     post: {},
     authorHandle: String,
     currentUserLikes: Set,
@@ -119,6 +120,7 @@ function canEdit() {
 
 
 function focus() {
+    if (props.disableClick) return;
     router.push({ name: 'view-post', params: {id: post.value.id} })
 }
 
