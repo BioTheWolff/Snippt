@@ -3,12 +3,14 @@ version: "3.9"
 services:
     api:
         build:
-            context: ./api
+            context: ./../
+            dockerfile: ./.docker/api/Dockerfile
             target: prod
 
     frontend:
         build:
-            context: ./frontend
+            context: ./../
+            dockerfile: ./.docker/frontend/Dockerfile
             target: prod
 
     traefik:
