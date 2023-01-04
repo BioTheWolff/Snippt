@@ -22,7 +22,7 @@ require('dotenv').config();
       migrations: [
         __dirname + '/database/migrations/*{.ts,.js}'
       ],
-      synchronize: (process.env.MODE === "dev"),
+      synchronize: (process.env.MODE === "devsync"),
     }),
     // API modules
     UsersModule,
