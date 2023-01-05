@@ -6,6 +6,8 @@ services:
             context: ./../
             dockerfile: ./.docker/api/Dockerfile
             target: prod
+        deploy:
+            replicas: 3
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.api.rule=Host(`${PROJECT_URL}`) && PathPrefix(`/api/`)"
@@ -18,6 +20,8 @@ services:
             context: ./../
             dockerfile: ./.docker/frontend/Dockerfile
             target: prod
+        deploy:
+            replicas: 2
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.frontend.rule=Host(`${PROJECT_URL}`)"

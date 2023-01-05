@@ -16,8 +16,11 @@ redeploy: build
 
 
 # MIGRATE #
+# we find all the replicas and run the migration command in them
 migrate: up
 	@echo "Replaying migrations..."
-	@docker exec --workdir /srv $(COMPOSE_PROJECT_NAME)_api npm run typeorm:run-migrations
+	@for container in $(shell docker ps --format "{{lower .Names}}" | grep "snippt-api") ; do \
+		docker exec --workdir /srv $$container npm run typeorm:run-migrations > /dev/null ; \
+	done
 
 up-migrate: up migrate

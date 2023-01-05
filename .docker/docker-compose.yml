@@ -30,7 +30,6 @@ services:
 
     # SERVICES #
     api:
-        container_name: ${COMPOSE_PROJECT_NAME}_api
         image: ${COMPOSE_PROJECT_NAME}_api
         networks: [docker]
         labels:
@@ -41,7 +40,6 @@ services:
             - "traefik.http.services.api.loadbalancer.server.port=80"
 
     frontend:
-        container_name: ${COMPOSE_PROJECT_NAME}_frontend
         image: ${COMPOSE_PROJECT_NAME}_frontend
         build: frontend
         networks: [docker]
