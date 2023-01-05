@@ -12,7 +12,7 @@ import { UsersSeederService } from "../src/users/seeds/users-seeder.service";
 import { usersSeeds } from "../src/users/seeds/users-seeds";
 import { CreatePostDto } from "../src/posts/dto/create-post.dto";
 import { responseMessages } from "../src/response-messages";
-import { answersSeeds, countDislikesForPost, countLikesForPost, postsSeeds } from "../src/posts/seeds/posts.seeds";
+import { countDislikesForPost, countLikesForPost, postsSeeds } from "../src/posts/seeds/posts.seeds";
 
 require('dotenv').config();
 
@@ -94,7 +94,7 @@ describe('Posts', () => {
             title: "My new title"
         })
         .expect(200)
-        .expect({ title: "My new title" })
+        .expect({ id: posts[0].id, updated: { title: "My new title" }})
   })
 
   it('should update the post if admin', async () => {
@@ -107,7 +107,7 @@ describe('Posts', () => {
             title: "My new admin title"
         })
         .expect(200)
-        .expect({ title: "My new admin title" })
+        .expect({ id: posts[0].id, updated: { title: "My new admin title" }})
   })
 
 
@@ -173,7 +173,7 @@ describe('Posts', () => {
     expect(foundDto.answers).toEqual([child]);
 
     // check parent id is correct
-    expect(foundDto.parent).toBe(response_parent.body.id);
+    expect(foundDto.parent.id).toBe(response_parent.body.id);
   })
 
   it('should return correct relations on end of chain', async () => {
@@ -195,7 +195,7 @@ describe('Posts', () => {
     expect(foundDto.answers).toEqual([]);
 
     // check parent id is correct
-    expect(foundDto.parent).toBe(response_parent.body.id);
+    expect(foundDto.parent.id).toBe(response_parent.body.id);
   })
 
   it('should 404 on unknown post', () => {
@@ -211,16 +211,24 @@ describe('Posts', () => {
     await request(app.getHttpServer())
         .delete(`/posts/${posts[0].id}`)
         .set('Authorization', jwt_bearer)
-        .expect(200)
-        .expect("OK");
+        .expect(200);
 
-    return request(app.getHttpServer())
-        .get(`/posts/${posts[0].id}`)
-        .expect(200)
-        .expect({
-            title: posts[0].title,
-            deleted: true
-        })
+    const response_post = await request(app.getHttpServer())
+        .get(`/posts/${posts[0].id}`);
+    const {
+      id: _0,
+      answers: _1,
+      parent: _2,
+      author: _3,
+      total_likes: _4,
+      total_dislikes: _5,
+      ...body
+    } = response_post.body;
+
+    expect(body).toEqual({
+      title: posts[0].title,
+      deleted: true
+    });
   })
 
   it('should remove post if admin', async () => {
@@ -229,16 +237,24 @@ describe('Posts', () => {
     await request(app.getHttpServer())
         .delete(`/posts/${posts[0].id}`)
         .set('Authorization', token)
-        .expect(200)
-        .expect("OK");
+        .expect(200);
 
-    return request(app.getHttpServer())
-        .get(`/posts/${posts[0].id}`)
-        .expect(200)
-        .expect({
-            title: posts[0].title,
-            deleted: true
-        })
+    const response_post = await request(app.getHttpServer())
+    .get(`/posts/${posts[0].id}`);
+    const {
+      id: _0,
+      answers: _1,
+      parent: _2,
+      author: _3,
+      total_likes: _4,
+      total_dislikes: _5,
+      ...body
+    } = response_post.body;
+
+    expect(body).toEqual({
+      title: posts[0].title,
+      deleted: true
+    });
   })
 
   it('should not remove post if not self', () => {

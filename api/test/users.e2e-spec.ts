@@ -220,8 +220,7 @@ describe('Users', () => {
       .patch(`/users/notfound/email`)
       .set("Authorization", token)
       .send({ email: users[1].email })
-      .expect(400)
-      .expect(getBodyFromError(400, responseMessages.UPDATE_NONEXIST_USER));
+      .expect(403);
   })
 
   it('should not update email on empty body', () => {
@@ -240,15 +239,14 @@ describe('Users', () => {
       .expect(getBodyFromError(403, responseMessages.TARGET_NOT_SELF));
   })
 
-  it('should update email of another user IF ADMIN', async () => {
+  it('should not update email of another user IF ADMIN', async () => {
     const token = await loginAndGetToken(app, usersSeeds[1].email, usersSeeds[1].password);
 
     return request(app.getHttpServer())
       .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", token)
       .send({ email: "notadmin@example.com" })
-      .expect(200)
-      .expect({ email: "notadmin@example.com" });
+      .expect(403);
   })
 
 

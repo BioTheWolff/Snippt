@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, NotFoundException, ParseIntPipe, UseInterceptors, ClassSerializerInterceptor, Query, DefaultValuePipe, ValidationPipe, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, NotFoundException, ParseIntPipe, UseInterceptors, ClassSerializerInterceptor, Query, DefaultValuePipe, BadRequestException } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto, languages } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -6,10 +6,10 @@ import { RequestWithUser } from '../types/request-with-user.type';
 import { NeedsAuthorPermission } from '../decorators/needs-author-permission.decorator';
 import { Public } from '../decorators/public.decorator';
 import { NeedsAdminPermission } from '../decorators/needs-admin-permission.decorator';
-import { ApiExcludeEndpoint, ApiNotFoundResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiNotFoundResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Post as PostEntity } from '../posts/entities/post.entity';
-import { ApiResponseForbidden, ApiResponseUnauthorized } from 'src/decorators/api-responses.decorator';
-import { JsonStatusResponse, PostUpdateResponse } from 'src/types/api-responses.type';
+import { ApiResponseForbidden, ApiResponseUnauthorized, ApiResponseValidationError } from '../decorators/api-responses.decorator';
+import { JsonStatusResponse, PostUpdateResponse } from '../types/api-responses.type';
 
 @Controller('posts')
 export class PostsController {
@@ -36,6 +36,7 @@ export class PostsController {
     description: "The created post",
     type: PostEntity,
   })
+  @ApiResponseValidationError()
   @ApiResponseUnauthorized()
   async create(@Req() req: RequestWithUser, @Body() createPostDto: CreatePostDto) {
     return await this.postsService.create(req.user, createPostDto);
@@ -123,6 +124,7 @@ export class PostsController {
     description: "The created post",
     type: PostEntity,
   })
+  @ApiResponseValidationError()
   async createAnswer(
     @Req() req: RequestWithUser, 
     @Param('id', ParseIntPipe) postId: number,
@@ -142,6 +144,7 @@ export class PostsController {
     description: "The post's id, alongside the updated fields",
     type: PostUpdateResponse
   })
+  @ApiResponseValidationError()
   @ApiResponseUnauthorized()
   @ApiResponseForbidden()
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {

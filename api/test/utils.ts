@@ -40,5 +40,7 @@ export async function loginAndGetToken(app, email: string, password: string) {
         email: email,
         password: password
       });
-    return getBearerFromResponse(response);
+    if (response.statusCode !== 201) 
+        throw new Error("Trying to log in with disabled user");
+    else return getBearerFromResponse(response);
   }
