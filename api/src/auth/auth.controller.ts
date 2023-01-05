@@ -6,7 +6,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { BypassJwtAuth } from '../decorators/bypass-jwt-auth.decorator';
 import { Response as ResponseType } from 'express';
 import { RequestWithUser } from '../types/request-with-user.type';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthStatusResponse, JsonLoginResponse } from '../types/api-responses.type';
 import { ApiResponseUnauthorized, ApiResponseValidationError } from '../decorators/api-responses.decorator';
 import { LoginRequestBody } from '../types/api-request-bodies.type';
@@ -21,6 +21,7 @@ export class AuthController {
   @Post('register')
   @BypassJwtAuth()
   @ApiTags('authentication')
+  @ApiOperation({ summary: "Register a new account" })
   @ApiResponse({ 
     status: 201,
     description: 'The user was successfully registered and logged in to',
@@ -36,6 +37,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @BypassJwtAuth()
   @ApiTags('authentication')
+  @ApiOperation({ summary: "Log into an existing account" })
   @ApiBody({ type: LoginRequestBody })
   @ApiResponse({ 
     status: 201,
@@ -49,6 +51,7 @@ export class AuthController {
 
   @Get('logout')
   @ApiTags('authentication')
+  @ApiOperation({ summary: "Log out of the current account" })
   @ApiResponse({ status: 200, description: 'The user was successfully logged out' })
   @ApiResponseUnauthorized()
   async logout(@Response({ passthrough: true }) res: ResponseType) {
@@ -60,6 +63,7 @@ export class AuthController {
   @Get('status')
   @UseGuards(JwtAuthGuard)
   @ApiTags('authentication')
+  @ApiOperation({ summary: "Get current login status" })
   @ApiResponse({
     status: 200,
     description: "The current authentication status",

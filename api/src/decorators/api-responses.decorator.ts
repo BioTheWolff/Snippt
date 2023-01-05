@@ -25,7 +25,7 @@ export function ApiResponseForbidden() {
   return applyDecorators(
     ApiResponse({ 
       status: 403,
-      description: "The user is not authorized to make this action. This happens if you try to update another user"
+      description: "The user is not authorized to make this action. This happens if you lack ownership or administrative permissions."
     })
   );
 }

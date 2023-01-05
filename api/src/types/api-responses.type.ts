@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { UpdatePostDto } from "../posts/dto/update-post.dto";
 import { Post } from "../posts/entities/post.entity";
 
 export class JsonStatusResponse {
@@ -65,4 +66,12 @@ export class UserProfileRelationsResponse {
 
     @ApiProperty()
     dislikes: Post[];
+}
+
+export class PostUpdateResponse {
+    @ApiProperty()
+    id: number;
+
+    @ApiProperty()
+    updated: UpdatePostDto;
 }

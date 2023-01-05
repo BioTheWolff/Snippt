@@ -73,7 +73,7 @@ export class UsersController {
   @Patch(':handle/details')
   @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle' })
   @ApiTags('user settings')
-  @ApiOperation({ summary: "Update a user's public details" })
+  @ApiOperation({ summary: "Update your public details - requires ownership" })
   @ApiBody({ description: 'All keys are optional', type: UpdateUserDetailsDto })
   @ApiResponseUnauthorized()
   @ApiResponseForbidden()
@@ -84,7 +84,7 @@ export class UsersController {
   @Patch(':handle/email')
   @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle', allow_admins: false })
   @ApiTags('user settings')
-  @ApiOperation({ summary: "Update a user's email" })
+  @ApiOperation({ summary: "Update your email - requires ownership" })
   @ApiResponseUnauthorized()
   @ApiResponseForbidden()
   async updateEmail(@Param('handle') handle: string, @Body() updateUserEmailDto: UpdateUserEmailDto) {
@@ -94,7 +94,7 @@ export class UsersController {
   @Patch(':handle/password')
   @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle', allow_admins: false })
   @ApiTags('user settings')
-  @ApiOperation({ summary: "Update a user's password" })
+  @ApiOperation({ summary: "Update your password - requires ownership" })
   @ApiResponse({ 
     status: 200, 
     description: 'The password was successfully updated',
