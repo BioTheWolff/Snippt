@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Request, Response, UseGuards } from '@nestjs/common';
-import { User } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -7,6 +6,10 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { BypassJwtAuth } from '../decorators/bypass-jwt-auth.decorator';
 import { Response as ResponseType } from 'express';
 import { RequestWithUser } from '../types/request-with-user.type';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthStatusResponse, JsonLoginResponse } from '../types/api-responses.type';
+import { ApiResponseUnauthorized, ApiResponseValidationError } from '../decorators/api-responses.decorator';
+import { LoginRequestBody } from '../types/api-request-bodies.type';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +20,13 @@ export class AuthController {
   // TODO: restrict to NOT logged-in users
   @Post('register')
   @BypassJwtAuth()
+  @ApiTags('authentication')
+  @ApiResponse({ 
+    status: 201,
+    description: 'The user was successfully registered and logged in to',
+    type: JsonLoginResponse
+  })
+  @ApiResponseValidationError()
   async register(@Body() userInfo: CreateUserDto, @Response({ passthrough: true }) res: ResponseType) {
     return await this.authService.register(userInfo, res);
   }
@@ -25,11 +35,22 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @BypassJwtAuth()
+  @ApiTags('authentication')
+  @ApiBody({ type: LoginRequestBody })
+  @ApiResponse({ 
+    status: 201,
+    description: 'The user was successfully logged in to',
+    type: JsonLoginResponse
+  })
+  @ApiResponseValidationError()
   async login(@Request() req: RequestWithUser, @Response({ passthrough: true }) res: ResponseType) {
     return this.authService.login(req.user, res);
   }
 
   @Get('logout')
+  @ApiTags('authentication')
+  @ApiResponse({ status: 200, description: 'The user was successfully logged out' })
+  @ApiResponseUnauthorized()
   async logout(@Response({ passthrough: true }) res: ResponseType) {
     return this.authService.logout(res);
   }
@@ -38,6 +59,13 @@ export class AuthController {
   // TODO: JWT refresh token?
   @Get('status')
   @UseGuards(JwtAuthGuard)
+  @ApiTags('authentication')
+  @ApiResponse({
+    status: 200,
+    description: "The current authentication status",
+    type: AuthStatusResponse
+  })
+  @ApiResponseUnauthorized()
   async status(@Request() req: RequestWithUser) {
     return { status: "OK", expiresIn: req.user.jwtExpirationDate - new Date().getTime()/1000 };
   }

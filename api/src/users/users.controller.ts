@@ -10,9 +10,9 @@ import { NeedsOwnerPermission } from '../decorators/needs-owner-permission.decor
 import { RequestWithUser } from '../types/request-with-user.type';
 import { NeedsAdminPermission } from '../decorators/needs-admin-permission.decorator';
 import { JsonStatusResponse } from '../types/api-responses.type';
+import { ApiResponseUnauthorized } from '../decorators/api-responses.decorator';
 
 @Controller('users')
-@ApiResponse({ status: 401, description: "The user making the request is not authenticated" })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -50,6 +50,7 @@ export class UsersController {
   @ApiTags('user profile')
   @ApiOperation({ summary: "Follow the target user" })
   @ApiResponse({ status: 201, description: "The target user was followed" })
+  @ApiResponseUnauthorized()
   async follow(@Request() req: RequestWithUser, @Param('handle') target_handle: string) {
     return await this.usersService.follow(req.user, target_handle);
   }
@@ -58,6 +59,7 @@ export class UsersController {
   @ApiTags('user profile')
   @ApiOperation({ summary: "Unfollow the target user" })
   @ApiResponse({ status: 201, description: "The target user was unfollowed" })
+  @ApiResponseUnauthorized()
   async unfollow(@Request() req: RequestWithUser, @Param('handle') target_handle: string) {
     return await this.usersService.unfollow(req.user, target_handle);
   }
@@ -69,6 +71,7 @@ export class UsersController {
   @ApiTags('user settings')
   @ApiOperation({ summary: "Update a user's public details" })
   @ApiBody({ description: 'All keys are optional', type: UpdateUserDetailsDto })
+  @ApiResponseUnauthorized()
   async updateDetails(@Param('handle') handle: string, @Body() updateUserDetailsDto: UpdateUserDetailsDto) {
     return await this.usersService.updateInfo(handle, updateUserDetailsDto);
   }
@@ -77,6 +80,7 @@ export class UsersController {
   @NeedsOwnerPermission({ route_param: 'handle', user_property: 'handle', allow_admins: false })
   @ApiTags('user settings')
   @ApiOperation({ summary: "Update a user's email" })
+  @ApiResponseUnauthorized()
   async updateEmail(@Param('handle') handle: string, @Body() updateUserEmailDto: UpdateUserEmailDto) {
     return await this.usersService.updateEmail(handle, updateUserEmailDto);
   }
@@ -90,6 +94,7 @@ export class UsersController {
     description: 'The password was successfully updated',
     type: JsonStatusResponse
   })
+  @ApiResponseUnauthorized()
   async updatePassword(@Param('handle') handle: string, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
     return await this.usersService.updatePassword(handle, updateUserPasswordDto)
   }
