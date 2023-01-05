@@ -23,19 +23,41 @@ If you have the `make` command available, use the `Makefile` at the root of the 
 
 ```bash
 # start the containers
-# you can use "make dev ENV=prod" to start in production mode
-$ make up
+$ make -f prod.mk up
 
 # shut them down
-# if started in production mode, write "make down ENV=prod"
-$ make down
+$ make -f prod.mk down
 
-# in any critical event, you can kill the containers
-$ make kill
+# apply database migrations to the api containers
+$ make -f prod.mk migrate
 
-# to apply migrations, in other environments than dev (staging, prod, etc.)
-# will make up before
-$ make migrate
+# redeploy the application 
+# (rebuild the images then recreate the containers)
+$ make -f prod.mk redeploy
+```
+
+If you want to contribute to the project, you will want to use the dev environment instead :
+
+```bash
+# start the containers
+$ make -f dev.mk up
+
+# shut them down
+$ make -f dev.mk down
+
+# in any critical event, kill the containers
+$ make -f dev.mk kill
+
+# apply database migrations to the api containers
+$ make -f dev.mk migrate
+
+# native typeorm commands defined in api/package.json are accessible
+# for example here, we generate a new migration
+$ make -f dev.mk typeorm command="generate-migration --name=MyMigration"
+
+# as migrations are created with the container's user,
+# you will want to fix the migrations folder's permissions
+$ make -f dev.mk fix-perms
 ```
 
 ### On Windows
