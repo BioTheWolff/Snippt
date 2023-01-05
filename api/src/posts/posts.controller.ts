@@ -5,7 +5,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { RequestWithUser } from '../types/request-with-user.type';
 import { NeedsAuthorPermission } from '../decorators/needs-author-permission.decorator';
 import { Public } from '../decorators/public.decorator';
-import { NeedsAdminPermission } from 'src/decorators/needs-admin-permission.decorator';
+import { NeedsAdminPermission } from '../decorators/needs-admin-permission.decorator';
 
 @Controller('posts')
 export class PostsController {
