@@ -129,7 +129,6 @@ export class UsersService {
     }
 
     // getting the user to update
-    // TODO: refactor with findOneByOrDie?
     let user = await this.usersRepository.findOneBy({handle: handle});
     if (!user) {
       throw new BadRequestException(responseMessages.UPDATE_NONEXIST_USER);

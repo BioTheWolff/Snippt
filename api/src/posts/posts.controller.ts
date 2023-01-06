@@ -133,8 +133,6 @@ export class PostsController {
     return await this.postsService.createAnswer(req.user, postId, createPostDto);
   }
 
-  // TODO: findOneDeleted with author permission
-
   @Patch(':id')
   @NeedsAuthorPermission()
   @ApiTags('post')

@@ -55,7 +55,6 @@ describe('Users', () => {
       });
   });
 
-  // TODO: test following system /follow and /unfollow
   it('should find the correct relations on profile', async () => {
     for (let index in users) {
       const response = await request(app.getHttpServer())
@@ -178,7 +177,6 @@ describe('Users', () => {
   it('should update email', () => {
     let new_email = { email: "brandnew@email.com" };
 
-    // TODO: check returned email is correct from private profile route once implemented
     return request(app.getHttpServer())
       .patch(`/users/${users[0].handle}/email`)
       .set("Authorization", jwt_bearer)

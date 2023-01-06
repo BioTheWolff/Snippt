@@ -105,7 +105,6 @@ export class UsersController {
     return await this.usersService.updatePassword(handle, updateUserPasswordDto)
   }
 
-  // TODO: create a "delete" route that would disable the user
   @Patch(':handle/status')
   @ApiExcludeEndpoint()
   async setStatus(

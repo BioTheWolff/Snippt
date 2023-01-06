@@ -63,7 +63,6 @@ export class AuthService {
     }
 
     async setAuthenticationToken(user: User, response: ResponseType) {
-        // TODO: simplify payload to switch to cookie
         const payload = {
             sub: user.id,
             handle: user.handle

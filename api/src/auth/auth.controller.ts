@@ -17,7 +17,6 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
 
-  // TODO: restrict to NOT logged-in users
   @Post('register')
   @BypassJwtAuth()
   @ApiTags('authentication')
@@ -32,7 +31,6 @@ export class AuthController {
     return await this.authService.register(userInfo, res);
   }
 
-  // TODO: refuse if user is disabled (only if not admin)
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @BypassJwtAuth()

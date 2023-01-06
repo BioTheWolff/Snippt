@@ -11,8 +11,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(cookieParser());
 
-  // TODO: generate migrations
-  // TODO: document swagger like the users module
   const config = new DocumentBuilder()
     .setTitle('Snippt API')
     .setDescription('The Snippt API')
