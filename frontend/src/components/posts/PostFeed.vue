@@ -15,7 +15,7 @@ const currentUser = useUserStore();
 async function loadPosts() {
     let retrieved = await apiLoadPosts(limit, page);
 
-    if (retrieved.length < limit) {
+    if (retrieved.length == 0) {
         if (posts.value.length === 0) noPosts.value = true;
         loadMore.value = false;
     } else {
